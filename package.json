@@ -1,0 +1,14 @@
+{
+  "name": "phan_mem_quan_ly_chung_cu",
+  "version": "1.0.1",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^32.1.0"
+  }
+}
