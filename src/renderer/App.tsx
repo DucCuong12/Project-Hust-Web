@@ -15,6 +15,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
+        <Route path="" element={<LoginForm />} />
         <Route path="/" element={<Hello />} />
       </Routes>
     </Router>
