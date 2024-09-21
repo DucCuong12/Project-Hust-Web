@@ -1,43 +1,80 @@
-import React, { useState } from "react";
-import "./LoginForm.css";
-import { FaLock, FaUser } from "react-icons/fa";
+import React, { useState } from 'react';
+import './LoginForm.css';
+import { useNavigate } from 'react-router-dom';
+import { FaLock, FaUser } from 'react-icons/fa';
+import AnimatedFrame from '../../../utils/animation_page';
 
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+function LoginForm() {
+  const [input, setInput] = useState({
+    username: '',
+    password: '',
+  });
 
-const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        // Handle login logic here
-        console.log('Email:', email);
-        console.log('Password:', password);
-    };
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setInput((prevInput) => ({
+      ...prevInput,
+      [name]: value,
+    }));
+  };
 
-    return (
-        <div className="wrapper">
-            <form action="">
-                <h1>Hello World!</h1>
-                <div className="input-box">
-                    <input type="text" placeholder="Username" required />
-                    <FaUser className="icon"/>
-                </div>
-                <div className="input-box">
-                    <input type="password" placeholder="Password" required />
-                    <FaLock className="icon"/>
-                </div>     
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    const validUsername = '1';
+    const validPassword = '1';
 
-                <div className="remember-forgot">
-                    <label><input type="checkbox"/>Remember me</label>
-                    <a href="#">Forgot password?</a>
-                </div>        
+    if (input.username === validUsername && input.password === validPassword) {
+      navigate('/home');
+    } else {
+      // eslint-disable-next-line no-alert
+      alert("Wrong login informations!");
+    }
+    // Handle login logic here
+  };
 
-                <button type="submit">Login</button>
+  return (
+    <AnimatedFrame>
+      <div className="wrapper">
+        <form onSubmit={handleSubmit}>
+          <h1>Hello World!</h1>
+          <div className="input-box">
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+              value={input.username}
+              onChange={handleChange}
+            />
+            <FaUser className="icon" />
+          </div>
+          <div className="input-box">
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              value={input.password}
+              onChange={handleChange}
+            />
+            <FaLock className="icon" />
+          </div>
 
-            </form>
-        </div>
-    )
-};
+          <div className="remember-forgot">
+            <label>
+              <input type="checkbox" />
+              Remember me
+            </label>
+            <a href="#">Forgot password?</a>
+          </div>
+
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </AnimatedFrame>
+  );
+}
 
 export default LoginForm;
