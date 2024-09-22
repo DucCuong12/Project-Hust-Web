@@ -9,11 +9,17 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, globalShortcut } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import db from '../db/config';
+
+db.connect((err) => {
+  if (err) throw err;
+  console.log('Connected!');
+});
 
 class AppUpdater {
   constructor() {
@@ -116,6 +122,14 @@ const createWindow = async () => {
 /**
  * Add event listeners...
  */
+app.on('browser-window-focus', function () {
+  globalShortcut.register('CommandOrControl+R', () => {
+    console.log('CommandOrControl+R is pressed: Shortcut Disabled');
+  });
+  globalShortcut.register('F5', () => {
+    console.log('F5 is pressed: Shortcut Disabled');
+  });
+});
 
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
