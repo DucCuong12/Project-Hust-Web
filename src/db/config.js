@@ -1,11 +1,13 @@
-import mysql2 from 'mysql2';
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv/config';
 
-const db = mysql2.createConnection({
-  host: 'mysql-310262b9-fujisyousuke-b8cb.i.aivencloud.com',
-  user: 'avnadmin',
-  password: 'AVNS__G8gkwjlZcM9kTe4BcH',
-  database: 'defaultdb',
+const db = await mysql.createConnection({
+  host: process.env.host,
+  user: process.env.user,
+  password: process.env.password,
+  database: 'user_auth',
   port: 28249,
+  rowsAsArray: true,
 });
 
 export default db;

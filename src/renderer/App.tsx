@@ -14,7 +14,6 @@ function Hello() {
   );
 }
 export default function App() {
-
   return (
     <Router>
       <Routes>

@@ -9,17 +9,30 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, globalShortcut } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  shell,
+  ipcMain,
+  globalShortcut,
+  ipcRenderer,
+  IpcMainEvent,
+  IpcMainInvokeEvent,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import bcrypt from 'bcrypt';
+// import 'dotenv/config';
+// import mysql from 'mysql2/promise';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import db from '../db/config';
+import { FieldPacket, QueryResult } from 'mysql2';
 
-db.connect((err) => {
-  if (err) throw err;
-  console.log('Connected!');
-});
+interface UserPayload {
+  username: string;
+  password: string;
+}
 
 class AppUpdater {
   constructor() {
@@ -36,6 +49,64 @@ ipcMain.on('ipc-example', async (event, arg) => {
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
 });
+
+db.connect();
+
+ipcMain.handle(
+  'login',
+  async (event: IpcMainInvokeEvent, { username, password }: UserPayload) => {
+    const query = 'SELECT password FROM users WHERE username = ?';
+    const values = [username];
+    // db.query('select * from users', (err: Error, res: any, fields: any) => {
+    //   if (err) throw err;
+    //   else console.log('Success!');
+    // });
+
+    try {
+      db.query(query, values).then((value: [QueryResult, FieldPacket[]]) => {
+        if (!value[0])
+          event.sender.send('login-response', {
+            success: false,
+            message: 'User not found',
+          });
+        else {
+          if (value[0][0][0] == password) {
+            event.sender.send('login-response', {
+              success: true,
+              message: 'Login successful',
+            });
+          } else {
+            event.sender.send('login-response', {
+              success: false,
+              message: 'Invalid credentials',
+            });
+          }
+
+          // bcrypt.compare(password, hashedPassword, (err, isMatch) => {
+          //   if (err) {
+          //     event.sender.send('login-response', {
+          //       success: false,
+          //       message: 'Server error',
+          //     });
+          //   } else if (!isMatch) {
+          //     event.sender.send('login-response', {
+          //       success: false,
+          //       message: 'Invalid credentials',
+          //     });
+          //   } else {
+          //     event.sender.send('login-response', {
+          //       success: true,
+          //       message: 'Login successful',
+          //     });
+          //   }
+          // });
+        }
+      });
+    } catch (err: any) {
+      console.log(err);
+    }
+  },
+);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -84,6 +155,8 @@ const createWindow = async () => {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
+      contextIsolation: true,
+      nodeIntegration: true,
     },
     fullscreenable: true,
   });

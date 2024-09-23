@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { ipcRenderer, IpcRendererEvent } from 'electron';
 import './LoginForm.css';
 import { useNavigate } from 'react-router-dom';
 import { FaLock, FaUser } from 'react-icons/fa';
 import AnimatedFrame from '../../../utils/animation_page';
+
+interface UserPayload {
+  username: string;
+  password: string;
+}
+
+interface IpcResponse {
+  success: boolean;
+  message: string;
+}
 
 function LoginForm() {
   const [input, setInput] = useState({
     username: '',
     password: '',
   });
+
+  const [message, setMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -20,19 +33,35 @@ function LoginForm() {
     }));
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const validUsername = '1';
-    const validPassword = '1';
-
-    if (input.username === validUsername && input.password === validPassword) {
-      navigate('/home');
-    } else {
-      // eslint-disable-next-line no-alert
-      alert("Wrong login informations!");
+    try {
+      const username = input.username;
+      const password = input.password;
+      await window.electronAPI.login({
+        username,
+        password,
+      });
+    } catch (error) {
+      alert('Login failed');
     }
-    // Handle login logic here
   };
+
+  useEffect(() => {
+    window.electronAPI.onMessage(
+      'login-response',
+      (event: IpcRendererEvent, response: IpcResponse) => {
+        if (response.success) {
+          setMessage('Login successful');
+          alert('Login successful!');
+          navigate('/home');
+        } else {
+          setMessage(response.message);
+          // alert(response.message);
+        }
+      },
+    );
+  }, []);
 
   return (
     <AnimatedFrame>
@@ -72,6 +101,7 @@ function LoginForm() {
 
           <button type="submit">Login</button>
         </form>
+        {/* {message && <p>{message}</p>} */}
       </div>
     </AnimatedFrame>
   );
