@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { ipcRenderer, IpcRendererEvent } from 'electron';
-import './LoginForm.css';
+import { useEffect, useState } from 'react';
+import { IpcRendererEvent } from 'electron';
 import { useNavigate } from 'react-router-dom';
-import { FaLock, FaUser } from 'react-icons/fa';
 import AnimatedFrame from '../../../utils/animation_page';
+import { FaLock, FaUser } from 'react-icons/fa';
+import './SignupForm.css';
 
+// Define the structure of the payload and response
 interface UserPayload {
   username: string;
   password: string;
@@ -15,18 +16,32 @@ interface IpcResponse {
   message: string;
 }
 
-function LoginForm() {
+function Signup() {
   const [input, setInput] = useState({
     username: '',
     password: '',
+    retype_password: '',
   });
-
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<string>('');
 
   const navigate = useNavigate();
 
-  const handleClick = (e: any) => {
-    navigate('/signup');
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    if (input.password !== input.retype_password) {
+      setMessage('Password retype incorrect!');
+    } else {
+      try {
+        const username = input.username;
+        const password = input.password;
+        await window.electronAPI.signup({
+          username,
+          password,
+        });
+      } catch (error) {
+        setMessage('Signup failed');
+      }
+    }
   };
 
   const handleChange = (e: any) => {
@@ -37,29 +52,18 @@ function LoginForm() {
     }));
   };
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    try {
-      const username = input.username;
-      const password = input.password;
-      await window.electronAPI.login({
-        username,
-        password,
-      });
-    } catch (error) {
-      alert('Login failed');
-    }
+  const handleClick = () => {
+    navigate('/');
   };
 
   useEffect(() => {
     window.electronAPI.onMessage(
-      'login-response',
+      'signup-response',
       (event: IpcRendererEvent, response: IpcResponse) => {
-        console.log('Received!');
         if (response.success) {
-          setMessage('Login successful');
-          alert('Login successful!');
-          navigate('/home');
+          setMessage('Signup successful');
+          //   alert('Signup successful!');
+          navigate('/');
         } else {
           setMessage(response.message);
           // alert(response.message);
@@ -72,7 +76,7 @@ function LoginForm() {
     <AnimatedFrame>
       <div className="wrapper">
         <form onSubmit={handleSubmit}>
-          <h1>Đăng nhập</h1>
+          <h1>Đăng ký</h1>
           <div className="input-box">
             <input
               type="text"
@@ -95,14 +99,25 @@ function LoginForm() {
             />
             <FaLock className="icon" />
           </div>
+          <div className="input-box">
+            <input
+              type="password"
+              name="retype_password"
+              placeholder="Retype password"
+              required
+              value={input.retype_password}
+              onChange={handleChange}
+            />
+            <FaLock className="icon" />
+          </div>
 
           <div className="remember-forgot">
             <a href="#" onClick={handleClick}>
-              Chưa có tài khoản? Đăng kí tại đây
+              Đã có tài khoản? Đăng nhập
             </a>
           </div>
 
-          <button type="submit">Đăng nhập</button>
+          <button type="submit">Đăng ký</button>
         </form>
         {message && <p>{message}</p>}
       </div>
@@ -110,4 +125,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default Signup;
