@@ -84,24 +84,24 @@ ipcMain.handle(
             });
           }
 
-          bcrypt.compare(password, value[0][0][0], (err, isMatch) => {
-            if (err) {
-              event.sender.send('login-response', {
-                success: false,
-                message: 'Server error',
-              });
-            } else if (!isMatch) {
-              event.sender.send('login-response', {
-                success: false,
-                message: 'Invalid credentials',
-              });
-            } else {
-              event.sender.send('login-response', {
-                success: true,
-                message: 'Login successful',
-              });
-            }
-          });
+          // bcrypt.compare(password, value[0][0][0], (err, isMatch) => {
+          //   if (err) {
+          //     event.sender.send('login-response', {
+          //       success: false,
+          //       message: 'Server error',
+          //     });
+          //   } else if (!isMatch) {
+          //     event.sender.send('login-response', {
+          //       success: false,
+          //       message: 'Invalid credentials',
+          //     });
+          //   } else {
+          //     event.sender.send('login-response', {
+          //       success: true,
+          //       message: 'Login successful',
+          //     });
+          //   }
+          // });
         }
       });
     } catch (err: any) {
@@ -113,36 +113,34 @@ ipcMain.handle(
 ipcMain.handle(
   'signup',
   async (event: IpcMainInvokeEvent, userData: UserPayload) => {
-    bcrypt.hash(userData.password, saltRounds).then((hash) => {
-      try {
-        const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
-        const values = [userData.username, hash];
-        // db.query(query, [userData.username, hashedPassword], (err) => {
-        //   if (err) {
-        //     return { success: false, message: 'User already exists' };
-        //   }
-        //   return { success: true, message: 'User registered' };
-        // });
-        db.query(query, values)
-          .then((value: [QueryResult, FieldPacket[]]) => {
-            event.sender.send('signup-response', {
-              success: true,
-              message: 'Signup successful',
-            });
-          })
-          .catch(() => {
-            event.sender.send('signup-response', {
-              success: false,
-              message: 'User already exists!',
-            });
+    try {
+      const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
+      const values = [userData.username, userData.password];
+      // db.query(query, [userData.username, hashedPassword], (err) => {
+      //   if (err) {
+      //     return { success: false, message: 'User already exists' };
+      //   }
+      //   return { success: true, message: 'User registered' };
+      // });
+      db.query(query, values)
+        .then((value: [QueryResult, FieldPacket[]]) => {
+          event.sender.send('signup-response', {
+            success: true,
+            message: 'Signup successful',
           });
-      } catch (error) {
-        event.sender.send('signup-response', {
-          success: false,
-          message: 'Server error',
+        })
+        .catch(() => {
+          event.sender.send('signup-response', {
+            success: false,
+            message: 'User already exists!',
+          });
         });
-      }
-    });
+    } catch (error) {
+      event.sender.send('signup-response', {
+        success: false,
+        message: 'Server error',
+      });
+    }
   },
 );
 
