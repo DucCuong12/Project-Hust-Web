@@ -4,7 +4,7 @@ import './App.css';
 import { useLocation } from 'react-router-dom';
 import AnimatedFrame from '../../utils/animation_page';
 import SignupForm from '../components/SignupForm/SignupForm';
-import CreateAccount from '../components/CreateAccount/CreateAccount';
+import AccountManage from '../components/AccountManage/AccountManage';
 
 function Hello() {
   return (
@@ -22,7 +22,7 @@ export default function App() {
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/home" element={<Hello />} />
         <Route path="/" element={<LoginForm />} />
-        <Route path="/create-account" element={<CreateAccount />} />
+        <Route path="/manage-account" element={<AccountManage />} />
       </Routes>
     </Router>
   );

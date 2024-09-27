@@ -60,7 +60,7 @@ function LoginForm() {
         if (response.success) {
           setMessage('Login successful');
           if (response.message === 'Admin successful')
-            navigate('/create-account');
+            navigate('/manage-account');
           else navigate('/home');
         } else {
           setMessage(response.message);

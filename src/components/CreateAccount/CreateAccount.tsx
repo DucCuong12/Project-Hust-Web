@@ -2,16 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IpcRendererEvent } from 'electron/renderer';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import { SignupPayload } from '../../interface/interface';
+import { IpcResponse, CreateAccountProps } from '../../interface/interface';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateAccount.css';
 
-interface IpcResponse {
-  success: boolean;
-  message: string;
-}
-
-const CreateAccount = () => {
+const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -51,8 +46,7 @@ const CreateAccount = () => {
       (event: IpcRendererEvent, response: IpcResponse) => {
         if (response.success) {
           setMessage('Signup successful');
-          //   alert('Signup successful!');
-          navigate('/');
+          onAccountCreated();
         } else {
           setMessage(response.message);
           // alert(response.message);

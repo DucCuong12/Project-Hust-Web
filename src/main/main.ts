@@ -50,8 +50,6 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-db.connect();
-
 ipcMain.handle(
   'login',
   async (
@@ -70,7 +68,7 @@ ipcMain.handle(
             message: 'User not found',
           });
         else {
-          compare(password, value[0][0][0]).then((result) => {
+          compare(password, value[0][0].password).then((result) => {
             if (result) {
               if (!admin) {
                 event.sender.send('login-response', {
@@ -103,11 +101,16 @@ ipcMain.handle(
   async (event: IpcMainInvokeEvent, userData: SignupPayload) => {
     try {
       const query =
-        'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
+        'INSERT INTO users (username, password, email, name) VALUES (?, ?, ?, ?)';
       genSalt(saltRounds)
         .then((salt) => hash(userData.password, salt))
         .then((hashedPassword) => {
-          db.query(query, [userData.username, hashedPassword, userData.email])
+          db.query(query, [
+            userData.username,
+            hashedPassword,
+            userData.email,
+            userData.name,
+          ])
             .then((value: [QueryResult, FieldPacket[]]) => {
               event.sender.send('signup-response', {
                 success: true,
@@ -129,6 +132,18 @@ ipcMain.handle(
     }
   },
 );
+
+ipcMain.handle('fetch-user', async () => {
+  try {
+    const [rows] = await db.query(
+      'SELECT id, name, username, email FROM users',
+    );
+    return rows;
+  } catch (error) {
+    console.error('Error fetching users from database:', error);
+    throw error;
+  }
+});
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

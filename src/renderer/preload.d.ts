@@ -1,11 +1,11 @@
 import { ElectronHandler } from '../main/preload';
 import { IpcRendererEvent } from 'electron';
-import { LoginPayload, SignupPayload } from '../interface/interface';
-
-interface IpcResponse {
-  success: boolean;
-  message: string;
-}
+import {
+  LoginPayload,
+  SignupPayload,
+  IpcResponse,
+  User,
+} from '../interface/interface';
 
 declare global {
   // eslint-disable-next-line no-unused-vars
@@ -18,6 +18,7 @@ declare global {
         channel: String,
         callback: (event: IpcRendererEvent, data: IpcResponse) => void,
       ) => void;
+      fetchUser: () => User[];
     };
   }
 }

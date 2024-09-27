@@ -1,15 +1,33 @@
-interface UserPayload {
+export interface IpcResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface UserPayload {
   username: string;
   password: string;
 }
 
-interface LoginPayload extends UserPayload {
+export interface LoginPayload extends UserPayload {
   admin: boolean;
 }
 
-interface SignupPayload extends UserPayload {
+export interface SignupPayload extends UserPayload {
   email: string;
   name: String;
 }
 
-export { UserPayload, LoginPayload, SignupPayload };
+export type User = {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+};
+
+export type ViewAccountProps = {
+  users: User[];
+};
+
+export type CreateAccountProps = {
+  onAccountCreated: () => void;
+};

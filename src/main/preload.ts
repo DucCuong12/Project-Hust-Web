@@ -56,6 +56,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
       ipcRenderer.on(channel, callback);
     }
   },
+
+  fetchUser: () => {
+    return ipcRenderer.invoke('fetch-user');
+  },
 });
 
 export type ElectronHandler = typeof electronHandler;
