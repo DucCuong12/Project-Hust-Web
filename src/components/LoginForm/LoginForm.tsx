@@ -5,11 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { FaLock, FaUser } from 'react-icons/fa';
 import AnimatedFrame from '../../../utils/animation_page';
 
-interface UserPayload {
-  username: string;
-  password: string;
-}
-
 interface IpcResponse {
   success: boolean;
   message: string;
@@ -19,6 +14,7 @@ function LoginForm() {
   const [input, setInput] = useState({
     username: '',
     password: '',
+    admin: false,
   });
 
   const [message, setMessage] = useState('');
@@ -37,14 +33,20 @@ function LoginForm() {
     }));
   };
 
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInput((prevInput) => ({
+      ...prevInput,
+      admin: event.target.checked,
+    }));
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const username = input.username;
-      const password = input.password;
       await window.electronAPI.login({
-        username,
-        password,
+        username: input.username,
+        password: input.password,
+        admin: input.admin,
       });
     } catch (error) {
       alert('Login failed');
@@ -55,11 +57,11 @@ function LoginForm() {
     window.electronAPI.onMessage(
       'login-response',
       (event: IpcRendererEvent, response: IpcResponse) => {
-        console.log('Received!');
         if (response.success) {
           setMessage('Login successful');
-          alert('Login successful!');
-          navigate('/home');
+          if (response.message === 'Admin successful')
+            navigate('/create-account');
+          else navigate('/home');
         } else {
           setMessage(response.message);
           // alert(response.message);
@@ -94,6 +96,16 @@ function LoginForm() {
               onChange={handleChange}
             />
             <FaLock className="icon" />
+          </div>
+
+          <div className="">
+            <input
+              type="checkbox"
+              id="myCheckbox"
+              checked={input.admin}
+              onChange={handleCheckboxChange}
+            />
+            <label>Đăng nhập với tư cách quản trị viên</label>
           </div>
 
           <div className="remember-forgot">

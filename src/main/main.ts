@@ -15,26 +15,24 @@ import {
   shell,
   ipcMain,
   globalShortcut,
-  ipcRenderer,
-  IpcMainEvent,
   IpcMainInvokeEvent,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import bcrypt from 'bcrypt';
-// import 'dotenv/config';
-// import mysql from 'mysql2/promise';
+import { genSalt, hash, compare } from 'bcrypt-ts';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import db from '../db/config';
 import { FieldPacket, QueryResult } from 'mysql2';
+import { LoginPayload, SignupPayload } from '../interface/interface';
 
 const saltRounds = 15;
 
-interface UserPayload {
-  username: string;
-  password: string;
-}
+// genSalt(saltRounds)
+//   .then((salt) => hash('password123', salt))
+//   .then((hashedPassword) => {
+//     console.log(hashedPassword);
+//   });
 
 class AppUpdater {
   constructor() {
@@ -56,14 +54,14 @@ db.connect();
 
 ipcMain.handle(
   'login',
-  async (event: IpcMainInvokeEvent, { username, password }: UserPayload) => {
-    const query = 'SELECT password FROM users WHERE username = ?';
+  async (
+    event: IpcMainInvokeEvent,
+    { username, password, admin }: LoginPayload,
+  ) => {
+    let query = admin
+      ? 'SELECT password FROM admin WHERE username = ?'
+      : 'SELECT password FROM users WHERE username = ?';
     const values = [username];
-    // db.query('select * from users', (err: Error, res: any, fields: any) => {
-    //   if (err) throw err;
-    //   else console.log('Success!');
-    // });
-
     try {
       db.query(query, values).then((value: [QueryResult, FieldPacket[]]) => {
         if (!value[0])
@@ -72,36 +70,26 @@ ipcMain.handle(
             message: 'User not found',
           });
         else {
-          if (value[0][0][0] == password) {
-            event.sender.send('login-response', {
-              success: true,
-              message: 'Login successful',
-            });
-          } else {
-            event.sender.send('login-response', {
-              success: false,
-              message: 'Invalid credentials',
-            });
-          }
-
-          // bcrypt.compare(password, value[0][0][0], (err, isMatch) => {
-          //   if (err) {
-          //     event.sender.send('login-response', {
-          //       success: false,
-          //       message: 'Server error',
-          //     });
-          //   } else if (!isMatch) {
-          //     event.sender.send('login-response', {
-          //       success: false,
-          //       message: 'Invalid credentials',
-          //     });
-          //   } else {
-          //     event.sender.send('login-response', {
-          //       success: true,
-          //       message: 'Login successful',
-          //     });
-          //   }
-          // });
+          compare(password, value[0][0][0]).then((result) => {
+            if (result) {
+              if (!admin) {
+                event.sender.send('login-response', {
+                  success: true,
+                  message: 'Login successful',
+                });
+              } else {
+                event.sender.send('login-response', {
+                  success: true,
+                  message: 'Admin successful',
+                });
+              }
+            } else {
+              event.sender.send('login-response', {
+                success: false,
+                message: 'Invalid credentials',
+              });
+            }
+          });
         }
       });
     } catch (err: any) {
@@ -112,28 +100,26 @@ ipcMain.handle(
 
 ipcMain.handle(
   'signup',
-  async (event: IpcMainInvokeEvent, userData: UserPayload) => {
+  async (event: IpcMainInvokeEvent, userData: SignupPayload) => {
     try {
-      const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
-      const values = [userData.username, userData.password];
-      // db.query(query, [userData.username, hashedPassword], (err) => {
-      //   if (err) {
-      //     return { success: false, message: 'User already exists' };
-      //   }
-      //   return { success: true, message: 'User registered' };
-      // });
-      db.query(query, values)
-        .then((value: [QueryResult, FieldPacket[]]) => {
-          event.sender.send('signup-response', {
-            success: true,
-            message: 'Signup successful',
-          });
-        })
-        .catch(() => {
-          event.sender.send('signup-response', {
-            success: false,
-            message: 'User already exists!',
-          });
+      const query =
+        'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
+      genSalt(saltRounds)
+        .then((salt) => hash(userData.password, salt))
+        .then((hashedPassword) => {
+          db.query(query, [userData.username, hashedPassword, userData.email])
+            .then((value: [QueryResult, FieldPacket[]]) => {
+              event.sender.send('signup-response', {
+                success: true,
+                message: 'Signup successful',
+              });
+            })
+            .catch(() => {
+              event.sender.send('signup-response', {
+                success: false,
+                message: 'User already exists!',
+              });
+            });
         });
     } catch (error) {
       event.sender.send('signup-response', {

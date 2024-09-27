@@ -5,12 +5,6 @@ import AnimatedFrame from '../../../utils/animation_page';
 import { FaLock, FaUser } from 'react-icons/fa';
 import './SignupForm.css';
 
-// Define the structure of the payload and response
-interface UserPayload {
-  username: string;
-  password: string;
-}
-
 interface IpcResponse {
   success: boolean;
   message: string;
@@ -19,6 +13,7 @@ interface IpcResponse {
 function Signup() {
   const [input, setInput] = useState({
     username: '',
+    email: '',
     password: '',
     retype_password: '',
   });
@@ -34,9 +29,13 @@ function Signup() {
       try {
         const username = input.username;
         const password = input.password;
+        const email = input.email;
+        const name = 'abcd';
         await window.electronAPI.signup({
           username,
           password,
+          name,
+          email,
         });
       } catch (error) {
         setMessage('Signup failed');

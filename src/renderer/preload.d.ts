@@ -1,10 +1,6 @@
 import { ElectronHandler } from '../main/preload';
 import { IpcRendererEvent } from 'electron';
-
-interface UserPayload {
-  username: string;
-  password: string;
-}
+import { LoginPayload, SignupPayload } from '../interface/interface';
 
 interface IpcResponse {
   success: boolean;
@@ -16,8 +12,8 @@ declare global {
   interface Window {
     electron: ElectronHandler;
     electronAPI: {
-      signup: (userData: UserPayload) => Promise<IpcResponse>;
-      login: (userData: UserPayload) => Promise<IpcResponse>;
+      signup: (userData: SignupPayload) => Promise<IpcResponse>;
+      login: (userData: LoginPayload) => Promise<IpcResponse>;
       onMessage: (
         channel: String,
         callback: (event: IpcRendererEvent, data: IpcResponse) => void,
