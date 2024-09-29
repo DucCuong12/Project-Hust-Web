@@ -31,3 +31,10 @@ export type ViewAccountProps = {
 export type CreateAccountProps = {
   onAccountCreated: () => void;
 };
+
+export type EditUser = {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+};

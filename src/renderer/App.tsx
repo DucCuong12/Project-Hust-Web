@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import AnimatedFrame from '../../utils/animation_page';
 import SignupForm from '../components/SignupForm/SignupForm';
 import AccountManage from '../components/AccountManage/AccountManage';
+import EditAccount from '../components/EditAccount/EditAccount';
 
 function Hello() {
   return (
@@ -21,8 +22,9 @@ export default function App() {
       <Routes>
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/home" element={<Hello />} />
-        <Route path="/" element={<LoginForm />} />
         <Route path="/manage-account" element={<AccountManage />} />
+        <Route path="/:id/edit" element={<EditAccount />} />
+        <Route path="/" element={<LoginForm />} />
       </Routes>
     </Router>
   );

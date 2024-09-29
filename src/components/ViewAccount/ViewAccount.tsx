@@ -1,9 +1,16 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
 import { ViewAccountProps } from '../../interface/interface';
+import { useNavigate } from 'react-router-dom';
 
 const ViewAccount: React.FC<ViewAccountProps> = ({ users }) => {
-  console.log(users);
+  const navigate = useNavigate();
+
+  const handleEdit = (e: any, id: number) => {
+    e.preventDefault();
+    navigate(`/${id}/edit`);
+  };
+
   return (
     <Table striped bordered hover>
       <thead>
@@ -22,7 +29,17 @@ const ViewAccount: React.FC<ViewAccountProps> = ({ users }) => {
             <td>{user.name}</td>
             <td>{user.username}</td>
             <td>{user.email}</td>
-            <td></td>
+            <td>
+              <Button
+                variant="outline-primary"
+                onClick={(e) => {
+                  handleEdit(e, user.id);
+                }}
+              >
+                Sửa
+              </Button>
+              <Button variant="outline-danger">Xóa</Button>
+            </td>
           </tr>
         ))}
       </tbody>

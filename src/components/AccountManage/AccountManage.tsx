@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import ViewAccount from '../ViewAccount/ViewAccount';
 import CreateAccount from '../CreateAccount/CreateAccount';
 import { User } from '../../interface/interface';
 
 const AccountManage = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const location = useLocation();
 
   const fetchUsers = async () => {
     try {
@@ -17,11 +19,13 @@ const AccountManage = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [location]);
 
   const handleAccountCreated = () => {
     fetchUsers();
   };
+
+  console.log('Re-rendered!');
 
   return (
     <div>

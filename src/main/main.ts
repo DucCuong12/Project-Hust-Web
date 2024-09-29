@@ -19,6 +19,7 @@ import {
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { genSalt, hash, compare } from 'bcrypt-ts';
 import { resolveHtmlPath } from './util';
 import db from '../db/config';
 import { FieldPacket, QueryResult } from 'mysql2';
@@ -54,7 +55,7 @@ ipcMain.handle(
     const values = [username];
     try {
       db.query(query, values).then((value: [QueryResult, FieldPacket[]]) => {
-        if (!value[0])
+        if (!value[0][0])
           event.sender.send('login-response', {
             success: false,
             message: 'User not found',
@@ -125,17 +126,98 @@ ipcMain.handle(
   },
 );
 
-ipcMain.handle('fetch-user', async () => {
-  try {
-    const [rows] = await db.query(
-      'SELECT id, name, username, email FROM users',
-    );
-    return rows;
-  } catch (error) {
-    console.error('Error fetching users from database:', error);
-    throw error;
+ipcMain.handle('fetch-user', async (event: IpcMainInvokeEvent, id?: number) => {
+  if (id) {
+    try {
+      const [rows] = await db.query(
+        'SELECT name, username, email FROM users WHERE id = ?',
+        [id],
+      );
+      return rows;
+    } catch (error) {
+      console.error('Error fetching users from database:', error);
+      throw error;
+    }
+  } else {
+    try {
+      const [rows] = await db.query(
+        'SELECT id, name, username, email FROM users',
+      );
+      return rows;
+    } catch (error) {
+      console.error('Error fetching users from database:', error);
+      throw error;
+    }
   }
 });
+
+ipcMain.handle(
+  'edit-account',
+  async (
+    event: IpcMainInvokeEvent,
+    formData: SignupPayload,
+    userId: number,
+  ) => {
+    if (formData.password === '') {
+      try {
+        const query =
+          'UPDATE users SET username = ?, name = ?, email = ? WHERE id = ?';
+        const values = [
+          formData.username,
+          formData.name,
+          formData.email,
+          userId,
+        ];
+        db.query(query, values)
+          .then((value: [QueryResult, FieldPacket[]]) => {
+            event.sender.send('edit-response', {
+              success: true,
+              message: 'Edit successful',
+            });
+          })
+          .catch(() => {
+            event.sender.send('signup-response', {
+              success: false,
+              message: 'Edit failed!',
+            });
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      try {
+        const query =
+          'UPDATE users SET username = ?, password = ?, name = ?, email = ? WHERE id = ?';
+        genSalt(saltRounds)
+          .then((salt) => hash(formData.password, salt))
+          .then((hashedPassword) => {
+            const values = [
+              formData.username,
+              hashedPassword,
+              formData.name,
+              formData.email,
+              userId,
+            ];
+            db.query(query, values)
+              .then((value: [QueryResult, FieldPacket[]]) => {
+                event.sender.send('edit-response', {
+                  success: true,
+                  message: 'Edit successful',
+                });
+              })
+              .catch(() => {
+                event.sender.send('signup-response', {
+                  success: false,
+                  message: 'Edit failed!',
+                });
+              });
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  },
+);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

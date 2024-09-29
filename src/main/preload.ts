@@ -1,18 +1,13 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import {
+  UserPayload,
+  IpcResponse,
+  SignupPayload,
+} from '../interface/interface';
 
 export type Channels = 'ipc-example';
-
-interface UserPayload {
-  username: string;
-  password: string;
-}
-
-interface IpcResponse {
-  success: boolean;
-  message: string;
-}
 
 const electronHandler = {
   ipcRenderer: {
@@ -51,14 +46,22 @@ contextBridge.exposeInMainWorld('electronAPI', {
     channel: string,
     callback: (event: IpcRendererEvent, data: IpcResponse) => void,
   ) => {
-    const validChannels = ['signup-response', 'login-response']; // Add valid channels
+    const validChannels = [
+      'signup-response',
+      'login-response',
+      'edit-response',
+    ]; // Add valid channels
     if (validChannels.includes(channel)) {
       ipcRenderer.on(channel, callback);
     }
   },
 
-  fetchUser: () => {
-    return ipcRenderer.invoke('fetch-user');
+  fetchUser: (id?: number) => {
+    return ipcRenderer.invoke('fetch-user', id);
+  },
+
+  editUserAccount: (formData: SignupPayload, userId: number) => {
+    return ipcRenderer.invoke('edit-account', formData, userId);
   },
 });
 
