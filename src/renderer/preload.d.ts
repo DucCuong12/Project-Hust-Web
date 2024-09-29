@@ -20,6 +20,7 @@ declare global {
       ) => void;
       fetchUser: (id?: number) => User[];
       editUserAccount: (formData: SignupPayload, userId: number) => void;
+      deleteUserAccount: (userId: number) => void;
     };
   }
 }

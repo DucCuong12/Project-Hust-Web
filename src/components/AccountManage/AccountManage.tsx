@@ -21,7 +21,7 @@ const AccountManage = () => {
     fetchUsers();
   }, [location]);
 
-  const handleAccountCreated = () => {
+  const handleAccountModified = () => {
     fetchUsers();
   };
 
@@ -32,10 +32,10 @@ const AccountManage = () => {
       <h1>Account Management</h1>
 
       {/* CreateAccount component with account creation callback */}
-      <CreateAccount onAccountCreated={handleAccountCreated} />
+      <CreateAccount onAccountCreated={handleAccountModified} />
 
       {/* ViewAccount displays the updated list of users */}
-      <ViewAccount users={users} />
+      <ViewAccount users={users} onAccountModified={handleAccountModified} />
     </div>
   );
 };

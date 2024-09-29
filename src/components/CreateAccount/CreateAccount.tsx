@@ -35,6 +35,12 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
         email: formData.email,
         name: formData.name,
       });
+      setFormData({
+        username: '',
+        password: '',
+        email: '',
+        name: '',
+      });
     } catch (error) {
       setMessage('Signup failed');
     }

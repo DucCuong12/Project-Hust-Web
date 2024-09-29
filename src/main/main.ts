@@ -24,6 +24,8 @@ import { resolveHtmlPath } from './util';
 import db from '../db/config';
 import { FieldPacket, QueryResult } from 'mysql2';
 import { LoginPayload, SignupPayload } from '../interface/interface';
+import { event } from 'jquery';
+import { Query } from 'mysql2/typings/mysql/lib/protocol/sequences/Query';
 
 const saltRounds = 15;
 
@@ -215,6 +217,31 @@ ipcMain.handle(
       } catch (err) {
         console.log(err);
       }
+    }
+  },
+);
+
+ipcMain.handle(
+  'delete-account',
+  (event: IpcMainInvokeEvent, userId: number) => {
+    const query = 'DELETE FROM users WHERE id = ?';
+    const values = [userId];
+    try {
+      db.query(query, values)
+        .then((value: [QueryResult, FieldPacket[]]) => {
+          event.sender.send('delete-response', {
+            success: true,
+            message: 'Delete successful',
+          });
+        })
+        .catch(() => {
+          event.sender.send('delete-response', {
+            success: false,
+            message: 'User not exists!',
+          });
+        });
+    } catch (err) {
+      console.log('Server error!');
     }
   },
 );

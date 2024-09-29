@@ -63,6 +63,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   editUserAccount: (formData: SignupPayload, userId: number) => {
     return ipcRenderer.invoke('edit-account', formData, userId);
   },
+
+  deleteUserAccount: (userId: number) => {
+    return ipcRenderer.invoke('delete-account', userId);
+  },
 });
 
 export type ElectronHandler = typeof electronHandler;
