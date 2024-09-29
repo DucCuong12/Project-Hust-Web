@@ -19,20 +19,12 @@ import {
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import { genSalt, hash, compare } from 'bcrypt-ts';
-import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import db from '../db/config';
 import { FieldPacket, QueryResult } from 'mysql2';
 import { LoginPayload, SignupPayload } from '../interface/interface';
 
 const saltRounds = 15;
-
-// genSalt(saltRounds)
-//   .then((salt) => hash('password123', salt))
-//   .then((hashedPassword) => {
-//     console.log(hashedPassword);
-//   });
 
 class AppUpdater {
   constructor() {
@@ -198,6 +190,8 @@ const createWindow = async () => {
     fullscreenable: true,
   });
 
+  mainWindow.removeMenu();
+
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.on('ready-to-show', () => {
@@ -214,9 +208,6 @@ const createWindow = async () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
 
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
