@@ -5,7 +5,9 @@ import {
   SignupPayload,
   IpcResponse,
   User,
+  Resident,
 } from '../interface/interface';
+
 
 declare global {
   // eslint-disable-next-line no-unused-vars
@@ -19,6 +21,7 @@ declare global {
         callback: (event: IpcRendererEvent, data: IpcResponse) => void,
       ) => void;
       fetchUser: () => User[];
+      fetchResidentsList: () => Resident[];
     };
   }
 }

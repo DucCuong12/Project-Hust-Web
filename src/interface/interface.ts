@@ -8,6 +8,16 @@ export interface UserPayload {
   password: string;
 }
 
+export interface Resident {
+  id: number;
+  room_number: number;
+  full_name: string;
+  birth_year: number;
+  occupation: string;
+  phone_number: string;
+  email: string;
+}
+
 export interface LoginPayload extends UserPayload {
   admin: boolean;
 }

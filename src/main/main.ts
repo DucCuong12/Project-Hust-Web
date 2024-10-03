@@ -137,6 +137,17 @@ ipcMain.handle('fetch-user', async () => {
   }
 });
 
+ipcMain.handle('fetch-residents-list', async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM residents');
+    console.log(rows);
+    return rows;
+  } catch (err) {
+    console.error('Error fetching residents:', err);
+    throw err;
+  }
+});
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();

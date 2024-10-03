@@ -5,7 +5,7 @@ const db = await mysql.createPool({
   host: process.env.host,
   user: process.env.user,
   password: process.env.password,
-  database: 'user_auth',
+  database: 'db',
   port: 28249,
   connectionLimit: 10,
 });

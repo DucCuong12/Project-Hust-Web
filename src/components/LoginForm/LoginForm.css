@@ -1,10 +1,10 @@
 .wrapper {
     width: 420px;
     background: transparent;
-    border: 2px solid rgba(255, 255, 255, .2);
+    border: 2px solid rgba(255, 255, 255, 0.11);
     backdrop-filter: blur(30px);
     box-shadow: 0 0 10px rgba(0, 0, 0, .2);
-    color: #fff;
+    color: #443a3a;
     border-radius: 10px;
     padding: 30px 40px;
 }
@@ -26,15 +26,15 @@
     height: 100%;
     background: transparent;
     outline: none;
-    border: 2px solid rgba(255, 255, 255, .2);
+    border: 2px solid #776d6d;
     border-radius: 40px;
     font-size: 16px;
-    color: #fff;
+    color: #443a3a;
     padding: 20px 45px 20px 20px;
 }
 
 .input-box input::placeholder {
-    color: #fff;
+    color: #443a3a;
 }
 
 .input-box .icon {
@@ -57,12 +57,12 @@
 
 
 .remember-forgot label input {
-    accent-color: #fff;
+    accent-color: #443a3a;
     margin-right: 4px;
 }
 
 .remember-forgot a {
-    color: #fff;
+    color: #443a3a;
     text-decoration: none;
     text-align: center; 
     display: inline-block; 

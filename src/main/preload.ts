@@ -60,6 +60,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   fetchUser: () => {
     return ipcRenderer.invoke('fetch-user');
   },
+
+  fetchResidentsList: () => {
+    return ipcRenderer.invoke('fetch-residents-list');
+  }
 });
 
 export type ElectronHandler = typeof electronHandler;
