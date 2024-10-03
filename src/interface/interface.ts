@@ -36,8 +36,16 @@ export type User = {
 
 export type ViewAccountProps = {
   users: User[];
+  onAccountModified: () => void;
 };
 
 export type CreateAccountProps = {
   onAccountCreated: () => void;
+};
+
+export type EditUser = {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
 };

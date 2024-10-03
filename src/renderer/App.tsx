@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import SignupForm from '../components/SignupForm/SignupForm';
 import AccountManage from '../components/AccountManage/AccountManage';
 import HomePage from '../components/Pages/HomePage/HomePage';
+import EditAccount from '../components/EditAccount/EditAccount';
 
 export default function App() {
   return (

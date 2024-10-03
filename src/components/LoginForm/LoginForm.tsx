@@ -4,11 +4,7 @@ import './LoginForm.css';
 import { useNavigate } from 'react-router-dom';
 import { FaLock, FaUser } from 'react-icons/fa';
 import AnimatedFrame from '../../../utils/animation_page';
-
-interface IpcResponse {
-  success: boolean;
-  message: string;
-}
+import { IpcResponse } from '../../interface/interface';
 
 function LoginForm() {
   const [input, setInput] = useState({
