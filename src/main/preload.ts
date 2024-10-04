@@ -67,6 +67,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteUserAccount: (userId: number) => {
     return ipcRenderer.invoke('delete-account', userId);
   },
+
+  fetchResidentsList: () => {
+    return ipcRenderer.invoke('fetch-residents-list');
+  }
 });
 
 export type ElectronHandler = typeof electronHandler;

@@ -149,6 +149,17 @@ ipcMain.handle('fetch-user', async (event: IpcMainInvokeEvent, id?: number) => {
   }
 });
 
+ipcMain.handle('fetch-residents-list', async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM residents');
+    console.log(rows);
+    return rows;
+  } catch (err) {
+    console.error('Error fetching residents:', err);
+    throw err;
+  }
+});
+
 ipcMain.handle(
   'edit-account',
   async (

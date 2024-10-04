@@ -94,7 +94,7 @@ function LoginForm() {
             <FaLock className="icon" />
           </div>
 
-          <div className="">
+          <div className="remember-forgot">
             <input
               type="checkbox"
               id="myCheckbox"
@@ -102,12 +102,6 @@ function LoginForm() {
               onChange={handleCheckboxChange}
             />
             <label>Đăng nhập với tư cách quản trị viên</label>
-          </div>
-
-          <div className="remember-forgot">
-            <a href="#" onClick={handleClick}>
-              Chưa có tài khoản? Đăng kí tại đây
-            </a>
           </div>
 
           <button type="submit">Đăng nhập</button>
