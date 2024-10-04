@@ -3,25 +3,19 @@
  * {
   margin: 0;
   padding: 0;
-  /* box-sizing: border-box; */
+  box-sizing: border-box;
  }
  
 body {
   position: relative;
   color: white;
   height: 100vh;
-  /* background: linear-gradient(
-    200.96deg,
-    #fedc2a -29.09%,
-    #dd5789 51.77%,
-    #7a2c9e 129.35%
-  ); */
   background: #dfcaca3d;
   font-family: sans-serif;
   overflow-y: hidden;
   display: flex;
-  /* justify-content: center;
-  align-items: center; */
+  justify-content: center;
+  align-items: center;
 }
 
 button {
@@ -57,16 +51,4 @@ a {
 a:hover {
   opacity: 1;
   text-decoration: none;
-}
-
-.NavBar {
-  background-color: #060b26;
-  height: 80px;
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  position: fixed;
-  width: 100%;
-  top: 0; 
-  z-index: 10;
 }
