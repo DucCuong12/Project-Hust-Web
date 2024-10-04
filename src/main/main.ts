@@ -24,8 +24,6 @@ import { resolveHtmlPath } from './util';
 import db from '../db/config';
 import { FieldPacket, QueryResult } from 'mysql2';
 import { LoginPayload, SignupPayload } from '../interface/interface';
-import { event } from 'jquery';
-import { Query } from 'mysql2/typings/mysql/lib/protocol/sequences/Query';
 
 const saltRounds = 15;
 
@@ -38,12 +36,6 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
 
 ipcMain.handle(
   'login',
@@ -87,6 +79,10 @@ ipcMain.handle(
       });
     } catch (err: any) {
       console.log(err);
+      event.sender.send('login-response', {
+        success: false,
+        message: 'Error occured!',
+      });
     }
   },
 );

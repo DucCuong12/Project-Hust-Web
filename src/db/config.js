@@ -1,10 +1,14 @@
 import mysql from 'mysql2/promise';
-import dotenv from 'dotenv/config';
+import dotenv from 'dotenv';
+
+dotenv.config({
+  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
+});
 
 const db = await mysql.createPool({
-  host: process.env.host,
-  user: process.env.user,
-  password: process.env.password,
+  host: 'mysql-310262b9-fujisyousuke-b8cb.i.aivencloud.com',
+  user: 'avnadmin',
+  password: 'AVNS__G8gkwjlZcM9kTe4BcH',
   database: 'user_auth',
   port: 28249,
   connectionLimit: 10,
