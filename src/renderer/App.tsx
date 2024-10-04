@@ -10,11 +10,11 @@ import EditAccount from '../components/EditAccount/EditAccount';
 export default function App() {
   return (
     <Router>
-=      <Routes>
-        {/* <Route path="/signup" element={<SignupForm />} /> */}
-        <Route path="/" element={<HomePage />} />
-        {/* <Route path="/" element={<LoginForm />} /> */}
-        {/* <Route path="/manage-account" element={<AccountManage />} /> */}
+      <Routes>
+        <Route path="/signup" element={<SignupForm />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/" element={<LoginForm />} />
+        <Route path="/manage-account" element={<AccountManage />} />
       </Routes>
     </Router>
   );

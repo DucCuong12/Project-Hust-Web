@@ -49,12 +49,13 @@ ipcMain.handle(
     const values = [username];
     try {
       db.query(query, values).then((value: [QueryResult, FieldPacket[]]) => {
-        if (!value[0][0])
+        console.log(values, value);
+        if (!value[0][0]) {
           event.sender.send('login-response', {
             success: false,
             message: 'User not found',
           });
-        else {
+        } else {
           compare(password, value[0][0].password).then((result) => {
             if (result) {
               if (!admin) {
