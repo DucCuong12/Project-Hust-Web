@@ -58,15 +58,3 @@ a:hover {
   opacity: 1;
   text-decoration: none;
 }
-
-.NavBar {
-  background-color: #060b26;
-  height: 80px;
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  position: fixed;
-  width: 100%;
-  top: 0; 
-  z-index: 10;
-}
