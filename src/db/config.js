@@ -9,7 +9,7 @@ const db = await mysql.createPool({
   host: 'mysql-310262b9-fujisyousuke-b8cb.i.aivencloud.com',
   user: 'avnadmin',
   password: 'AVNS__G8gkwjlZcM9kTe4BcH',
-  database: 'user_auth',
+  database: 'db',
   port: 28249,
   connectionLimit: 10,
 });
