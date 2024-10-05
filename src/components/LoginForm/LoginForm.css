@@ -1,21 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-   }
-   
-body {
-    position: relative;
-    color: white;
-    height: 100vh;
-    background: #dfcaca3d;
-    font-family: sans-serif;
-    overflow-y: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .wrapper {
     width: 420px;
     background: transparent;

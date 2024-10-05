@@ -20,10 +20,14 @@ declare global {
         channel: String,
         callback: (event: IpcRendererEvent, data: IpcResponse) => void,
       ) => void;
+<<<<<<< HEAD
+      fetchUser: () => User[];
       fetchResidentsList: () => Resident[];
+=======
       fetchUser: (id?: number) => User[];
       editUserAccount: (formData: SignupPayload, userId: number) => void;
       deleteUserAccount: (userId: number) => void;
+>>>>>>> 2e10c902d660fa456b8dfaa569827c6f0f8771f8
     };
   }
 }
