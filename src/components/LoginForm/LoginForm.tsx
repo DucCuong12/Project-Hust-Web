@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
-import './LoginForm.css';
 import { useNavigate } from 'react-router-dom';
-import { FaLock, FaUser } from 'react-icons/fa';
+import { Spinner } from 'react-bootstrap';
+import { FaLock, FaUser, FaEyeSlash } from 'react-icons/fa';
 import AnimatedFrame from '../../../utils/animation_page';
 import { IpcResponse } from '../../interface/interface';
+import './LoginForm.css';
 
 function LoginForm() {
   const [input, setInput] = useState({
@@ -16,10 +17,6 @@ function LoginForm() {
   const [message, setMessage] = useState('');
 
   const navigate = useNavigate();
-
-  const handleClick = (e: any) => {
-    navigate('/signup');
-  };
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -38,6 +35,7 @@ function LoginForm() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setMessage('');
     try {
       await window.electronAPI.login({
         username: input.username,
@@ -47,6 +45,12 @@ function LoginForm() {
     } catch (error) {
       alert('Login failed');
     }
+  };
+
+  const handleToggle = () => {
+    const inputNode = document.getElementById('myPassword') as HTMLElement;
+    if (inputNode.type === 'password') inputNode.type = 'text';
+    else inputNode.type = 'password';
   };
 
   useEffect(() => {
@@ -68,14 +72,14 @@ function LoginForm() {
 
   return (
     <AnimatedFrame>
-      <div className="wrapper">
+      <div className="wrapper login">
         <form onSubmit={handleSubmit}>
           <h1>Đăng nhập</h1>
           <div className="input-box">
             <input
               type="text"
               name="username"
-              placeholder="Username"
+              placeholder="Tên đăng nhập"
               required
               value={input.username}
               onChange={handleChange}
@@ -86,12 +90,16 @@ function LoginForm() {
             <input
               type="password"
               name="password"
-              placeholder="Password"
+              id="myPassword"
+              placeholder="Mật khẩu"
               required
               value={input.password}
               onChange={handleChange}
             />
-            <FaLock className="icon" />
+            <div className="icon">
+              <FaEyeSlash className="icon-left" onClick={handleToggle} />
+              <FaLock />
+            </div>
           </div>
 
           <div className="remember-forgot">
@@ -101,7 +109,9 @@ function LoginForm() {
               checked={input.admin}
               onChange={handleCheckboxChange}
             />
-            <label>Đăng nhập với tư cách quản trị viên</label>
+            <label htmlFor="myCheckbox">
+              Đăng nhập với tư cách quản trị viên
+            </label>
           </div>
 
           <button type="submit">Đăng nhập</button>
