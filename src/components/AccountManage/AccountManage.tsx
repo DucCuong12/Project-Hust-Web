@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import ViewAccount from '../ViewAccount/ViewAccount';
 import CreateAccount from '../CreateAccount/CreateAccount';
 import { User } from '../../interface/interface';
+import './AccountManage.css';
+import AnimatedFrame from '../../../utils/animation_page';
 
 const AccountManage = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -28,15 +30,15 @@ const AccountManage = () => {
   console.log('Re-rendered!');
 
   return (
-    <div>
-      <h1>Account Management</h1>
+    <AnimatedFrame>
+      <h1 className="account-manage-header">Quản lý tài khoản</h1>
 
       {/* CreateAccount component with account creation callback */}
       <CreateAccount onAccountCreated={handleAccountModified} />
 
       {/* ViewAccount displays the updated list of users */}
       <ViewAccount users={users} onAccountModified={handleAccountModified} />
-    </div>
+    </AnimatedFrame>
   );
 };
 
