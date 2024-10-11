@@ -27,8 +27,6 @@ const AccountManage = () => {
     fetchUsers();
   };
 
-  console.log('Re-rendered!');
-
   return (
     <AnimatedFrame>
       <h1 className="account-manage-header">Quản lý tài khoản</h1>

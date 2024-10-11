@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
-import './LoginForm.css';
 import { useNavigate } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap';
 import { FaLock, FaUser, FaEyeSlash } from 'react-icons/fa';
 import AnimatedFrame from '../../../utils/animation_page';
 import { IpcResponse } from '../../interface/interface';
+import './LoginForm.css';
 
 function LoginForm() {
   const [input, setInput] = useState({
@@ -34,6 +35,7 @@ function LoginForm() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setMessage('');
     try {
       await window.electronAPI.login({
         username: input.username,
@@ -107,7 +109,9 @@ function LoginForm() {
               checked={input.admin}
               onChange={handleCheckboxChange}
             />
-            <label>Đăng nhập với tư cách quản trị viên</label>
+            <label htmlFor="myCheckbox">
+              Đăng nhập với tư cách quản trị viên
+            </label>
           </div>
 
           <button type="submit">Đăng nhập</button>

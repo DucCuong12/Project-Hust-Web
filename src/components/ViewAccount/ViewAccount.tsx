@@ -8,11 +8,16 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
   onAccountModified,
 }) => {
   const [show, setShow] = useState(false);
+  const [id, setId] = useState(0);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = (e: any) => {
+    setId(parseInt(e.target.getAttribute('data-id')));
+    setShow(true);
+  };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = () => {
+    console.log(id);
     try {
       window.electronAPI.deleteUserAccount(id);
     } catch (err) {
@@ -48,7 +53,7 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
               <td>{user.name}</td>
               <td>{user.username}</td>
               <td>{user.email}</td>
-              <td>
+              <td id={`${user.id}`}>
                 <Button
                   variant="outline-primary"
                   onClick={(e) => {
@@ -57,7 +62,11 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
                 >
                   Sửa
                 </Button>
-                <Button variant="outline-danger" onClick={handleShow}>
+                <Button
+                  variant="outline-danger"
+                  data-id={`${user.id}`}
+                  onClick={handleShow}
+                >
                   Xóa
                 </Button>
               </td>
@@ -76,10 +85,7 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
                   <Button variant="secondary" onClick={handleClose}>
                     Hủy bỏ
                   </Button>
-                  <Button
-                    variant="danger"
-                    onClick={() => handleDelete(user.id)}
-                  >
+                  <Button variant="danger" onClick={handleDelete}>
                     Xóa
                   </Button>
                 </Modal.Footer>
