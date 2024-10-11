@@ -4,6 +4,7 @@ import LoginForm from '../components/LoginForm/LoginForm';
 import SignupForm from '../components/SignupForm/SignupForm';
 import AccountManage from '../components/AccountManage/AccountManage';
 import HomePage from '../components/Pages/HomePage/HomePage';
+import FeePage from '../components/Pages/FeePage/FeePage';
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <Routes>
         {/* <Route path="/signup" element={<SignupForm />} /> */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/feepage" element={<FeePage />} />
         {/* <Route path="/" element={<LoginForm />} /> */}
         {/* <Route path="/manage-account" element={<AccountManage />} /> */}
       </Routes>

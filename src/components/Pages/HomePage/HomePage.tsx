@@ -7,13 +7,14 @@ import {
   BarChartOutlined,
   FormOutlined,
   NotificationOutlined,
-  QuestionCircleOutlined,  
+  DollarCircleOutlined,  
   MenuFoldOutlined,
   MenuUnfoldOutlined
 } from '@ant-design/icons';
 import './HomePage.css';
 import ResidentTable from './ResidentTable';
 import AnimatedFrame from '../../../../utils/animation_page';
+import { Link } from 'react-router-dom'; 
 
 const { Header, Sider, Content } = Layout;
 
@@ -51,8 +52,8 @@ function HomePage() {
               <Menu.Item key="5" icon={<NotificationOutlined />}>
                 Thông báo
               </Menu.Item>
-              <Menu.Item key="6" icon={<QuestionCircleOutlined />}>
-                Hỗ trợ
+              <Menu.Item key="6" icon={<DollarCircleOutlined />} > 
+                <Link to="/feepage">Khoản thu</Link>
               </Menu.Item>
             </Menu>
           </>
