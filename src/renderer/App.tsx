@@ -9,6 +9,7 @@ import LoginForm from '../components/LoginForm/LoginForm';
 import AccountManage from '../components/AccountManage/AccountManage';
 import HomePage from '../components/Pages/HomePage/HomePage';
 import LogoutButton from '../components/LogoutButton/LogoutButton';
+import FeePage from '../components/Pages/FeePage/FeePage';
 
 const AppInner = () => {
   const location = useLocation();
@@ -19,6 +20,7 @@ const AppInner = () => {
         <Route path="/home" element={<HomePage />} />
         <Route path="/" element={<LoginForm />} />
         <Route path="/manage-account" element={<AccountManage />} />
+        <Route path="/feepage" element={<FeePage />} />
       </Routes>
     </div>
   );
