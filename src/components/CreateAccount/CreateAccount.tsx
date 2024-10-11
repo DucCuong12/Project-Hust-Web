@@ -63,14 +63,14 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
 
   return (
     <Container className="mt-5 form-container">
-      <h2>Create an Account</h2>
+      <h2>Tạo tài khoản mới</h2>
       <Form onSubmit={handleSubmit}>
         {/* Username Field */}
         <Form.Group as={Row} controlId="formUsername" className="mb-3">
-          <Form.Label column sm={2}>
-            Username
+          <Form.Label column sm={3}>
+            Tên đăng nhập
           </Form.Label>
-          <Col sm={10}>
+          <Col sm={9}>
             <Form.Control
               type="text"
               placeholder="Enter username"
@@ -83,10 +83,10 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
         </Form.Group>
 
         <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-          <Form.Label column sm={2}>
+          <Form.Label column sm={3}>
             Email
           </Form.Label>
-          <Col sm={10}>
+          <Col sm={9}>
             <Form.Control
               type="email"
               placeholder="Enter email"
@@ -100,10 +100,10 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
 
         {/* Password Field */}
         <Form.Group as={Row} controlId="formPassword" className="mb-3">
-          <Form.Label column sm={2}>
-            Password
+          <Form.Label column sm={3}>
+            Mật khẩu
           </Form.Label>
-          <Col sm={10}>
+          <Col sm={9}>
             <Form.Control
               type="password"
               placeholder="Enter password"
@@ -117,10 +117,10 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
 
         {/* Account Name Field */}
         <Form.Group as={Row} controlId="formName" className="mb-3">
-          <Form.Label column sm={2}>
-            Name
+          <Form.Label column sm={3}>
+            Tên tài khoản
           </Form.Label>
-          <Col sm={10}>
+          <Col sm={9}>
             <Form.Control
               type="text"
               placeholder="Enter name"
@@ -132,7 +132,7 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
         </Form.Group>
 
         <Button variant="primary" type="submit">
-          Create Account
+          Tạo mới
         </Button>
       </Form>
     </Container>

@@ -7,9 +7,10 @@ import {
   BarChartOutlined,
   FormOutlined,
   NotificationOutlined,
+  QuestionCircleOutlined,
   DollarCircleOutlined,  
   MenuFoldOutlined,
-  MenuUnfoldOutlined
+  MenuUnfoldOutlined,
 } from '@ant-design/icons';
 import './HomePage.css';
 import ResidentTable from './ResidentTable';
@@ -21,6 +22,7 @@ const { Header, Sider, Content } = Layout;
 function HomePage() {
   const [collapsed, setCollapsed] = useState(false);
   return (
+    <div className="home">
     <AnimatedFrame>
       <Layout>
         <Sider
@@ -57,30 +59,30 @@ function HomePage() {
               </Menu.Item>
             </Menu>
           </>
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              className="triger-btn"
+            />
+          </Sider>
 
-          <Button 
-            type='text' 
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            className='triger-btn'
-          />
-        </Sider>
-
-        <Layout className="site-layout">
-          <Header className="header"> </Header>
-          <Content style={{ margin: '14px', background: '#fff' }}>
-            <div
-              className="site-layout-background"
-              style={{ padding: 16, minHeight: 360 }}
-            >
-              <div className="content">
-                <ResidentTable />
+          <Layout className="site-layout">
+            <Header className="header"> </Header>
+            <Content style={{ margin: '14px', background: '#fff' }}>
+              <div
+                className="site-layout-background"
+                style={{ padding: 16, minHeight: 360 }}
+              >
+                <div className="content">
+                  <ResidentTable />
+                </div>
               </div>
-            </div>
-          </Content>
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
-    </AnimatedFrame>
+      </AnimatedFrame>
+    </div>
   );
 }
 

@@ -51,6 +51,7 @@ const EditAccount = () => {
       setUser(data);
     } catch (err) {
       console.log(err);
+    } finally {
     }
   };
 
@@ -65,7 +66,7 @@ const EditAccount = () => {
         {/* Username Field */}
         <Form.Group as={Row} controlId="formUsername" className="mb-3">
           <Form.Label column sm={2}>
-            Username
+            Tên đăng nhập
           </Form.Label>
           <Col sm={10}>
             <Form.Control
@@ -98,7 +99,7 @@ const EditAccount = () => {
         {/* Password Field */}
         <Form.Group as={Row} controlId="formPassword" className="mb-3">
           <Form.Label column sm={2}>
-            New password (left blank if you don't want to change)
+            Mật khẩu mới (để trống nếu không muốn thay đổi)
           </Form.Label>
           <Col sm={10}>
             <Form.Control
@@ -114,7 +115,7 @@ const EditAccount = () => {
         {/* Account Name Field */}
         <Form.Group as={Row} controlId="formName" className="mb-3">
           <Form.Label column sm={2}>
-            Name
+            Tên tài khoản
           </Form.Label>
           <Col sm={10}>
             <Form.Control
@@ -128,7 +129,7 @@ const EditAccount = () => {
         </Form.Group>
 
         <Button variant="primary" type="submit">
-          Edit Account
+          Sửa
         </Button>
       </Form>
     </Container>
