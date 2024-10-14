@@ -70,7 +70,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   fetchResidentsList: () => {
     return ipcRenderer.invoke('fetch-residents-list');
-  }
+  },
 });
 
 export type ElectronHandler = typeof electronHandler;
