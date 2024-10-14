@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
 import { FaLock, FaUser, FaEyeSlash } from 'react-icons/fa';
 import AnimatedFrame from '../../../utils/animation_page';
-import { IpcResponse } from '../../interface/interface';
+import { IpcResponse, HandleLoginState } from '../../interface/interface';
 import './LoginForm.css';
 
-function LoginForm() {
+const LoginForm: React.FC<HandleLoginState> = ({ onAction }) => {
   const [input, setInput] = useState({
     username: '',
     password: '',
@@ -59,6 +59,7 @@ function LoginForm() {
       (event: IpcRendererEvent, response: IpcResponse) => {
         if (response.success) {
           setMessage('Login successful');
+          onAction(true);
           if (response.message === 'Admin successful')
             navigate('/manage-account');
           else navigate('/home');
@@ -120,6 +121,6 @@ function LoginForm() {
       </div>
     </AnimatedFrame>
   );
-}
+};
 
 export default LoginForm;
