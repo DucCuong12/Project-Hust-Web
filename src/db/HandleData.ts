@@ -1,8 +1,9 @@
 import db from './config';
-import { LoginPayload, SignupPayload } from '../interface/interface';
 import { IpcMainInvokeEvent } from 'electron';
 import { compare, genSalt, hash } from 'bcrypt-ts';
 import { FieldPacket, QueryResult } from 'mysql2';
+import { LoginPayload, SignupPayload } from '../interface/interface';
+import { ChartData } from '../interface/class';
 
 const saltRounds = 15;
 
@@ -121,7 +122,6 @@ export const fetchUserRequest = async (
 export const fetchResidents = async () => {
   try {
     const [rows] = await db.query('SELECT * FROM residents');
-    console.log(rows);
     return rows;
   } catch (err) {
     console.error('Error fetching residents:', err);
@@ -211,14 +211,36 @@ export const deleteAccount = (event: IpcMainInvokeEvent, userId: number) => {
   }
 };
 
-export const getTotalResidents = () => {
-  // try {
-  //   const query = 'SELECT * FROM db.residents';
-  //   db.query(query).then((value) => {
-  //     console.log(value);
-  //   });
-  // } catch {
-  //   console.log('Cannot connect to database!');
-  // }
-  return 'Completed!';
+export const getResidentsData = async () => {
+  const todayYear = new Date().getFullYear();
+  try {
+    const [result] = await db.query(
+      'select	count(*) as totalResidents, count(case when birth_year > ? then 1 else null end) as totalChildren, count(case when (birth_year <= ? and birth_year > ?) then 1 else null end) as totalAdults, count(case when birth_year <= ? then 1 else null end) as totalElders, count(case when gender = ? then 1 else null end) as totalMale, count(case when gender = ? then 1 else null end) as totalFemale from db.residents',
+      [
+        todayYear - 18,
+        todayYear - 18,
+        todayYear - 50,
+        todayYear - 50,
+        'Nam',
+        'Nữ',
+      ],
+    );
+    const childrenData = new ChartData('0 - 18', result[0].totalChildren);
+    const adultsData = new ChartData(
+      '18 - 50',
+      result[0].totalResidents - result[0].totalChildren,
+    );
+    const elderData = new ChartData('Trên 50', result[0].totalElders);
+    const maleData = new ChartData('Nam', result[0].totalMale);
+    const femaleData = new ChartData(
+      'Nữ',
+      result[0].totalResidents - result[0].totalMale,
+    );
+    return {
+      ageCount: [childrenData, adultsData, elderData],
+      genderCount: [maleData, femaleData],
+    };
+  } catch (err) {
+    console.log(err);
+  }
 };

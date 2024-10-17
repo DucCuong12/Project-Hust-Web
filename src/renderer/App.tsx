@@ -22,19 +22,19 @@ const AppInner = () => {
       {location.pathname !== '/' && <LogoutButton onAction={setIsLogin} />}
       {isLogin ? (
         <div style={{ display: 'flex' }}>
-          <SideBar />
+          {location.pathname !== '/manage-account' && <SideBar />}
           <div style={{ flex: 1 }}>
             <Routes>
+              <Route path="/manage-account" element={<AccountManage />} />
               <Route path="/home" element={<HomePage />} />
               <Route path="/feepage" element={<FeePage />} />
               <Route path="/contribute" element={<ContributionPage />} />
-              {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </div>
         </div>
       ) : (
         <Routes>
-          <Route path="/manage-account" element={<AccountManage />} />
           <Route path="*" element={<LoginForm onAction={setIsLogin} />} />
         </Routes>
       )}

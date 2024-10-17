@@ -20,6 +20,7 @@ import {
   fetchResidents,
   editAccount,
   deleteAccount,
+  getResidentsData,
 } from '../db/HandleData';
 
 class AppUpdater {
@@ -33,16 +34,12 @@ class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.handle('login', loginRequest);
-
 ipcMain.handle('signup', signupRequest);
-
 ipcMain.handle('fetch-user', fetchUserRequest);
-
 ipcMain.handle('fetch-residents-list', fetchResidents);
-
 ipcMain.handle('edit-account', editAccount);
-
 ipcMain.handle('delete-account', deleteAccount);
+ipcMain.handle('fetch-number-residents', getResidentsData);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
