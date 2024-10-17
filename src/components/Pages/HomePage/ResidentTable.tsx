@@ -35,7 +35,7 @@ function ResidentTable() {
 
   return (
     <div className="resident-table-container">
-      <h2>Danh sách cư dân</h2>
+      <h1 className = "text-2xl font-semibold mb-4">Danh sách cư dân</h1>
       {/* <button className="btn btn-primary">Add Student</button> */}
       <table className="table">
         <thead>

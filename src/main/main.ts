@@ -23,7 +23,7 @@ import { genSalt, hash, compare } from 'bcrypt-ts';
 import { resolveHtmlPath } from './util';
 import db from '../db/config';
 import { FieldPacket, QueryResult } from 'mysql2';
-import { LoginPayload, SignupPayload } from '../interface/interface';
+import { LoginPayload, SignupPayload, Fee } from '../interface/interface';
 
 const saltRounds = 15;
 
@@ -152,7 +152,16 @@ ipcMain.handle('fetch-user', async (event: IpcMainInvokeEvent, id?: number) => {
 ipcMain.handle('fetch-residents-list', async () => {
   try {
     const [rows] = await db.query('SELECT * FROM residents');
-    console.log(rows);
+    return rows;
+  } catch (err) {
+    console.error('Error fetching residents:', err);
+    throw err;
+  }
+});
+
+ipcMain.handle('fetch-required-fee', async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM fee');
     return rows;
   } catch (err) {
     console.error('Error fetching residents:', err);
@@ -226,6 +235,34 @@ ipcMain.handle(
       }
     }
   },
+);
+
+ipcMain.handle(
+  'delete-compulsory-fee',
+  (event: IpcMainInvokeEvent, room_number: number) => {
+    const query = 'delete from fee where room_number = ?';
+    const values = [room_number];
+
+    try {
+      db.query(query, values)
+        .then((value: [QueryResult, FieldPacket[]]) => {
+          event.sender.send('delete-response', {
+            success: true,
+            message: 'Delete successful',
+          });
+        })
+        .catch(() => {
+          event.sender.send('delete-response', {
+            success: false,
+            message: 'Room number does not exist!',
+          });
+        });
+      return 1;
+    } catch (err) {
+      console.log('Server error!');
+      return 0;
+    }
+  }
 );
 
 ipcMain.handle(

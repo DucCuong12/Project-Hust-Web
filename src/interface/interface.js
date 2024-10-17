@@ -8,10 +8,12 @@ export interface UserPayload {
   password: string;
 }
 
-export interface Transaction {
+export interface Fee {
+  id: number;
   room_number: number;
   amount_money: number;
-  transferrer: string;
+  representator: string;
+  email: String;
   phone_number: string;
 }
 

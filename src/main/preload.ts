@@ -70,7 +70,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   fetchResidentsList: () => {
     return ipcRenderer.invoke('fetch-residents-list');
-  }
+  },
+
+  fetchRequiredFee: () => {
+    return ipcRenderer.invoke('fetch-required-fee');
+  },
+
+  deleteCompulsoryFee: (room_number: number) => {
+    return ipcRenderer.invoke('delete-compulsory-fee', room_number);
+  } ,
 });
 
 export type ElectronHandler = typeof electronHandler;

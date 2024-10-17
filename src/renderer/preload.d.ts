@@ -6,6 +6,7 @@ import {
   IpcResponse,
   User,
   Resident,
+  Fee,
 } from '../interface/interface';
 
 
@@ -21,9 +22,11 @@ declare global {
         callback: (event: IpcRendererEvent, data: IpcResponse) => void,
       ) => void;
       fetchResidentsList: () => Resident[];
+      fetchRequiredFee: () => Fee[];
       fetchUser: (id?: number) => User[];
       editUserAccount: (formData: SignupPayload, userId: number) => void;
       deleteUserAccount: (userId: number) => void;
+      deleteCompulsoryFee: (room_number: number) => number;
     };
   }
 }
