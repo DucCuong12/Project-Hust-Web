@@ -11,7 +11,7 @@ export default function App() {
     <Router>
       <Routes>
         {/* <Route path="/signup" element={<SignupForm />} /> */}
-        <Route path="/" element={<HomePage />} />
+        {/* <Route path="/" element={<HomePage />} /> */}
         <Route path="/feepage" element={<FeePage />} />
         {/* <Route path="/" element={<LoginForm />} /> */}
         {/* <Route path="/manage-account" element={<AccountManage />} /> */}
