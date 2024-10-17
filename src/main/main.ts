@@ -42,6 +42,7 @@ ipcMain.handle(
   async (
     event: IpcMainInvokeEvent,
     { username, password, admin }: LoginPayload,
+    onAction,
   ) => {
     let query = admin
       ? 'SELECT password FROM admin WHERE username = ?'

@@ -7,6 +7,7 @@ import {
   BarChartOutlined,
   FormOutlined,
   NotificationOutlined,
+  QuestionCircleOutlined,
   DollarCircleOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,

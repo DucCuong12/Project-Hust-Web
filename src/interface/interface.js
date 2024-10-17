@@ -58,3 +58,6 @@ export type EditUser = {
   email: string;
   password: string;
 };
+export type HandleLoginState = {
+  onAction: import("react").Dispatch<import("react").SetStateAction<boolean>>;
+}
