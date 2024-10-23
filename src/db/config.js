@@ -11,7 +11,7 @@ const db = await mysql.createPool({
   password: 'AVNS__G8gkwjlZcM9kTe4BcH',
   database: 'db',
   port: 28249,
-  connectionLimit: 10,
+  connectionLimit: 100,
 });
 
 export default db;

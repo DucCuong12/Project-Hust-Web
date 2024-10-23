@@ -6,6 +6,7 @@ import {
   IpcResponse,
   User,
   Resident,
+  DashboardData,
 } from '../interface/interface';
 
 declare global {
@@ -23,6 +24,7 @@ declare global {
       fetchUser: (id?: number) => User[];
       editUserAccount: (formData: SignupPayload, userId: number) => void;
       deleteUserAccount: (userId: number) => void;
+      fetchResidentsData: () => DashboardData;
     };
   }
 }

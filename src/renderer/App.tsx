@@ -12,6 +12,7 @@ import LogoutButton from '../components/LogoutButton/LogoutButton';
 import FeePage from '../components/Pages/FeePage/FeePage';
 import ContributionPage from '../components/Pages/ContributionPage/ContributionPage';
 import SideBar from '../components/Layout/SideBar';
+import Dashboard from '../components/Pages/Dashboard/Dashboard';
 
 const AppInner = () => {
   const location = useLocation();
@@ -19,24 +20,16 @@ const AppInner = () => {
   return (
     <div>
       {location.pathname !== '/' && <LogoutButton onAction={setIsLogin} />}
-      {/* {isLogin && <SideBar />}
-      <Routes>
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/manage-account" element={<AccountManage />} />
-        <Route path="/feepage" element={<FeePage />} />
-        <Route path="/contribute" element={<ContributionPage />} />
-        <Route path="/" element={<LoginForm onAction={setIsLogin} />} />
-      </Routes> */}
       {isLogin ? (
         <div style={{ display: 'flex' }}>
-          <SideBar />
+          {location.pathname !== '/manage-account' && <SideBar />}
           <div style={{ flex: 1 }}>
             <Routes>
-              <Route path="/home" element={<HomePage />} />
               <Route path="/manage-account" element={<AccountManage />} />
+              <Route path="/home" element={<HomePage />} />
               <Route path="/feepage" element={<FeePage />} />
               <Route path="/contribute" element={<ContributionPage />} />
-              <Route path="/" element={<LoginForm onAction={setIsLogin} />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </div>
         </div>
