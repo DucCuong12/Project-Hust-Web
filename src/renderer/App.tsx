@@ -13,6 +13,7 @@ import FeePage from '../components/Pages/FeePage/FeePage';
 import ContributionPage from '../components/Pages/ContributionPage/ContributionPage';
 import SideBar from '../components/Layout/SideBar';
 import Dashboard from '../components/Pages/Dashboard/Dashboard';
+import EditAccount from '../components/EditAccount/EditAccount';
 
 const AppInner = () => {
   const location = useLocation();
@@ -22,7 +23,7 @@ const AppInner = () => {
       {location.pathname !== '/' && <LogoutButton onAction={setIsLogin} />}
       {isLogin ? (
         <div style={{ display: 'flex' }}>
-          {location.pathname !== '/manage-account' && <SideBar />}
+          {!location.pathname.includes('/manage-account') && <SideBar />}
           <div style={{ flex: 1 }}>
             <Routes>
               <Route path="/manage-account" element={<AccountManage />} />
@@ -30,6 +31,10 @@ const AppInner = () => {
               <Route path="/feepage" element={<FeePage />} />
               <Route path="/contribute" element={<ContributionPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route
+                path="/manage-account/:id/edit"
+                element={<EditAccount />}
+              />
             </Routes>
           </div>
         </div>
