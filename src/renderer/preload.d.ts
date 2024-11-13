@@ -7,6 +7,7 @@ import {
   User,
   Resident,
   Fee,
+  DashboardData,
 } from '../interface/interface';
 
 declare global {
@@ -33,6 +34,7 @@ declare global {
       deleteContributeFee: (room_number: number) => number;
       addContributeFee: (room_number: number, amount_money: number, representator: string) => number;
       editContributeFee: (room_number: number, amount_money: number, representator: string) => number;
+      fetchResidentsData: () => DashboardData;
     };
   }
 }

@@ -102,8 +102,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   editContributeFee: (room_number: number, amount_money: number, representator: string) => {
     return ipcRenderer.invoke('edit-contribute-fee', room_number, amount_money, representator);
-  }
+  },
 
+  fetchResidentsData: () => {
+    return ipcRenderer.invoke('fetch-number-residents');
+  },
 });
 
 export type ElectronHandler = typeof electronHandler;

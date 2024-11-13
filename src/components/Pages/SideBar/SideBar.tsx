@@ -48,7 +48,7 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
             Tài khoản
           </Menu.Item>
           <Menu.Item key="3" icon={<BarChartOutlined />}>
-            Thống kê
+            <Link to="/dashboard">Thống kê</Link>
           </Menu.Item>
           <Menu.Item key="4" icon={<FormOutlined />}>
             Báo cáo

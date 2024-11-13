@@ -61,3 +61,11 @@ export type EditUser = {
 export type HandleLoginState = {
   onAction: import("react").Dispatch<import("react").SetStateAction<boolean>>;
 }
+export interface ChartData {
+  name: String;
+  value: Number;
+}
+export interface DashboardData {
+  ageCount: ChartData[];
+  genderCount: ChartData[];
+}

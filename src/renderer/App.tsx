@@ -15,6 +15,8 @@ import LogoutButton from '../components/LogoutButton/LogoutButton';
 import FeePage from '../components/Pages/FeePage/FeePage';
 import ContributionPage from '../components/Pages/ContributionPage/ContributionPage';
 import SideBar from '../components/Pages/SideBar/SideBar';
+import Dashboard from '../components/Pages/Dashboard/Dashboard';
+import EditAccount from '../components/EditAccount/EditAccount';
 
 const AppInner = () => {
   const location = useLocation();
@@ -24,24 +26,21 @@ const AppInner = () => {
   return (
     <div>
       {location.pathname !== '/' && <LogoutButton onAction={setIsLogin} />}
-      {/* {isLogin && <SideBar />}
-      <Routes>
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/manage-account" element={<AccountManage />} />
-        <Route path="/feepage" element={<FeePage />} />
-        <Route path="/contribute" element={<ContributionPage />} />
-        <Route path="/" element={<LoginForm onAction={setIsLogin} />} />
-      </Routes> */}
       {isLogin ? (
         <div style={{ display: 'flex' }}>
-          <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
+          {/* <SideBar collapsed={collapsed} setCollapsed={setCollapsed} /> */}
+          {/* {!location.pathname.includes('/manage-account') && <SideBar />} */}
           <div style={{ flex: 1 }}>
             <Routes>
-              <Route path="/home" element={<HomePage />} />
               <Route path="/manage-account" element={<AccountManage />} />
+              <Route path="/home" element={<HomePage />} />
               <Route path="/feepage" element={<FeePage />} />
               <Route path="/contribute" element={<ContributionPage />} />
-              <Route path="/" element={<LoginForm onAction={setIsLogin} />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route
+                path="/manage-account/:id/edit"
+                element={<EditAccount />}
+              />
             </Routes>
           </div>
         </div>
