@@ -19,6 +19,8 @@ import SideBar from '../components/Pages/SideBar/SideBar';
 const AppInner = () => {
   const location = useLocation();
   const [isLogin, setIsLogin] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  
   return (
     <div>
       {location.pathname !== '/' && <LogoutButton onAction={setIsLogin} />}
@@ -32,7 +34,7 @@ const AppInner = () => {
       </Routes> */}
       {isLogin ? (
         <div style={{ display: 'flex' }}>
-          <SideBar />
+          <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
           <div style={{ flex: 1 }}>
             <Routes>
               <Route path="/home" element={<HomePage />} />

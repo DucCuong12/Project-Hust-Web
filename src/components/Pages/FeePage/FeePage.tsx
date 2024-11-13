@@ -16,6 +16,7 @@ import AnimatedFrame from '../../../../utils/animation_page';
 import { Link } from 'react-router-dom';
 import { Fee } from '../../../interface/interface.js';
 import SideBar from '../SideBar/SideBar';
+import ConfirmModal from '../../ConfirmModal/ConfirmModel';
 
 const { Header, Sider, Content } = Layout;
 const rowsPerPage = 5;
@@ -31,18 +32,6 @@ function FeePage() {
   const [requiredFee, setRequiredFee] = useState<Fee[]>([]);
   const [searchRoom, setSearchRoom] = useState("");
   const [roomFeeMap, setRoomFeeMap] = useState<RoomFeeMap>({});
-
-
-  // search room number that need to be edited
-  const [searchEditedRoom, setSearchEditedRoom] = useState("");
-  const [editedMoney, setEditedMoney] = useState("");
-  const [editedEmail, setEditedEmail] = useState("");
-  const [editedTransferrer, setEditedTransferrer] = useState("");
-
-  // search room number that need to be deleted
-  const [searchDeletedRoom, setSearchDeletedRoom] = useState("");
-  const [searchDeletedResult, setSearchDeletedResult] = useState(""); 
-  const [error, setError] = useState("");
 
   // search the fee that filter by room number
   const [searchValues, setSearchValues] = useState({
@@ -107,41 +96,181 @@ function FeePage() {
   }, [searchValues.searchRoomFee]);
 
   // for deleting
-  const handleDeleting = async (e: any) => {
+  const [searchDeletedRoom, setSearchDeletedRoom] = useState("");
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isErrorDeleteModalOpen, setErrorDeleteModalOpen] = useState(false);
+  const [isConfirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
+  const [isSuccessDeleteModalOpen, setSuccessDeleteModalOpen] = useState(false);
+  const [errorDeleteMessage, setErrorDeleteMessage] = useState('');
+  const [confirmationDeleteMessage, setConfirmationDeleteMessage] = useState('');
+
+  const handleCloseDelete = () => setDeleteModalOpen(false);
+
+  const handleSubmitDeleting = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!searchDeletedRoom) {
-      alert("Vui lòng nhập số phòng");
-
-    } else {
-      
-      const confirmed = window.confirm(`Bạn có chắc chắn muốn xoá dữ liệu cho phòng ${searchDeletedRoom}?`)
-      if (confirmed) {
-        try {
-          const success = await window.electronAPI.deleteCompulsoryFee(Number(searchDeletedRoom));
     
-          if (success) {
-            alert("Đã xoá thành công.");
-          } else {
-            alert("Xoá không thành công.");
-          }
-        } catch(error) {
-          console.log(error);
-        }
-      } else {
-        alert("Đã huỷ thao tác xoá.");
-      }
+    var check = 0;
 
-      fetchRequiredFee();
+    for (var i = 0; i < requiredFee.length; i++) {
+      if (searchDeletedRoom == requiredFee[i]["room_number"].toString()) {
+        check = 1;
+        break;
+      }
     }
-  }
+
+    if (!check) {
+      setErrorDeleteMessage("Vui lòng nhập đúng số phòng");
+      setErrorDeleteModalOpen(true); // Show error modal
+    } else {
+      setConfirmationDeleteMessage(`Bạn có chắc chắn xoá khoản thu của phòng ${searchDeletedRoom}?`);
+      setConfirmDeleteModalOpen(true); // Show confirmation modal
+    }
+  };
+
+  const handleConfirmDeleting = async () => {
+    setConfirmDeleteModalOpen(false); // Close confirmation modal
+    try {
+      const success = await window.electronAPI.deleteCompulsoryFee(Number(searchDeletedRoom));
+      if (success) {
+        setSuccessDeleteModalOpen(true); // Show success modal
+      } else {
+        setErrorDeleteMessage("Thêm khoản thu không thành công.");
+        setErrorDeleteModalOpen(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    fetchRequiredFee();
+  };
   
-  const handleSubmit = (e: any) => {e.preventDefault();};
+  // for adding
+  const [isErrorAddModalOpen, setErrorAddModalOpen] = useState(false);
+  const [isConfirmAddModalOpen, setConfirmAddModalOpen] = useState(false);
+  const [isSuccessAddModalOpen, setSuccessAddModalOpen] = useState(false);
+  const [errorAddMessage, setErrorAddMessage] = useState('');
+  const [confirmationAddMessage, setConfirmationAddMessage] = useState('');
+
+  const [submitRoomNumber, setSubmitRoomNumber] = useState("");
+  const [submitTransferrer, setSubmitTransferrer] = useState("");
+  const [submitMoney, setSubmitMoney] = useState("");
+
+  const handleSubmitAdding = async (e: any) => {
+    e.preventDefault();
+    
+    var check = 0;
+
+    for (var i = 0; i < requiredFee.length; i++) {
+      if (submitRoomNumber == requiredFee[i]["room_number"].toString()) {
+        check = 1;
+        break;
+      }
+    }
+
+    if (!check) {
+      setErrorAddMessage("Nhập sai số phòng.");
+      setErrorAddModalOpen(true);
+    } else {
+      setConfirmationAddMessage(`Bạn có chắc chắn thêm khoản thu của phòng ${submitRoomNumber}?`)
+      setConfirmAddModalOpen(true);
+    }
+  };
+
+  const handleConfirmAdding = async () => {
+    setConfirmAddModalOpen(false); // Close confirmation modal
+    var cur_money = 0;
+
+    for (var i = 0; i < requiredFee.length; i++) {
+      if (submitRoomNumber == requiredFee[i]["room_number"].toString()) {
+        cur_money = requiredFee[i]["amount_money"];
+        break;
+      }
+    }
+
+    const money = cur_money + Number(submitMoney);
+    try {
+      const success = await window.electronAPI.addSubmittedFee(Number(submitRoomNumber), money, submitTransferrer);
+
+      if (success) {
+        setSuccessAddModalOpen(true);
+      } else {
+        setErrorAddMessage("Thêm khoản thu không thành công.");
+        setErrorAddModalOpen(true);
+      }
+    } catch(error) {
+      console.log(error);
+    }
+
+    fetchRequiredFee();
+  };
+
+  //for editing
+  const [searchEditedRoom, setSearchEditedRoom] = useState("");
+  const [editedMoney, setEditedMoney] = useState("");
+  const [editedEmail, setEditedEmail] = useState("");
+  const [editedTransferrer, setEditedTransferrer] = useState("");
+
+  const [isErrorEditModalOpen, setErrorEditModalOpen] = useState(false);
+  const [isConfirmEditModalOpen, setConfirmEditModalOpen] = useState(false);
+  const [isSuccessEditModalOpen, setSuccessEditModalOpen] = useState(false);
+  const [errorEditMessage, setErrorEditMessage] = useState('');
+  const [confirmationEditMessage, setConfirmationEditMessage] = useState('');
+  const [curEditMoney, setCurEditMoney] = useState('');
+  const [curEditTransferrer, setCurEditTransferrer] = useState('');
+
+  const handleSubmitEditing = async (e: any) => {
+    e.preventDefault();
+    
+    var check = 0;
+
+    for (var i = 0; i < requiredFee.length; i++) {
+      if (searchEditedRoom == requiredFee[i]["room_number"].toString()) {
+        setCurEditMoney(requiredFee[i]["amount_money"].toString());
+        setCurEditTransferrer(requiredFee[i]["representator"]);
+        check = 1;
+        break;
+      }
+    }
+
+    if (!check) {
+      setErrorEditMessage("Nhập sai số phòng.");
+      setErrorEditModalOpen(true);
+    } else {
+      setConfirmationEditMessage(`Bạn có chắc chắn chỉnh sửa khoản thu của phòng ${searchEditedRoom}?`)
+      setConfirmEditModalOpen(true);
+    }
+  };
+
+  const handleConfirmEditing = async () => {
+    setConfirmEditModalOpen(false); // Close confirmation modal
+
+    try {
+      var money = "", transferrer = "";
+      if (editedMoney == "") money = curEditMoney;
+      else money = editedMoney;
+
+      if (editedTransferrer == "") transferrer = curEditTransferrer;
+      else transferrer = editedTransferrer;
+
+      const success = await window.electronAPI.editFee(Number(searchEditedRoom), Number(money), transferrer);
+
+      if (success) {
+        setSuccessEditModalOpen(true);
+      } else {
+        setErrorEditMessage("Chỉnh sửa khoản thu không thành công.");
+        setErrorEditModalOpen(true);
+      }
+    } catch(error) {
+      console.log(error);
+    }
+
+    fetchRequiredFee();
+  };
 
   return (
     <AnimatedFrame>
       <Layout>
-        <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
+        {/* <SideBar collapsed={collapsed} setCollapsed={setCollapsed} /> */}
         <Layout className="site-layout">
           <Header className="header"> </Header>
           <Content style={{ margin: '14px', background: '#fff' }}>
@@ -152,7 +281,7 @@ function FeePage() {
                   <h2 className="text-2xl font-semibold mb-4">
                     Thêm khoản thu
                   </h2>
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmitAdding}>
                     <div className="mb-4">
                       <label
                         className="block text-sm font-medium mb-2"
@@ -163,8 +292,8 @@ function FeePage() {
                       <input
                         type="number"
                         id="roomNumber"
-                        value={roomNumber}
-                        onChange={(e) => setRoomNumber(e.target.value)}
+                        value={submitRoomNumber}
+                        onChange={(e) => setSubmitRoomNumber(e.target.value)}
                         className="w-full p-2 border rounded-md"
                         placeholder="Nhập số phòng"
                         required
@@ -180,8 +309,8 @@ function FeePage() {
                       <input
                         type="number"
                         id="transferAmount"
-                        // value={transferAmount}
-                        // onChange={(e) => setTransferAmount(e.target.value)}
+                        value={submitMoney}
+                        onChange={(e) => setSubmitMoney(e.target.value)}
                         className="w-full p-2 border rounded-md"
                         placeholder="Nhập số tiền"
                         required
@@ -195,47 +324,60 @@ function FeePage() {
                         Người nộp tiền
                       </label>
                       <input
-                        type="number"
-                        id="transferAmount"
-                        // value={transferAmount}
-                        // onChange={(e) => setTransferAmount(e.target.value)}
+                        type="string"
+                        id="person"
+                        value={submitTransferrer}
+                        onChange={(e) => setSubmitTransferrer(e.target.value)}
                         className="w-full p-2 border rounded-md"
                         placeholder="Nhập tên người nộp tiền"
                         required
                       />
                     </div>
-                    <div className="mb-4">
-                      <label
-                        className="block text-sm font-medium mb-2"
-                        htmlFor="transferAmount"
-                      >
-                        Email
-                      </label>
-                      <input
-                        type="number"
-                        id="transferAmount"
-                        // value={transferAmount}
-                        // onChange={(e) => setTransferAmount(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        placeholder="Nhập email người nộp"
-                        required
-                      />
-                    </div>
-                    {error && (
-                      <p className="text-red-500 text-sm mb-4">{error}</p>
-                    )}
+                    
                     <button
                       type="submit"
                       className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
                     >
                       Thêm khoản thu
                     </button>
+
+                    <ConfirmModal
+                      show={isErrorAddModalOpen}
+                      onClose={() => setErrorAddModalOpen(false)}
+                      onConfirm={() => setErrorAddModalOpen(false)}
+                      title="Lỗi"
+                      bodyText={errorAddMessage}
+                      confirmText=""
+                      cancelText="Huỷ"
+                    />
+
+                    {/* Confirmation Modal */}
+                    <ConfirmModal
+                      show={isConfirmAddModalOpen}
+                      onClose={() => setConfirmAddModalOpen(false)}
+                      onConfirm={handleConfirmAdding}
+                      title="Xác nhận thêm khoản thu"
+                      bodyText={confirmationAddMessage}
+                      confirmText="Xác nhận"
+                      cancelText="Hủy"
+                    />
+
+                    {/* Success Modal */}
+                    <ConfirmModal
+                      show={isSuccessAddModalOpen}
+                      onClose={() => setSuccessAddModalOpen(false)}
+                      onConfirm={() => setSuccessAddModalOpen(false)}
+                      title="Thành công"
+                      bodyText="Đã thêm khoản thu thành công."
+                      confirmText=""
+                      cancelText="Huỷ"
+                    />
                   </form>
                 </div>
 
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <h2 className="text-2xl font-semibold mb-4">Chỉnh sửa khoản thu</h2>
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmitEditing}>
                     <label
                           className="block text-sm font-medium mb-2"
                           htmlFor="roomNumber"
@@ -244,21 +386,14 @@ function FeePage() {
                     </label>
                     <div className="mb-4">
                       <input
-                        type="text"
-                        value={searchDeletedRoom}
-                        onChange={(e) => setSearchDeletedRoom(e.target.value)}
+                        type="number"
+                        value={searchEditedRoom}
+                        onChange={(e) => setSearchEditedRoom(e.target.value)}
                         className="w-full p-2 border rounded-md"
                         placeholder="Nhập số phòng"
+                        required
                       />
                     </div>
-                    {/* {searchRoom && (
-                      <>
-                        <p className="mt-2 text-lg text-red-500">
-                          Số tiền phòng {searchRoom} CÒN THIẾU: 
-                          {searchResult !== "" ? " " + (requiredMoney - parseFloat(searchResult)) + ".000 VND": ' 0 VND'}
-                        </p>
-                      </>
-                    )} */}
 
                     <label
                           className="block text-sm font-medium mb-2"
@@ -269,9 +404,9 @@ function FeePage() {
 
                     <div className="mb-4">
                       <input
-                        type="text"
-                        value={searchRoom}
-                        onChange={(e) => setSearchRoom(e.target.value)}
+                        type="number"
+                        value={editedMoney}
+                        onChange={(e) => setEditedMoney(e.target.value)}
                         className="w-full p-2 border rounded-md"
                         placeholder="Nhập số tiền mới"
                       />
@@ -285,30 +420,12 @@ function FeePage() {
                           Người nộp tiền
                         </label>
                         <input
-                          type="number"
+                          type="string"
                           id="transferAmount"
-                          // value={transferAmount}
-                          // onChange={(e) => setTransferAmount(e.target.value)}
+                          value={editedTransferrer}
+                          onChange={(e) => setEditedTransferrer(e.target.value)}
                           className="w-full p-2 border rounded-md"
                           placeholder="Nhập tên người nộp tiền mới"
-                          required
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label
-                          className="block text-sm font-medium mb-2"
-                          htmlFor="transferAmount"
-                        >
-                          Email
-                        </label>
-                        <input
-                          type="number"
-                          id="transferAmount"
-                          // value={transferAmount}
-                          // onChange={(e) => setTransferAmount(e.target.value)}
-                          className="w-full p-2 border rounded-md"
-                          placeholder="Nhập email người nộp mới"
-                          required
                         />
                       </div>
 
@@ -318,13 +435,45 @@ function FeePage() {
                       >
                         Chỉnh sửa khoản thu
                     </button>   
+
+                    <ConfirmModal
+                      show={isErrorEditModalOpen}
+                      onClose={() => setErrorEditModalOpen(false)}
+                      onConfirm={() => setErrorEditModalOpen(false)}
+                      title="Lỗi"
+                      bodyText={errorEditMessage}
+                      confirmText=""
+                      cancelText="Huỷ"
+                    />
+
+                    {/* Confirmation Modal */}
+                    <ConfirmModal
+                      show={isConfirmEditModalOpen}
+                      onClose={() => setConfirmEditModalOpen(false)}
+                      onConfirm={handleConfirmEditing}
+                      title="Xác nhận chỉnh sửa khoản thu"
+                      bodyText={confirmationEditMessage}
+                      confirmText="Xác nhận"
+                      cancelText="Hủy"
+                    />
+
+                    {/* Success Modal */}
+                    <ConfirmModal
+                      show={isSuccessEditModalOpen}
+                      onClose={() => setSuccessEditModalOpen(false)}
+                      onConfirm={() => setSuccessEditModalOpen(false)}
+                      title="Thành công"
+                      bodyText="Đã chỉnh sửa khoản thu thành công."
+                      confirmText=""
+                      cancelText="Huỷ"
+                    />
                   </form>              
                 </div>
 
                 {/* Room Payments Section */}
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <h2 className="text-2xl font-semibold mb-4">Xoá khoản thu</h2>
-                  <form onSubmit={handleDeleting}>
+                  <form onSubmit={handleSubmitDeleting}>
                     <label
                           className="block text-sm font-medium mb-2"
                           htmlFor="roomNumber"
@@ -334,19 +483,59 @@ function FeePage() {
                     <div className="mb-4">
                       <input
                         type="text"
+                        id="deleteroom"
                         value={searchDeletedRoom}
                         onChange={(e) => setSearchDeletedRoom(e.target.value)}
                         className="w-full p-2 border rounded-md"
                         placeholder="Nhập số phòng"
+                        required
                       />
                     </div>
 
                     <button
                         type="submit"
                         className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+                        // onClick={(e) => {
+                        //   e.preventDefault(); 
+                        //   setDeleteModalOpen(true)
+                        
+                        // }}
                       >
                         Xoá khoản thu
-                    </button>     
+                    </button>    
+
+                    <ConfirmModal
+                      show={isErrorDeleteModalOpen}
+                      onClose={() => setErrorDeleteModalOpen(false)}
+                      onConfirm={() => setErrorDeleteModalOpen(false)}
+                      title="Lỗi"
+                      bodyText={errorDeleteMessage}
+                      confirmText=""
+                      cancelText="Huỷ"
+                    />
+
+                    {/* Confirmation Modal */}
+                    <ConfirmModal
+                      show={isConfirmDeleteModalOpen}
+                      onClose={() => setConfirmDeleteModalOpen(false)}
+                      onConfirm={handleConfirmDeleting}
+                      title="Xác nhận xoá khoản thu"
+                      bodyText={confirmationDeleteMessage}
+                      confirmText="Xác nhận"
+                      cancelText="Hủy"
+                    />
+
+                    {/* Success Modal */}
+                    <ConfirmModal
+                      show={isSuccessDeleteModalOpen}
+                      onClose={() => setSuccessDeleteModalOpen(false)}
+                      onConfirm={() => setSuccessDeleteModalOpen(false)}
+                      title="Thành công"
+                      bodyText="Đã xoá khoản thu thành công."
+                      confirmText=""
+                      cancelText="Huỷ"
+                    />
+
                   </form>            
                 </div>
               {/* </div> */}

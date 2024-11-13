@@ -26,6 +26,13 @@ declare global {
       editUserAccount: (formData: SignupPayload, userId: number) => void;
       deleteUserAccount: (userId: number) => void;
       deleteCompulsoryFee: (room_number: number) => number;
+      addSubmittedFee: (room_number: number, amount_money: number, representator: string) => number;
+      editFee: (room_number: number, amount_money: number, representator: string) => number;
+
+      fetchContributeFee: () => Fee[];
+      deleteContributeFee: (room_number: number) => number;
+      addContributeFee: (room_number: number, amount_money: number, representator: string) => number;
+      editContributeFee: (room_number: number, amount_money: number, representator: string) => number;
     };
   }
 }

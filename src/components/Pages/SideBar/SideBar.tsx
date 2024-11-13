@@ -10,6 +10,7 @@ import {
   DollarCircleOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
 import { Link } from 'react-router-dom';
@@ -55,9 +56,18 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
           <Menu.Item key="5" icon={<NotificationOutlined />}>
             Thông báo
           </Menu.Item>
-          <Menu.Item key="6" icon={<DollarCircleOutlined />}>
-            <Link to="/feepage">Khoản thu</Link>
-          </Menu.Item>
+          <Menu.SubMenu key="6" icon={<DollarCircleOutlined />} title="Khoản thu">
+            {/* <Link to="/feepage">Khoản thu</Link> */}
+
+            <Menu.Item key="7">
+              <Link to="/feepage">Bắt buộc</Link>
+            </Menu.Item>
+
+            <Menu.Item key="8">
+              <Link to="/contribute">Đóng góp</Link>
+            </Menu.Item>
+
+        </Menu.SubMenu>
         </Menu>
       </>
 
