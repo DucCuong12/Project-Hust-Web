@@ -42,7 +42,7 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
           className="menu-bar"
         >
           <Menu.Item key="1" icon={<HomeOutlined />}>
-            <Link to="/">Trang chủ</Link>
+            <Link to="/home">Trang chủ</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<UserOutlined />}>
             Tài khoản
@@ -56,7 +56,11 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
           <Menu.Item key="5" icon={<NotificationOutlined />}>
             Thông báo
           </Menu.Item>
-          <Menu.SubMenu key="6" icon={<DollarCircleOutlined />} title="Khoản thu">
+          <Menu.SubMenu
+            key="6"
+            icon={<DollarCircleOutlined />}
+            title="Khoản thu"
+          >
             {/* <Link to="/feepage">Khoản thu</Link> */}
 
             <Menu.Item key="7">
@@ -66,8 +70,7 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
             <Menu.Item key="8">
               <Link to="/contribute">Đóng góp</Link>
             </Menu.Item>
-
-        </Menu.SubMenu>
+          </Menu.SubMenu>
         </Menu>
       </>
 

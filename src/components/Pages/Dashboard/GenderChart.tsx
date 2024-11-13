@@ -13,8 +13,6 @@ const GenderChart = ({ data }: any) => {
     }
   }, [data]);
 
-  console.log(data);
-
   if (isLoading) {
     return <div>Loading gender data, please wait...</div>;
   } else {

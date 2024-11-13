@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ipcRenderer, IpcRendererEvent } from 'electron';
+import { IpcRendererEvent } from 'electron';
 import { useNavigate } from 'react-router-dom';
-import { Spinner } from 'react-bootstrap';
+import { Spinner, Alert, Button } from 'react-bootstrap';
 import { FaLock, FaUser, FaEyeSlash } from 'react-icons/fa';
 import AnimatedFrame from '../../../utils/animation_page';
 import { IpcResponse, HandleLoginState } from '../../interface/interface';
@@ -15,6 +15,7 @@ const LoginForm: React.FC<HandleLoginState> = ({ onAction }) => {
   });
 
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -36,6 +37,7 @@ const LoginForm: React.FC<HandleLoginState> = ({ onAction }) => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setMessage('');
+    setIsLoading(true);
     try {
       await window.electronAPI.login({
         username: input.username,
@@ -65,8 +67,8 @@ const LoginForm: React.FC<HandleLoginState> = ({ onAction }) => {
           else navigate('/home');
         } else {
           setMessage(response.message);
-          // alert(response.message);
         }
+        setIsLoading(false);
       },
     );
   }, []);
@@ -115,9 +117,28 @@ const LoginForm: React.FC<HandleLoginState> = ({ onAction }) => {
             </label>
           </div>
 
-          <button type="submit">Đăng nhập</button>
+          <Button onClick={handleSubmit} disabled={isLoading} variant="primary">
+            {isLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                <span className="ms-2">Đang đăng nhập...</span>
+              </>
+            ) : (
+              'Đăng nhập'
+            )}
+          </Button>
         </form>
-        {message && <p>{message}</p>}
+        {message && (
+          <Alert key="warning" variant="warning">
+            {message}
+          </Alert>
+        )}
       </div>
     </AnimatedFrame>
   );
