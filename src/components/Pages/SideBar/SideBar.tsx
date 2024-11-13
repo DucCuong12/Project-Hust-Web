@@ -1,24 +1,26 @@
+import React, { useState } from 'react';
 import { Flex, Button, Layout, Menu } from 'antd';
 import { FaLeaf } from 'react-icons/fa';
-import { useState } from 'react';
 import {
   UserOutlined,
   HomeOutlined,
   BarChartOutlined,
   FormOutlined,
   NotificationOutlined,
-  QuestionCircleOutlined,
   DollarCircleOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
+import Sider from 'antd/es/layout/Sider';
 import { Link } from 'react-router-dom';
-import { NavLink } from 'react-router-dom';
 
-const { Header, Sider, Content } = Layout;
-const SideBar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+interface SideBarProps {
+  collapsed: boolean;
+  setCollapsed: (value: boolean) => void;
+}
 
+const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
   return (
     <Sider
       theme="dark"
@@ -40,7 +42,7 @@ const SideBar = () => {
           className="menu-bar"
         >
           <Menu.Item key="1" icon={<HomeOutlined />}>
-            <Link to="/home">Trang chủ</Link>
+            <Link to="/">Trang chủ</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<UserOutlined />}>
             Tài khoản
@@ -54,11 +56,21 @@ const SideBar = () => {
           <Menu.Item key="5" icon={<NotificationOutlined />}>
             Thông báo
           </Menu.Item>
-          <Menu.Item key="6" icon={<DollarCircleOutlined />}>
-            <Link to="/feepage">Khoản thu</Link>
-          </Menu.Item>
+          <Menu.SubMenu key="6" icon={<DollarCircleOutlined />} title="Khoản thu">
+            {/* <Link to="/feepage">Khoản thu</Link> */}
+
+            <Menu.Item key="7">
+              <Link to="/feepage">Bắt buộc</Link>
+            </Menu.Item>
+
+            <Menu.Item key="8">
+              <Link to="/contribute">Đóng góp</Link>
+            </Menu.Item>
+
+        </Menu.SubMenu>
         </Menu>
       </>
+
       <Button
         type="text"
         icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}

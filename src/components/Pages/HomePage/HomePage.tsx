@@ -1,26 +1,28 @@
 import { Layout } from 'antd';
 import './HomePage.css';
+import SideBar from '../SideBar/SideBar';
 import ResidentTable from './ResidentTable';
 import AnimatedFrame from '../../../../utils/animation_page';
+import { Link } from 'react-router-dom';
 
 const { Header, Content } = Layout;
 
 function HomePage() {
   return (
     <div className="home">
-      <AnimatedFrame>
-        <Layout>
-          <Layout className="site-layout">
-            <Header className="header"> </Header>
-            <Content style={{ margin: '14px', background: '#fff' }}>
-              <div
-                className="site-layout-background"
-                style={{ padding: 16, minHeight: 360 }}
-              >
-                <div className="content">
-                  <ResidentTable />
+        <AnimatedFrame>
+          <Layout>
+            <Layout className="site-layout">
+              <Header className="header"> </Header>
+              <Content style={{ margin: '14px', background: '#fff' }}>
+                <div
+                  className="site-layout-background"
+                  style={{ padding: 16, minHeight: 360 }}
+                >
+                  <div className="content">
+                    <ResidentTable />
+                  </div>
                 </div>
-              </div>
             </Content>
           </Layout>
         </Layout>
