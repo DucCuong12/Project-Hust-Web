@@ -19,6 +19,7 @@ import {
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { genSalt, hash, compare } from 'bcrypt-ts';
 import { resolveHtmlPath } from './util';
 import db from '../db/config';
 import { FieldPacket, QueryResult } from 'mysql2';
@@ -448,12 +449,12 @@ ipcMain.handle(
     }
   },
 );
-ipcMain.handle('login', loginRequest);
-ipcMain.handle('signup', signupRequest);
-ipcMain.handle('fetch-user', fetchUserRequest);
-ipcMain.handle('fetch-residents-list', fetchResidents);
-ipcMain.handle('edit-account', editAccount);
-ipcMain.handle('delete-account', deleteAccount);
+// ipcMain.handle('login', loginRequest);
+// ipcMain.handle('signup', signupRequest);
+// ipcMain.handle('fetch-user', fetchUserRequest);
+// ipcMain.handle('fetch-residents-list', fetchResidents);
+// ipcMain.handle('edit-account', editAccount);
+// ipcMain.handle('delete-account', deleteAccount);
 ipcMain.handle('fetch-number-residents', getResidentsData);
 
 if (process.env.NODE_ENV === 'production') {

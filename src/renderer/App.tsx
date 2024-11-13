@@ -28,7 +28,7 @@ const AppInner = () => {
       {location.pathname !== '/' && <LogoutButton onAction={setIsLogin} />}
       {isLogin ? (
         <div style={{ display: 'flex' }}>
-          {/* <SideBar collapsed={collapsed} setCollapsed={setCollapsed} /> */}
+          <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
           {/* {!location.pathname.includes('/manage-account') && <SideBar />} */}
           <div style={{ flex: 1 }}>
             <Routes>
