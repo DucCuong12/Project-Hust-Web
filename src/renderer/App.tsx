@@ -6,9 +6,7 @@ import {
 } from 'react-router-dom';
 import { useState } from 'react';
 import LoginForm from '../components/LoginForm/LoginForm';
-// import './App.css';
 import './output.css';
-import SignupForm from '../components/SignupForm/SignupForm';
 import AccountManage from '../components/AccountManage/AccountManage';
 import HomePage from '../components/Pages/HomePage/HomePage';
 import LogoutButton from '../components/LogoutButton/LogoutButton';
@@ -17,19 +15,28 @@ import ContributionPage from '../components/Pages/ContributionPage/ContributionP
 import SideBar from '../components/Pages/SideBar/SideBar';
 import Dashboard from '../components/Pages/Dashboard/Dashboard';
 import EditAccount from '../components/EditAccount/EditAccount';
+import ConfirmLogout from '../components/ConfirmLogout/ConfirmLogout';
 
 const AppInner = () => {
   const location = useLocation();
   const [isLogin, setIsLogin] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  
+  const [modalShow, setModalShow] = useState(false);
+
   return (
     <div>
-      {location.pathname !== '/' && <LogoutButton onAction={setIsLogin} />}
+      {location.pathname !== '/' && (
+        <LogoutButton
+          onAction={() => {
+            setModalShow(true);
+          }}
+        />
+      )}
       {isLogin ? (
         <div style={{ display: 'flex' }}>
-          <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
-          {/* {!location.pathname.includes('/manage-account') && <SideBar />} */}
+          {!location.pathname.includes('/manage-account') && (
+            <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
+          )}
           <div style={{ flex: 1 }}>
             <Routes>
               <Route path="/manage-account" element={<AccountManage />} />
@@ -46,9 +53,17 @@ const AppInner = () => {
         </div>
       ) : (
         <Routes>
-          <Route path="*" element={<LoginForm onAction={setIsLogin} />} />
+          <Route path="/" element={<LoginForm onAction={setIsLogin} />} />
         </Routes>
       )}
+      <ConfirmLogout
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        onLogout={() => {
+          setIsLogin(false);
+          setModalShow(false);
+        }}
+      />
     </div>
   );
 };

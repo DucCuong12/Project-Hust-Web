@@ -12,7 +12,6 @@ const Dashboard = () => {
   const fetchNumberResidents = async () => {
     try {
       const data = await window.electronAPI.fetchResidentsData();
-      console.log(data);
       setData(data);
     } catch (err) {
       console.log(err);
