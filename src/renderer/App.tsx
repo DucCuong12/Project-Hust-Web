@@ -16,6 +16,7 @@ import SideBar from '../components/Pages/SideBar/SideBar';
 import Dashboard from '../components/Pages/Dashboard/Dashboard';
 import EditAccount from '../components/EditAccount/EditAccount';
 import ConfirmLogout from '../components/ConfirmLogout/ConfirmLogout';
+import CreateAccount from '../components/CreateAccount/CreateAccount';
 
 const AppInner = () => {
   const location = useLocation();
@@ -47,6 +48,10 @@ const AppInner = () => {
               <Route
                 path="/manage-account/:id/edit"
                 element={<EditAccount />}
+              />
+              <Route
+                path="/manage-account/create-account"
+                element={<CreateAccount />}
               />
             </Routes>
           </div>

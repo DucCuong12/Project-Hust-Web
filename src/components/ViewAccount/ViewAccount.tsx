@@ -35,11 +35,11 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
   };
 
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>#</th>
+            <th>ID</th>
             <th>Tên tài khoản</th>
             <th>Tên đăng nhập</th>
             <th>Email</th>
