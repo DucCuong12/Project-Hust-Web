@@ -45,12 +45,6 @@ const CreateAccount = () => {
         email: formData.email,
         name: formData.name,
       });
-      setFormData({
-        username: '',
-        password: '',
-        email: '',
-        name: '',
-      });
     } catch (error) {
       setMessage('Signup failed');
     }
@@ -62,15 +56,16 @@ const CreateAccount = () => {
       (event: IpcRendererEvent, response: IpcResponse) => {
         if (response.success) {
           setMessage('Signup successful');
+          navigate('/manage-account');
         } else {
           setMessage(response.message);
-          // alert(response.message);
         }
         setIsLoading(false);
-        navigate(-1);
       },
     );
   }, []);
+
+  console.log(formData, message);
 
   return (
     <AnimatedFrame>

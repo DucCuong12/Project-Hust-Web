@@ -17,7 +17,6 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
   };
 
   const handleDelete = () => {
-    console.log(id);
     try {
       window.electronAPI.deleteUserAccount(id);
     } catch (err) {

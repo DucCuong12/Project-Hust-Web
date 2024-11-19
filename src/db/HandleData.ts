@@ -76,10 +76,10 @@ export const signupRequest = async (
               message: 'Signup successful',
             });
           })
-          .catch(() => {
+          .catch((value: [QueryResult, FieldPacket[]]) => {
             event.sender.send('signup-response', {
               success: false,
-              message: 'User already exists!',
+              message: value[0],
             });
           });
       });
