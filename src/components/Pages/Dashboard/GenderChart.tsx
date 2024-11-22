@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, Legend, Tooltip, Label } from 'recharts';
 import { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
 
@@ -25,14 +25,14 @@ const GenderChart = ({ data }: any) => {
             alignItems: 'center',
           }}
         >
-          <PieChart width={400} height={300}>
+          <PieChart width={400} height={360}>
             <Pie
               data={data}
               dataKey="value"
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius={80}
+              outerRadius={120}
               fill="#8884d8"
               label
             >
@@ -44,8 +44,23 @@ const GenderChart = ({ data }: any) => {
               ))}
             </Pie>
             <Tooltip />
-            <Legend verticalAlign="bottom" height={36} />
+            <Legend
+              align="right"
+              verticalAlign="top"
+              height={36}
+              iconSize={18}
+            />
           </PieChart>
+          <h3
+            style={{
+              position: 'absolute',
+              bottom: '18px',
+              fontWeight: 500,
+              fontSize: '16px',
+            }}
+          >
+            Thống kê tỉ lệ nam - nữ dân cư
+          </h3>
         </Card.Body>
       </Card>
     );
