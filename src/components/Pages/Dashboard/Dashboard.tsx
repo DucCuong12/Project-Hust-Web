@@ -28,12 +28,17 @@ const Dashboard = () => {
         <Content style={{ margin: '14px', background: '#fff' }}>
           <div
             className="site-layout-background"
-            style={{ padding: 16, minHeight: 360 }}
+            style={{ padding: 16, minHeight: 720 }}
           >
             <div className="content">
               <Container fluid>
                 <Row>
-                  <h3 style={{ marginBottom: '24px' }}>Thống kê dân cư</h3>
+                  <h2
+                    className="text-2xl font-semibold"
+                    style={{ marginBottom: '24px' }}
+                  >
+                    Thống kê dân cư
+                  </h2>
                   <Col lg={6} md={12}>
                     <div className="gender-chart">
                       <GenderChart data={data?.genderCount} />
