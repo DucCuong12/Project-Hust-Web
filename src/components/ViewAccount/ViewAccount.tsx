@@ -21,9 +21,10 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
       window.electronAPI.deleteUserAccount(id);
     } catch (err) {
       console.log('Server error!');
+    } finally {
+      onAccountModified();
     }
     handleClose();
-    onAccountModified();
   };
 
   const navigate = useNavigate();

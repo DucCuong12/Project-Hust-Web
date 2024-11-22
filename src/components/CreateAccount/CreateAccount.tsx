@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateAccount.css';
 import AnimatedFrame from '../../../utils/animation_page';
 import { FaEyeSlash, FaLock } from 'react-icons/fa';
+import { m } from 'framer-motion';
 
 const CreateAccount = () => {
   const [formData, setFormData] = useState({
@@ -65,7 +66,7 @@ const CreateAccount = () => {
     );
   }, []);
 
-  console.log(formData, message);
+  console.log(message);
 
   return (
     <AnimatedFrame>

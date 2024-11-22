@@ -7,6 +7,26 @@ import { ChartData } from '../interface/class';
 
 const saltRounds = 15;
 
+export const queryUserByField = (field: string, value: string) => {
+  const query = `SELECT * FROM users WHERE ${field} = ?`;
+  return db.query(query, [value]);
+};
+
+export const insertUser = (userData: SignupPayload) => {
+  const query =
+    'INSERT INTO users (username, password, email, name) VALUES (?, ?, ?, ?)';
+  return genSalt(saltRounds)
+    .then((salt) => hash(userData.password, salt))
+    .then((hashedPassword) =>
+      db.query(query, [
+        userData.username,
+        hashedPassword,
+        userData.email,
+        userData.name,
+      ]),
+    );
+};
+
 export const loginRequest = async (
   event: IpcMainInvokeEvent,
   { username, password, admin }: LoginPayload,
@@ -58,37 +78,79 @@ export const signupRequest = async (
   event: IpcMainInvokeEvent,
   userData: SignupPayload,
 ) => {
-  try {
-    const query =
-      'INSERT INTO users (username, password, email, name) VALUES (?, ?, ?, ?)';
-    genSalt(saltRounds)
-      .then((salt) => hash(userData.password, salt))
-      .then((hashedPassword) => {
-        db.query(query, [
-          userData.username,
-          hashedPassword,
-          userData.email,
-          userData.name,
-        ])
-          .then((value: [QueryResult, FieldPacket[]]) => {
-            event.sender.send('signup-response', {
-              success: true,
-              message: 'Signup successful',
-            });
-          })
-          .catch((value: [QueryResult, FieldPacket[]]) => {
-            event.sender.send('signup-response', {
-              success: false,
-              message: value[0],
-            });
-          });
+  // try {
+  //   const query = 'SELECT * FROM users WHERE username = ?';
+  //   db.query(query, [userData.username]).then((value: [QueryResult, FieldPacket[]]) => {
+  //     if (!value[0][0]) {
+  //       event.sender.send('signup-response', {
+  //         success: false,
+  //         message: 'Username already exists',
+  //       });
+  //     } else {
+  //       const query = 'SELECT * FROM users WHERE email = ?';
+  //       db
+  //     }
+  //   }
+  //
+
+  // try {
+  //   const query =
+  //     'INSERT INTO users (username, password, email, name) VALUES (?, ?, ?, ?)';
+  //   genSalt(saltRounds)
+  //     .then((salt) => hash(userData.password, salt))
+  //     .then((hashedPassword) => {
+  //       db.query(query, [
+  //         userData.username,
+  //         hashedPassword,
+  //         userData.email,
+  //         userData.name,
+  //       ])
+  //         .then((value: [QueryResult, FieldPacket[]]) => {
+  //           event.sender.send('signup-response', {
+  //             success: true,
+  //             message: 'Signup successful',
+  //           });
+  //         })
+  //         .catch((value: [QueryResult, FieldPacket[]]) => {
+  //           event.sender.send('signup-response', {
+  //             success: false,
+  //             message: value[0],
+  //           });
+  //         });
+  //     });
+  // } catch (error) {
+  //   event.sender.send('signup-response', {
+  //     success: false,
+  //     message: 'Server error',
+  //   });
+  // }
+
+  queryUserByField('username', userData.username)
+    .then(([rows]) => {
+      if (rows[0]) {
+        throw new Error('Username already exists');
+      }
+      return queryUserByField('email', userData.email);
+    })
+    .then(([rows]) => {
+      if (rows[0]) {
+        throw new Error('Email already exists');
+      }
+      return insertUser(userData);
+    })
+    .then(() => {
+      event.sender.send('signup-response', {
+        success: true,
+        message: 'Signup successful',
       });
-  } catch (error) {
-    event.sender.send('signup-response', {
-      success: false,
-      message: 'Server error',
+    })
+    .catch((error) => {
+      const errorMessage = error.message || 'Server error';
+      event.sender.send('signup-response', {
+        success: false,
+        message: errorMessage,
+      });
     });
-  }
 };
 
 export const fetchUserRequest = async (
