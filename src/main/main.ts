@@ -20,6 +20,15 @@ import {
   fetchResidents,
   editAccount,
   deleteAccount,
+  getResidentsData,
+  fetchRequiredFee,
+  fetchContributeFee,
+  editFee,
+  addSubmittedFee,
+  deleteCompulsoryFee,
+  editContributeFee,
+  addContributeFee,
+  deleteContributeFee,
 } from '../db/HandleData';
 
 class AppUpdater {
@@ -43,6 +52,24 @@ ipcMain.handle('fetch-residents-list', fetchResidents);
 ipcMain.handle('edit-account', editAccount);
 
 ipcMain.handle('delete-account', deleteAccount);
+
+ipcMain.handle('fetch-number-residents', getResidentsData);
+
+ipcMain.handle('fetch-required-fee', fetchRequiredFee);
+
+ipcMain.handle('fetch-contribute-fee', fetchContributeFee);
+
+ipcMain.handle('edit-fee', editFee);
+
+ipcMain.handle('add-submitted-fee', addSubmittedFee);
+
+ipcMain.handle('delete-compulsory-fee', deleteCompulsoryFee);
+
+ipcMain.handle('edit-contribute-fee', editContributeFee);
+
+ipcMain.handle('add-contribute-fee', addContributeFee);
+
+ipcMain.handle('delete-contribute-fee', deleteContributeFee);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

@@ -31,7 +31,7 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
 
   const handleEdit = (e: any, id: number) => {
     e.preventDefault();
-    navigate(`/${id}/edit`);
+    navigate(`/manage-account/${id}/edit`);
   };
 
   return (

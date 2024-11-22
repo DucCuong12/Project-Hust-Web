@@ -8,10 +8,12 @@ export interface UserPayload {
   password: string;
 }
 
-export interface Transaction {
+export interface Fee {
+  id: number;
   room_number: number;
   amount_money: number;
-  transferrer: string;
+  representator: string;
+  email: String;
   phone_number: string;
 }
 
@@ -58,4 +60,12 @@ export type EditUser = {
 };
 export type HandleLoginState = {
   onAction: import("react").Dispatch<import("react").SetStateAction<boolean>>;
+}
+export interface ChartData {
+  name: String;
+  value: Number;
+}
+export interface DashboardData {
+  ageCount: ChartData[];
+  genderCount: ChartData[];
 }

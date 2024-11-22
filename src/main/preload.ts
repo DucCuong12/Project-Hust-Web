@@ -71,6 +71,42 @@ contextBridge.exposeInMainWorld('electronAPI', {
   fetchResidentsList: () => {
     return ipcRenderer.invoke('fetch-residents-list');
   },
+
+  fetchRequiredFee: () => {
+    return ipcRenderer.invoke('fetch-required-fee');
+  },
+
+  deleteCompulsoryFee: (room_number: number) => {
+    return ipcRenderer.invoke('delete-compulsory-fee', room_number);
+  },
+
+  addSubmittedFee: (room_number: number, amount_money: number, representator: string) => {
+    return ipcRenderer.invoke('add-submitted-fee', room_number, amount_money, representator);
+  },
+
+  editFee: (room_number: number, amount_money: number, representator: string) => {
+    return ipcRenderer.invoke('edit-fee', room_number, amount_money, representator);
+  },
+
+  fetchContributeFee: () => {
+    return ipcRenderer.invoke('fetch-contribute-fee');
+  },
+
+  deleteContributeFee: (room_number: number) => {
+    return ipcRenderer.invoke('delete-contribute-fee', room_number);
+  },
+
+  addContributeFee: (room_number: number, amount_money: number, representator: string) => {
+    return ipcRenderer.invoke('add-contribute-fee', room_number, amount_money, representator);
+  },
+
+  editContributeFee: (room_number: number, amount_money: number, representator: string) => {
+    return ipcRenderer.invoke('edit-contribute-fee', room_number, amount_money, representator);
+  },
+
+  fetchResidentsData: () => {
+    return ipcRenderer.invoke('fetch-number-residents');
+  },
 });
 
 export type ElectronHandler = typeof electronHandler;

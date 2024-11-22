@@ -1,8 +1,9 @@
 import db from './config';
-import { LoginPayload, SignupPayload } from '../interface/interface';
 import { IpcMainInvokeEvent } from 'electron';
 import { compare, genSalt, hash } from 'bcrypt-ts';
 import { FieldPacket, QueryResult } from 'mysql2';
+import { LoginPayload, SignupPayload } from '../interface/interface';
+import { ChartData } from '../interface/class';
 
 const saltRounds = 15;
 
@@ -121,7 +122,6 @@ export const fetchUserRequest = async (
 export const fetchResidents = async () => {
   try {
     const [rows] = await db.query('SELECT * FROM residents');
-    console.log(rows);
     return rows;
   } catch (err) {
     console.error('Error fetching residents:', err);
@@ -211,14 +211,237 @@ export const deleteAccount = (event: IpcMainInvokeEvent, userId: number) => {
   }
 };
 
-export const getTotalResidents = () => {
-  // try {
-  //   const query = 'SELECT * FROM db.residents';
-  //   db.query(query).then((value) => {
-  //     console.log(value);
-  //   });
-  // } catch {
-  //   console.log('Cannot connect to database!');
-  // }
-  return 'Completed!';
+export const getResidentsData = async () => {
+  const todayYear = new Date().getFullYear();
+  try {
+    const [result] = await db.query(
+      'select	count(*) as totalResidents, count(case when birth_year > ? then 1 else null end) as totalChildren, count(case when (birth_year <= ? and birth_year > ?) then 1 else null end) as totalAdults, count(case when birth_year <= ? then 1 else null end) as totalElders, count(case when gender = ? then 1 else null end) as totalMale, count(case when gender = ? then 1 else null end) as totalFemale from db.residents',
+      [
+        todayYear - 18,
+        todayYear - 18,
+        todayYear - 50,
+        todayYear - 50,
+        'Nam',
+        'Nữ',
+      ],
+    );
+    const childrenData = new ChartData('0 - 18', result[0].totalChildren);
+    const adultsData = new ChartData(
+      '18 - 50',
+      result[0].totalResidents - result[0].totalChildren,
+    );
+    const elderData = new ChartData('Trên 50', result[0].totalElders);
+    const maleData = new ChartData('Nam', result[0].totalMale);
+    const femaleData = new ChartData(
+      'Nữ',
+      result[0].totalResidents - result[0].totalMale,
+    );
+    return {
+      ageCount: [childrenData, adultsData, elderData],
+      genderCount: [maleData, femaleData],
+    };
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const fetchRequiredFee = async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM fee');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching residents:', err);
+    throw err;
+  }
+};
+
+export const fetchContributeFee = async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM contribute_fee');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching residents:', err);
+    throw err;
+  }
+};
+
+export const editFee = (
+  event: IpcMainInvokeEvent,
+  room_number: number,
+  amount_money: number,
+  representator: string,
+) => {
+  const query =
+    'UPDATE fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
+  const values = [amount_money, representator, room_number];
+
+  try {
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('edit-response', {
+          success: true,
+          message: 'edit successful',
+        });
+      })
+      .catch(() => {
+        event.sender.send('add-response', {
+          success: false,
+          message: 'edit failed!',
+        });
+      });
+    return 1;
+  } catch (err) {
+    console.log('Server error!');
+    return 0;
+  }
+};
+
+export const addSubmittedFee = (
+  event: IpcMainInvokeEvent,
+  room_number: number,
+  amount_money: number,
+  representator: string,
+) => {
+  const query =
+    'UPDATE fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
+  const values = [amount_money, representator, room_number];
+
+  try {
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('add-response', {
+          success: true,
+          message: 'add successful',
+        });
+      })
+      .catch(() => {
+        event.sender.send('add-response', {
+          success: false,
+          message: 'add failed!',
+        });
+      });
+    return 1;
+  } catch (err) {
+    console.log('Server error!');
+    return 0;
+  }
+};
+
+export const deleteCompulsoryFee = async (
+  event: IpcMainInvokeEvent,
+  room_number: number,
+) => {
+  const query = 'UPDATE fee SET amount_money = ? WHERE room_number = ?;';
+  const values = [0, room_number];
+
+  try {
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('delete-response', {
+          success: true,
+          message: 'Delete successful',
+        });
+      })
+      .catch(() => {
+        event.sender.send('delete-response', {
+          success: false,
+          message: 'Room number does not exist!',
+        });
+      });
+    return 1;
+  } catch (err) {
+    console.log('Server error!');
+    return 0;
+  }
+};
+
+export const editContributeFee = (
+  event: IpcMainInvokeEvent,
+  room_number: number,
+  amount_money: number,
+  representator: string,
+) => {
+  const query =
+    'UPDATE contribute_fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
+  const values = [amount_money, representator, room_number];
+
+  try {
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('edit-response', {
+          success: true,
+          message: 'edit successful',
+        });
+      })
+      .catch(() => {
+        event.sender.send('add-response', {
+          success: false,
+          message: 'edit failed!',
+        });
+      });
+    return 1;
+  } catch (err) {
+    console.log('Server error!');
+    return 0;
+  }
+};
+
+export const addContributeFee = (
+  event: IpcMainInvokeEvent,
+  room_number: number,
+  amount_money: number,
+  representator: string,
+) => {
+  const query =
+    'UPDATE contribute_fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
+  const values = [amount_money, representator, room_number];
+
+  try {
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('add-response', {
+          success: true,
+          message: 'add successful',
+        });
+      })
+      .catch(() => {
+        event.sender.send('add-response', {
+          success: false,
+          message: 'add failed!',
+        });
+      });
+    return 1;
+  } catch (err) {
+    console.log('Server error!');
+    return 0;
+  }
+};
+
+export const deleteContributeFee = (
+  event: IpcMainInvokeEvent,
+  room_number: number,
+) => {
+  const query =
+    'UPDATE contribute_fee SET amount_money = ? WHERE room_number = ?;';
+  const values = [0, room_number];
+
+  try {
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('delete-response', {
+          success: true,
+          message: 'Delete successful',
+        });
+      })
+      .catch(() => {
+        event.sender.send('delete-response', {
+          success: false,
+          message: 'Room number does not exist!',
+        });
+      });
+    return 1;
+  } catch (err) {
+    console.log('Server error!');
+    return 0;
+  }
 };
