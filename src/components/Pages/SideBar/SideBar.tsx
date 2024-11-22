@@ -71,6 +71,9 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
               <Link to="/contribute">Đóng góp</Link>
             </Menu.Item>
           </Menu.SubMenu>
+          <Menu.Item key="9" icon={<DollarCircleOutlined />}>
+            <Link to="/receivable-fee">Khoản thu</Link>
+          </Menu.Item>
         </Menu>
       </>
 
