@@ -34,6 +34,8 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
     navigate(`/manage-account/${id}/edit`);
   };
 
+  console.log(users);
+
   return (
     <div style={{ width: '100%' }}>
       <Table striped bordered hover>

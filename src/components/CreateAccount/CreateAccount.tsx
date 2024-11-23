@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IpcRendererEvent } from 'electron/renderer';
 import { Form, Button, Container, FloatingLabel } from 'react-bootstrap';
+import { FaEyeSlash, FaLock } from 'react-icons/fa';
 import { IpcResponse } from '../../interface/interface';
+import { notification } from '../../../utils/toast_notification';
+import AnimatedFrame from '../../../utils/animation_page';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateAccount.css';
-import AnimatedFrame from '../../../utils/animation_page';
-import { FaEyeSlash, FaLock } from 'react-icons/fa';
-import { m } from 'framer-motion';
 
 const CreateAccount = () => {
   const [formData, setFormData] = useState({
@@ -57,7 +57,10 @@ const CreateAccount = () => {
       (event: IpcRendererEvent, response: IpcResponse) => {
         if (response.success) {
           setMessage('Signup successful');
-          navigate('/manage-account');
+          notification.success('Tạo tài khoản thành công');
+          setTimeout(() => {
+            navigate('/manage-account');
+          }, 500);
         } else {
           setMessage(response.message);
         }
@@ -65,8 +68,6 @@ const CreateAccount = () => {
       },
     );
   }, []);
-
-  console.log(message);
 
   return (
     <AnimatedFrame>

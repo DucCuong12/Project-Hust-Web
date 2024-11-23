@@ -78,53 +78,6 @@ export const signupRequest = async (
   event: IpcMainInvokeEvent,
   userData: SignupPayload,
 ) => {
-  // try {
-  //   const query = 'SELECT * FROM users WHERE username = ?';
-  //   db.query(query, [userData.username]).then((value: [QueryResult, FieldPacket[]]) => {
-  //     if (!value[0][0]) {
-  //       event.sender.send('signup-response', {
-  //         success: false,
-  //         message: 'Username already exists',
-  //       });
-  //     } else {
-  //       const query = 'SELECT * FROM users WHERE email = ?';
-  //       db
-  //     }
-  //   }
-  //
-
-  // try {
-  //   const query =
-  //     'INSERT INTO users (username, password, email, name) VALUES (?, ?, ?, ?)';
-  //   genSalt(saltRounds)
-  //     .then((salt) => hash(userData.password, salt))
-  //     .then((hashedPassword) => {
-  //       db.query(query, [
-  //         userData.username,
-  //         hashedPassword,
-  //         userData.email,
-  //         userData.name,
-  //       ])
-  //         .then((value: [QueryResult, FieldPacket[]]) => {
-  //           event.sender.send('signup-response', {
-  //             success: true,
-  //             message: 'Signup successful',
-  //           });
-  //         })
-  //         .catch((value: [QueryResult, FieldPacket[]]) => {
-  //           event.sender.send('signup-response', {
-  //             success: false,
-  //             message: value[0],
-  //           });
-  //         });
-  //     });
-  // } catch (error) {
-  //   event.sender.send('signup-response', {
-  //     success: false,
-  //     message: 'Server error',
-  //   });
-  // }
-
   queryUserByField('username', userData.username)
     .then(([rows]) => {
       if (rows[0]) {
@@ -239,7 +192,7 @@ export const editAccount = async (
               });
             })
             .catch(() => {
-              event.sender.send('signup-response', {
+              event.sender.send('edit-response', {
                 success: false,
                 message: 'Edit failed!',
               });

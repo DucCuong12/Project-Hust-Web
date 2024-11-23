@@ -26,6 +26,7 @@ const AccountManage = () => {
 
   const handleAccountModified = () => {
     fetchUsers();
+    console.log('Modified');
   };
 
   return (
