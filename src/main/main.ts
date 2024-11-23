@@ -369,6 +369,44 @@ ipcMain.handle(
   }
 );
 
+ipcMain.handle('fetch-transfer-fee', async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM transfer_fee');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching transfer_fee:', err);
+    throw err;
+  }
+});
+
+ipcMain.handle(
+  'add-transfer-fee',
+  (event: IpcMainInvokeEvent, room_number: number, money: number, fee_name: string, transferer: string, fee_type: string) => {
+    const query = 'insert into transfer_fee values (?, ?, ?, ?, ?);';
+    const values = [room_number, money, fee_name, transferer, fee_type];
+
+    try {
+      db.query(query, values)
+        .then((value: [QueryResult, FieldPacket[]]) => {
+          event.sender.send('add-response', {
+            success: true,
+            message: 'add successful',
+          });
+        })
+        .catch(() => {
+          event.sender.send('add-response', {
+            success: false,
+            message: 'add failed!',
+          });
+        });
+      return 1;
+    } catch (err) {
+      console.log('Server error!');
+      return 0;
+    }
+  }
+);
+
 ipcMain.handle(
   'add-contribute-fee',
   (event: IpcMainInvokeEvent, room_number: number, amount_money: number, representator: string) => {

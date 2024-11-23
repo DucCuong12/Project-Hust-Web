@@ -107,6 +107,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   fetchResidentsData: () => {
     return ipcRenderer.invoke('fetch-number-residents');
   },
+
+  addTransferFee: (room_number: number, money: number, fee_name: string, transferer: string, fee_type: string) => {
+    return ipcRenderer.invoke('add-transfer-fee', room_number, money, fee_name, transferer, fee_type);
+  },
+
+  fetchTransferFee: () => {
+    return ipcRenderer.invoke('fetch-transfer-fee');
+  },
 });
 
 export type ElectronHandler = typeof electronHandler;

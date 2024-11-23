@@ -17,6 +17,7 @@ import ContributionPage from '../components/Pages/ContributionPage/ContributionP
 import SideBar from '../components/Pages/SideBar/SideBar';
 import Dashboard from '../components/Pages/Dashboard/Dashboard';
 import EditAccount from '../components/EditAccount/EditAccount';
+import TransferFeePage from '../components/Pages/TransferFee/TransferFee';
 
 const AppInner = () => {
   const location = useLocation();
@@ -37,6 +38,7 @@ const AppInner = () => {
               <Route path="/feepage" element={<FeePage />} />
               <Route path="/contribute" element={<ContributionPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/transferfeepage" element={<TransferFeePage />} />
               <Route
                 path="/manage-account/:id/edit"
                 element={<EditAccount />}

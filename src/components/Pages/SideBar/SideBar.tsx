@@ -11,6 +11,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   DownOutlined,
+  DollarCircleTwoTone
 } from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
 import { Link } from 'react-router-dom';
@@ -42,7 +43,7 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
           className="menu-bar"
         >
           <Menu.Item key="1" icon={<HomeOutlined />}>
-            <Link to="/">Trang chủ</Link>
+            <Link to="/home">Trang chủ</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<UserOutlined />}>
             Tài khoản
@@ -50,15 +51,16 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
           <Menu.Item key="3" icon={<BarChartOutlined />}>
             <Link to="/dashboard">Thống kê</Link>
           </Menu.Item>
-          <Menu.Item key="4" icon={<FormOutlined />}>
+          <Menu.Item key="4" icon={<DollarCircleTwoTone />}>
+            <Link to="/transferfeepage">Thu phí</Link>
+          </Menu.Item>
+          <Menu.Item key="5" icon={<FormOutlined />}>
             Báo cáo
           </Menu.Item>
-          <Menu.Item key="5" icon={<NotificationOutlined />}>
+          <Menu.Item key="6" icon={<NotificationOutlined />}>
             Thông báo
           </Menu.Item>
-          <Menu.SubMenu key="6" icon={<DollarCircleOutlined />} title="Khoản thu">
-            {/* <Link to="/feepage">Khoản thu</Link> */}
-
+          {/* <Menu.SubMenu key="6" icon={<DollarCircleOutlined />} title="Khoản thu">
             <Menu.Item key="7">
               <Link to="/feepage">Bắt buộc</Link>
             </Menu.Item>
@@ -67,7 +69,7 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
               <Link to="/contribute">Đóng góp</Link>
             </Menu.Item>
 
-        </Menu.SubMenu>
+          </Menu.SubMenu> */}
         </Menu>
       </>
 
