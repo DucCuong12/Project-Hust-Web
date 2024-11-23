@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
+import { IpcRendererEvent } from 'electron/renderer';
+import { IpcResponse } from '../../interface/interface';
+import { notification } from '../../../utils/toast_notification';
 import ViewAccount from '../ViewAccount/ViewAccount';
 import { User } from '../../interface/interface';
 import AnimatedFrame from '../../../utils/animation_page';
@@ -8,7 +11,6 @@ import './AccountManage.css';
 
 const AccountManage = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const location = useLocation();
   const navigate = useNavigate();
 
   const fetchUsers = async () => {
@@ -22,15 +24,27 @@ const AccountManage = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [location]);
+  }, []);
+
+  useEffect(() => {
+    window.electronAPI.onMessage(
+      'delete-user-response',
+      (event: IpcRendererEvent, response: IpcResponse) => {
+        if (response.success) {
+          notification.success(response.message);
+          fetchUsers();
+        } else {
+          notification.error(response.message);
+        }
+      },
+    );
+  }, []);
 
   const handleDelete = (id: number) => {
     try {
       window.electronAPI.deleteUserAccount(id);
     } catch (err) {
-      console.log('Server error!');
-    } finally {
-      fetchUsers();
+      notification.error('Đã có lỗi xảy ra! Vui lòng thử lại sau.');
     }
   };
 

@@ -9,6 +9,8 @@ import AnimatedFrame from '../../../utils/animation_page';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateAccount.css';
 
+var dumState = true;
+
 const CreateAccount = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -17,7 +19,6 @@ const CreateAccount = () => {
     name: '',
   });
 
-  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const CreateAccount = () => {
         name: formData.name,
       });
     } catch (error) {
-      setMessage('Signup failed');
+      notification.error('Đã có lỗi xảy ra! Vui lòng thử lại sau.');
     }
   };
 
@@ -56,18 +57,18 @@ const CreateAccount = () => {
       'signup-response',
       (event: IpcRendererEvent, response: IpcResponse) => {
         if (response.success) {
-          setMessage('Signup successful');
-          notification.success('Tạo tài khoản thành công');
+          notification.success(response.message);
           setTimeout(() => {
             navigate('/manage-account');
           }, 500);
         } else {
-          setMessage(response.message);
+          notification.error(response.message);
         }
         setIsLoading(false);
+        dumState = !dumState;
       },
     );
-  }, []);
+  }, [dumState]);
 
   return (
     <AnimatedFrame>

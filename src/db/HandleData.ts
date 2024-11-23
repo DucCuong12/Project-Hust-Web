@@ -81,24 +81,25 @@ export const signupRequest = async (
   queryUserByField('username', userData.username)
     .then(([rows]) => {
       if (rows[0]) {
-        throw new Error('Username already exists');
+        throw new Error('Tên tài khoản đã tồn tại.');
       }
       return queryUserByField('email', userData.email);
     })
     .then(([rows]) => {
       if (rows[0]) {
-        throw new Error('Email already exists');
+        throw new Error('Email đã được sử dụng.');
       }
       return insertUser(userData);
     })
     .then(() => {
       event.sender.send('signup-response', {
         success: true,
-        message: 'Signup successful',
+        message: 'Tạo tài khoản thành công',
       });
     })
     .catch((error) => {
-      const errorMessage = error.message || 'Server error';
+      const errorMessage =
+        error.message || 'Lỗi máy chủ! Vui lòng thử lại sau.';
       event.sender.send('signup-response', {
         success: false,
         message: errorMessage,
@@ -210,19 +211,22 @@ export const deleteAccount = (event: IpcMainInvokeEvent, userId: number) => {
   try {
     db.query(query, values)
       .then((value: [QueryResult, FieldPacket[]]) => {
-        event.sender.send('delete-response', {
+        event.sender.send('delete-user-response', {
           success: true,
-          message: 'Delete successful',
+          message: 'Xóa tài khoản thành công',
         });
       })
       .catch(() => {
-        event.sender.send('delete-response', {
+        event.sender.send('delete-user-response', {
           success: false,
-          message: 'User not exists!',
+          message: 'Tài khoản không tồn tại!',
         });
       });
   } catch (err) {
-    console.log('Server error!');
+    event.sender.send('delete-user-response', {
+      success: false,
+      message: 'Lỗi máy chủ! Vui lòng thử lại sau.',
+    });
   }
 };
 

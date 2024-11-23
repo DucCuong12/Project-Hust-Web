@@ -3,7 +3,7 @@ import { notification as antdNotification } from 'antd';
 export const notification = {
   error: (description: string) => {
     antdNotification.error({
-      message: 'Error',
+      message: 'Lỗi',
       description: description,
       showProgress: true,
       pauseOnHover: true,
@@ -11,7 +11,7 @@ export const notification = {
   },
   warning: (description: string) => {
     antdNotification.warning({
-      message: 'Warning',
+      message: 'Cảnh báo',
       description: description,
       showProgress: true,
       pauseOnHover: true,
@@ -19,7 +19,7 @@ export const notification = {
   },
   success: (description: string) => {
     antdNotification.success({
-      message: 'Success',
+      message: 'Thành công',
       description: description,
       showProgress: true,
       pauseOnHover: true,
@@ -27,7 +27,7 @@ export const notification = {
   },
   info: (description: string) => {
     antdNotification.info({
-      message: 'Info',
+      message: 'Thông tin',
       description: description,
       showProgress: true,
       pauseOnHover: true,
