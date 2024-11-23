@@ -3,10 +3,7 @@ import { Table, Button, Modal } from 'react-bootstrap';
 import { ViewAccountProps } from '../../interface/interface';
 import { useNavigate } from 'react-router-dom';
 
-const ViewAccount: React.FC<ViewAccountProps> = ({
-  users,
-  onAccountModified,
-}) => {
+const ViewAccount: React.FC<ViewAccountProps> = ({ users, handleDelete }) => {
   const [show, setShow] = useState(false);
   const [id, setId] = useState(0);
 
@@ -16,25 +13,12 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
     setShow(true);
   };
 
-  const handleDelete = () => {
-    try {
-      window.electronAPI.deleteUserAccount(id);
-    } catch (err) {
-      console.log('Server error!');
-    } finally {
-      onAccountModified();
-    }
-    handleClose();
-  };
-
   const navigate = useNavigate();
 
   const handleEdit = (e: any, id: number) => {
     e.preventDefault();
     navigate(`/manage-account/${id}/edit`);
   };
-
-  console.log(users);
 
   return (
     <div style={{ width: '100%' }}>
@@ -87,7 +71,13 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
                   <Button variant="secondary" onClick={handleClose}>
                     Hủy bỏ
                   </Button>
-                  <Button variant="danger" onClick={handleDelete}>
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      handleDelete(id);
+                      handleClose();
+                    }}
+                  >
                     Xóa
                   </Button>
                 </Modal.Footer>

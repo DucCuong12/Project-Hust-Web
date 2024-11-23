@@ -45,7 +45,7 @@ export type User = {
 
 export type ViewAccountProps = {
   users: User[];
-  onAccountModified: () => void;
+  handleDelete: (id: number) => void;
 };
 
 export type CreateAccountProps = {

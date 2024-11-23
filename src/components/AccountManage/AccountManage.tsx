@@ -24,9 +24,14 @@ const AccountManage = () => {
     fetchUsers();
   }, [location]);
 
-  const handleAccountModified = () => {
-    fetchUsers();
-    console.log('Modified');
+  const handleDelete = (id: number) => {
+    try {
+      window.electronAPI.deleteUserAccount(id);
+    } catch (err) {
+      console.log('Server error!');
+    } finally {
+      fetchUsers();
+    }
   };
 
   return (
@@ -52,10 +57,7 @@ const AccountManage = () => {
           >
             Thêm tài khoản mới
           </Button>
-          <ViewAccount
-            users={users}
-            onAccountModified={handleAccountModified}
-          />
+          <ViewAccount users={users} handleDelete={handleDelete} />
         </div>
       </div>
     </AnimatedFrame>
