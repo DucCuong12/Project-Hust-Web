@@ -39,12 +39,21 @@ function TransferFeePage() {
   const [requiredFee, setRequiredFee] = useState<TransferFee[]>([]);
   const [searchRoom, setSearchRoom] = useState("");
   const [roomFeeMap, setRoomFeeMap] = useState<RoomFeeMap>({});
+  const [allRows, setAllRows] = useState<Fee[]>([]);
 
   // search the fee that filter by room number
   const [searchValues, setSearchValues] = useState({
     searchRoomFee: "",
     result: "",
   });
+
+  const fetchFee = async () => {
+    const requiredFee: Fee[] = await window.electronAPI.fetchRequiredFee();
+
+    setAllRows(requiredFee);
+  };
+
+  fetchFee();
 
   // fetch data from database
   const fetchRequiredFee = async () => {
@@ -76,6 +85,8 @@ function TransferFeePage() {
       searchRoomFee: value,
       result: "",
     });
+
+    fetchRequiredFee();
 
   };
   
@@ -170,8 +181,8 @@ function TransferFeePage() {
     
     var check = 0;
 
-    for (const fee of requiredFee) {
-      if (submitRoomNumber == fee["room_number"].toString()) {
+    for (const row of allRows) {
+      if (submitRoomNumber == row["room_number"].toString()) {
         check = 1;
         break;
       }
@@ -196,6 +207,15 @@ function TransferFeePage() {
 
       if (success) {
         setSuccessAddModalOpen(true);
+
+        roomFeeMap[submitRoomNumber.toString()].push({
+          room_number: Number(submitRoomNumber),
+          money: Number(submitMoney),
+          fee_name: submitFeeName,
+          transferer: submitTransferrer,
+          fee_type: FeeMap[submitFeeName as keyof typeof FeeMap],
+        });        
+
       } else {
         setErrorAddMessage("Nộp tiền không thành công.");
         setErrorAddModalOpen(true);
