@@ -53,7 +53,22 @@ contextBridge.exposeInMainWorld('electronAPI', {
       'delete-user-response',
     ]; // Add valid channels
     if (validChannels.includes(channel)) {
-      ipcRenderer.once(channel, callback);
+      ipcRenderer.on(channel, callback);
+    }
+  },
+
+  removeListener: (
+    channel: string,
+    func: (event: IpcRendererEvent, ...args: any[]) => void,
+  ) => {
+    const validChannels = [
+      'signup-response',
+      'login-response',
+      'edit-response',
+      'delete-user-response',
+    ];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.removeListener(channel, func);
     }
   },
 

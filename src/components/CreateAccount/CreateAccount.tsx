@@ -9,8 +9,6 @@ import AnimatedFrame from '../../../utils/animation_page';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateAccount.css';
 
-var dumState = true;
-
 const CreateAccount = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -53,22 +51,30 @@ const CreateAccount = () => {
   };
 
   useEffect(() => {
-    window.electronAPI.onMessage(
-      'signup-response',
-      (event: IpcRendererEvent, response: IpcResponse) => {
-        if (response.success) {
-          notification.success(response.message);
-          setTimeout(() => {
-            navigate('/manage-account');
-          }, 500);
-        } else {
-          notification.error(response.message);
-        }
-        setIsLoading(false);
-        dumState = !dumState;
-      },
-    );
-  }, [dumState]);
+    const handleSignupResponse = (
+      event: IpcRendererEvent,
+      response: IpcResponse,
+    ) => {
+      if (response.success) {
+        notification.success(response.message);
+        setTimeout(() => {
+          navigate('/manage-account');
+        }, 500);
+      } else {
+        notification.error(response.message);
+      }
+      setIsLoading(false);
+    };
+
+    window.electronAPI.onMessage('signup-response', handleSignupResponse);
+
+    return () => {
+      window.electronAPI.removeListener(
+        'signup-response',
+        handleSignupResponse,
+      );
+    };
+  }, []);
 
   return (
     <AnimatedFrame>
