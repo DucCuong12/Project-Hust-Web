@@ -25,7 +25,7 @@
   bottom: 10px;
   left: 10px;
   color: rgb(221, 210, 210);
-  margin: 0px 15px; 
+  margin: 0px 15px;
 }
 
 .content {
@@ -40,7 +40,7 @@
   box-shadow:
     0px 8px 28px -6px rgba(24, 39, 75, 0.12),
     0px 18px 88px -4px rgba(24, 39, 75, 0.14);
-} 
+}
 
 table {
   width: 100%;
@@ -114,4 +114,113 @@ th {
 
 .pagination-button:hover {
   background-color: #0056b3;
+}
+.resident-table-container {
+  max-width: 1000px;
+  margin: 20px auto;
+
+}
+/* Nút Thêm cư dân */
+.add-button {
+  background-color: #008CBA; /* Xanh lam đậm */
+  color: white;
+  padding: 8px 16px; /* Giảm padding */
+  border: none;
+  border-radius: 4px;
+  font-size: 14px; /* Giảm font-size */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.add-button:hover {
+  background-color: #005f73; /* Màu xanh lam đậm hơn khi hover */
+  transform: translateY(-2px); /* Nâng nút lên khi hover */
+}
+
+.add-button:active {
+  transform: translateY(1px); /* Tạo hiệu ứng nhấn nút */
+}
+
+/* Nút Chỉnh sửa */
+.edit-button {
+  background-color: #ff9800; /* Cam sáng */
+  color: white;
+  padding: 8px 16px; /* Giảm padding */
+  border: none;
+  border-radius: 4px;
+  font-size: 14px; /* Giảm font-size */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.edit-button:hover {
+  background-color: #e67e00; /* Màu cam đậm hơn khi hover */
+  transform: translateY(-2px); /* Nâng nút lên khi hover */
+}
+
+.edit-button:active {
+  transform: translateY(1px); /* Tạo hiệu ứng nhấn nút */
+}
+
+/* Nút Lưu */
+.save-button {
+  background-color: #4caf50; /* Xanh lá cây */
+  color: white;
+  padding: 8px 16px; /* Giảm padding */
+  border: none;
+  border-radius: 4px;
+  font-size: 14px; /* Giảm font-size */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.save-button:hover {
+  background-color: #45a049; /* Màu xanh lá đậm hơn khi hover */
+  transform: translateY(-2px); /* Nâng nút lên khi hover */
+}
+
+.save-button:active {
+  transform: translateY(1px); /* Tạo hiệu ứng nhấn nút */
+}
+
+/* Nút Hủy */
+.cancel-button {
+  background-color: #f44336; /* Đỏ */
+  color: white;
+  padding: 8px 16px; /* Giảm padding */
+  border: none;
+  border-radius: 4px;
+  font-size: 14px; /* Giảm font-size */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cancel-button:hover {
+  background-color: #e53935; /* Màu đỏ đậm hơn khi hover */
+  transform: translateY(-2px); /* Nâng nút lên khi hover */
+}
+
+.cancel-button:active {
+  transform: translateY(1px); /* Tạo hiệu ứng nhấn nút */
+}
+
+/* Nút trang trước và trang sau trong phân trang */
+.pagination-button {
+  background-color: #007bff; /* Xanh dương */
+  color: white;
+  padding: 6px 12px; /* Giảm padding */
+  margin: 0 3px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pagination-button:hover {
+  background-color: #0056b3; /* Xanh đậm khi hover */
+  transform: translateY(-2px); /* Nâng nút lên khi hover */
+}
+
+.pagination-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
