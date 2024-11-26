@@ -84,10 +84,11 @@ const FeeForm = (props: any) => {
               name="feeUnit"
             >
               <option value="kWh">kWh</option>
-              <option value="number">Khối</option>
-              <option value="month">Tháng</option>
-              <option value="person">Người</option>
-              <option value="time">Lần</option>
+              <option value="Số">Số</option>
+              <option value="Tháng">Tháng</option>
+              <option value="Người">Người</option>
+              <option value="Lần">Lần</option>
+              <option value="Cái">Cái</option>
             </Form.Select>
           </FloatingLabel>
           <FloatingLabel

@@ -15,7 +15,6 @@ const handleSubmitRequiredFee = async (
     } else if (action === 'edit') {
       await window.electronAPI.editRequiredFee(data, editId);
     } else if (action === 'delete') {
-      console.log('delete', editId);
       await window.electronAPI.deleteRequiredFee(editId);
     }
   } catch (err) {

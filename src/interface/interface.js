@@ -8,7 +8,7 @@ export interface UserPayload {
   password: string;
 }
 
-export type UnitOptions =  'month' | 'item' | 'time' | 'person' | 'kWh' | 'number';
+export type UnitOptions =  'Tháng' | 'Cái' | 'Lần' | 'Người' | 'kWh' | 'Số';
 
 export interface RequiredFee {
   id: number;
