@@ -17,6 +17,7 @@ import Dashboard from '../components/Pages/Dashboard/Dashboard';
 import EditAccount from '../components/EditAccount/EditAccount';
 import ConfirmLogout from '../components/ConfirmLogout/ConfirmLogout';
 import CreateAccount from '../components/CreateAccount/CreateAccount';
+import TransferFeePage from '../components/Pages/TransferFee/TransferFee';
 
 const AppInner = () => {
   const location = useLocation();
@@ -45,6 +46,7 @@ const AppInner = () => {
               <Route path="/feepage" element={<FeePage />} />
               <Route path="/contribute" element={<ContributionPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/transferfeepage" element={<TransferFeePage />} />
               <Route
                 path="/manage-account/:id/edit"
                 element={<EditAccount />}

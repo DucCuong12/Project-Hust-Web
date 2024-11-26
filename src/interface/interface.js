@@ -17,6 +17,14 @@ export interface Fee {
   phone_number: string;
 }
 
+export interface TransferFee {
+  room_number: number;
+  money: number;
+  fee_name: String;
+  transferer: String;
+  fee_type: String;
+}
+
 export interface Resident {
   id: number;
   room_number: number;

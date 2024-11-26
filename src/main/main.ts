@@ -9,10 +9,23 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, globalShortcut } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  shell,
+  ipcMain,
+  globalShortcut,
+  IpcMainInvokeEvent,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { genSalt, hash, compare } from 'bcrypt-ts';
 import { resolveHtmlPath } from './util';
+import db from '../db/config';
+import { FieldPacket, QueryResult } from 'mysql2';
+import { LoginPayload, SignupPayload, Fee } from '../interface/interface';
+
+const saltRounds = 15;
 import {
   loginRequest,
   signupRequest,
@@ -70,6 +83,51 @@ ipcMain.handle('edit-contribute-fee', editContributeFee);
 ipcMain.handle('add-contribute-fee', addContributeFee);
 
 ipcMain.handle('delete-contribute-fee', deleteContributeFee);
+
+ipcMain.handle('fetch-transfer-fee', async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM transfer_fee');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching transfer_fee:', err);
+    throw err;
+  }
+});
+
+ipcMain.handle(
+  'add-transfer-fee',
+  (
+    event: IpcMainInvokeEvent,
+    room_number: number,
+    money: number,
+    fee_name: string,
+    transferer: string,
+    fee_type: string,
+  ) => {
+    const query = 'insert into transfer_fee values (?, ?, ?, ?, ?);';
+    const values = [room_number, money, fee_name, transferer, fee_type];
+
+    try {
+      db.query(query, values)
+        .then((value: [QueryResult, FieldPacket[]]) => {
+          event.sender.send('add-response', {
+            success: true,
+            message: 'add successful',
+          });
+        })
+        .catch(() => {
+          event.sender.send('add-response', {
+            success: false,
+            message: 'add failed!',
+          });
+        });
+      return 1;
+    } catch (err) {
+      console.log('Server error!');
+      return 0;
+    }
+  },
+);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
