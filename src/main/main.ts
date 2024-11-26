@@ -34,6 +34,11 @@ import {
   editAccount,
   deleteAccount,
   getResidentsData,
+  getRequiredFeeData,
+  getContributoryFeeData,
+  addRequiredFee,
+  editRequiredFee,
+  deleteRequiredFee,
 } from '../db/HandleData';
 
 class AppUpdater {
@@ -169,25 +174,25 @@ ipcMain.handle('fetch-residents-list', async () => {
   }
 });
 
-ipcMain.handle('fetch-required-fee', async () => {
-  try {
-    const [rows] = await db.query('SELECT * FROM fee');
-    return rows;
-  } catch (err) {
-    console.error('Error fetching residents:', err);
-    throw err;
-  }
-});
+// ipcMain.handle('fetch-required-fee', async () => {
+//   try {
+//     const [rows] = await db.query('SELECT * FROM fee');
+//     return rows;
+//   } catch (err) {
+//     console.error('Error fetching residents:', err);
+//     throw err;
+//   }
+// });
 
-ipcMain.handle('fetch-contribute-fee', async () => {
-  try {
-    const [rows] = await db.query('SELECT * FROM contribute_fee');
-    return rows;
-  } catch (err) {
-    console.error('Error fetching residents:', err);
-    throw err;
-  }
-});
+// ipcMain.handle('fetch-contribute-fee', async () => {
+//   try {
+//     const [rows] = await db.query('SELECT * FROM contribute_fee');
+//     return rows;
+//   } catch (err) {
+//     console.error('Error fetching residents:', err);
+//     throw err;
+//   }
+// });
 
 ipcMain.handle(
   'edit-account',
@@ -259,8 +264,14 @@ ipcMain.handle(
 
 ipcMain.handle(
   'edit-fee',
-  (event: IpcMainInvokeEvent, room_number: number, amount_money: number, representator: string) => {
-    const query = 'UPDATE fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
+  (
+    event: IpcMainInvokeEvent,
+    room_number: number,
+    amount_money: number,
+    representator: string,
+  ) => {
+    const query =
+      'UPDATE fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
     const values = [amount_money, representator, room_number];
 
     try {
@@ -282,13 +293,19 @@ ipcMain.handle(
       console.log('Server error!');
       return 0;
     }
-  }
+  },
 );
 
 ipcMain.handle(
   'add-submitted-fee',
-  (event: IpcMainInvokeEvent, room_number: number, amount_money: number, representator: string) => {
-    const query = 'UPDATE fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
+  (
+    event: IpcMainInvokeEvent,
+    room_number: number,
+    amount_money: number,
+    representator: string,
+  ) => {
+    const query =
+      'UPDATE fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
     const values = [amount_money, representator, room_number];
 
     try {
@@ -310,7 +327,7 @@ ipcMain.handle(
       console.log('Server error!');
       return 0;
     }
-  }
+  },
 );
 
 ipcMain.handle(
@@ -338,13 +355,19 @@ ipcMain.handle(
       console.log('Server error!');
       return 0;
     }
-  }
+  },
 );
 
 ipcMain.handle(
   'edit-contribute-fee',
-  (event: IpcMainInvokeEvent, room_number: number, amount_money: number, representator: string) => {
-    const query = 'UPDATE contribute_fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
+  (
+    event: IpcMainInvokeEvent,
+    room_number: number,
+    amount_money: number,
+    representator: string,
+  ) => {
+    const query =
+      'UPDATE contribute_fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
     const values = [amount_money, representator, room_number];
 
     try {
@@ -366,13 +389,19 @@ ipcMain.handle(
       console.log('Server error!');
       return 0;
     }
-  }
+  },
 );
 
 ipcMain.handle(
   'add-contribute-fee',
-  (event: IpcMainInvokeEvent, room_number: number, amount_money: number, representator: string) => {
-    const query = 'UPDATE contribute_fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
+  (
+    event: IpcMainInvokeEvent,
+    room_number: number,
+    amount_money: number,
+    representator: string,
+  ) => {
+    const query =
+      'UPDATE contribute_fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
     const values = [amount_money, representator, room_number];
 
     try {
@@ -394,13 +423,14 @@ ipcMain.handle(
       console.log('Server error!');
       return 0;
     }
-  }
+  },
 );
 
 ipcMain.handle(
   'delete-contribute-fee',
   (event: IpcMainInvokeEvent, room_number: number) => {
-    const query = 'UPDATE contribute_fee SET amount_money = ? WHERE room_number = ?;';
+    const query =
+      'UPDATE contribute_fee SET amount_money = ? WHERE room_number = ?;';
     const values = [0, room_number];
 
     try {
@@ -422,7 +452,7 @@ ipcMain.handle(
       console.log('Server error!');
       return 0;
     }
-  }
+  },
 );
 
 ipcMain.handle(
@@ -456,6 +486,11 @@ ipcMain.handle(
 // ipcMain.handle('edit-account', editAccount);
 // ipcMain.handle('delete-account', deleteAccount);
 ipcMain.handle('fetch-number-residents', getResidentsData);
+ipcMain.handle('fetch-required-fee', getRequiredFeeData);
+ipcMain.handle('add-required-fee', addRequiredFee);
+ipcMain.handle('edit-required-fee', editRequiredFee);
+ipcMain.handle('delete-required-fee', deleteRequiredFee);
+ipcMain.handle('fetch-contribute-fee', getContributoryFeeData);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

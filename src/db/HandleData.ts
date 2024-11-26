@@ -244,3 +244,120 @@ export const getResidentsData = async () => {
     console.log(err);
   }
 };
+
+export const getRequiredFeeData = async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM db.fee_required');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching RequiredFee data:', err);
+    throw err;
+  }
+};
+
+export const getContributoryFeeData = async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM db.fee_contribute');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching ContributeFee data:', err);
+    throw err;
+  }
+};
+
+export const addRequiredFee = async (
+  event: IpcMainInvokeEvent,
+  feeData: any,
+) => {
+  try {
+    const query =
+      'INSERT INTO db.fee_required (fee_name, unit_price, unit) VALUES (?, ?, ?)';
+    const values = [feeData.feeName, feeData.feeUnitPrice, feeData.feeUnit];
+
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('add-required-fee-response', {
+          success: true,
+          message: 'Thêm khoản thu bắt buộc thành công!',
+        });
+      })
+      .catch((err) => {
+        event.sender.send('add-required-fee-response', {
+          success: false,
+          message: 'Thêm khoản thu bắt buộc thất bại!',
+        });
+      });
+  } catch {
+    event.sender.send('add-required-fee-response', {
+      success: false,
+      message: 'Server error!',
+    });
+  }
+};
+
+export const editRequiredFee = async (
+  event: IpcMainInvokeEvent,
+  feeData: any,
+  editId: number,
+) => {
+  try {
+    const query =
+      'UPDATE db.fee_required SET fee_name = ?, unit_price = ?, unit = ? WHERE fee_id = ?';
+    const values = [
+      feeData.feeName,
+      feeData.feeUnitPrice,
+      feeData.feeUnit,
+      editId,
+    ];
+
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('edit-required-fee-response', {
+          success: true,
+          message: 'Sửa khoản thu bắt buộc thành công!',
+        });
+      })
+      .catch((err) => {
+        event.sender.send('edit-required-fee-response', {
+          success: false,
+          message: 'Sửa khoản thu bắt buộc thất bại!',
+        });
+        console.log(err);
+      });
+  } catch {
+    event.sender.send('edit-required-fee-response', {
+      success: false,
+      message: 'Server error!',
+    });
+  }
+};
+
+export const deleteRequiredFee = async (
+  event: IpcMainInvokeEvent,
+  feeId: number,
+) => {
+  try {
+    const query = 'DELETE FROM db.fee_required WHERE fee_id = ?';
+    const values = [feeId];
+
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('delete-required-fee-response', {
+          success: true,
+          message: 'Xóa khoản thu bắt buộc thành công!',
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        event.sender.send('delete-required-fee-response', {
+          success: false,
+          message: 'Xóa khoản thu bắt buộc thất bại!',
+        });
+      });
+  } catch {
+    event.sender.send('delete-required-fee-response', {
+      success: false,
+      message: 'Server error!',
+    });
+  }
+};

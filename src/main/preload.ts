@@ -5,7 +5,9 @@ import {
   UserPayload,
   IpcResponse,
   SignupPayload,
+  RequiredFee,
 } from '../interface/interface';
+import { deleteRequiredFee, editRequiredFee } from '../db/HandleData';
 
 export type Channels = 'ipc-example';
 
@@ -76,16 +78,46 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('fetch-required-fee');
   },
 
+  addRequiredFee: (feeData: RequiredFee) => {
+    return ipcRenderer.invoke('add-required-fee', feeData);
+  },
+
+  editRequiredFee: (feeData: RequiredFee, editId: number) => {
+    return ipcRenderer.invoke('edit-required-fee', feeData, editId);
+  },
+
+  deleteRequiredFee: (feeId: number) => {
+    return ipcRenderer.invoke('delete-required-fee', feeId);
+  },
+
   deleteCompulsoryFee: (room_number: number) => {
     return ipcRenderer.invoke('delete-compulsory-fee', room_number);
   },
 
-  addSubmittedFee: (room_number: number, amount_money: number, representator: string) => {
-    return ipcRenderer.invoke('add-submitted-fee', room_number, amount_money, representator);
+  addSubmittedFee: (
+    room_number: number,
+    amount_money: number,
+    representator: string,
+  ) => {
+    return ipcRenderer.invoke(
+      'add-submitted-fee',
+      room_number,
+      amount_money,
+      representator,
+    );
   },
 
-  editFee: (room_number: number, amount_money: number, representator: string) => {
-    return ipcRenderer.invoke('edit-fee', room_number, amount_money, representator);
+  editFee: (
+    room_number: number,
+    amount_money: number,
+    representator: string,
+  ) => {
+    return ipcRenderer.invoke(
+      'edit-fee',
+      room_number,
+      amount_money,
+      representator,
+    );
   },
 
   fetchContributeFee: () => {
@@ -96,12 +128,30 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('delete-contribute-fee', room_number);
   },
 
-  addContributeFee: (room_number: number, amount_money: number, representator: string) => {
-    return ipcRenderer.invoke('add-contribute-fee', room_number, amount_money, representator);
+  addContributeFee: (
+    room_number: number,
+    amount_money: number,
+    representator: string,
+  ) => {
+    return ipcRenderer.invoke(
+      'add-contribute-fee',
+      room_number,
+      amount_money,
+      representator,
+    );
   },
 
-  editContributeFee: (room_number: number, amount_money: number, representator: string) => {
-    return ipcRenderer.invoke('edit-contribute-fee', room_number, amount_money, representator);
+  editContributeFee: (
+    room_number: number,
+    amount_money: number,
+    representator: string,
+  ) => {
+    return ipcRenderer.invoke(
+      'edit-contribute-fee',
+      room_number,
+      amount_money,
+      representator,
+    );
   },
 
   fetchResidentsData: () => {
