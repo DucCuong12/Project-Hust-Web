@@ -264,203 +264,119 @@ export const getResidentsData = async () => {
   }
 };
 
-export const fetchRequiredFee = async () => {
+export const getRequiredFeeData = async () => {
   try {
-    const [rows] = await db.query('SELECT * FROM fee');
+    const [rows] = await db.query('SELECT * FROM db.fee_required');
     return rows;
   } catch (err) {
-    console.error('Error fetching residents:', err);
+    console.error('Error fetching RequiredFee data:', err);
     throw err;
   }
 };
 
-export const fetchContributeFee = async () => {
+export const getContributoryFeeData = async () => {
   try {
-    const [rows] = await db.query('SELECT * FROM contribute_fee');
+    const [rows] = await db.query('SELECT * FROM db.fee_contribute');
     return rows;
   } catch (err) {
-    console.error('Error fetching residents:', err);
+    console.error('Error fetching ContributeFee data:', err);
     throw err;
   }
 };
 
-export const editFee = (
+export const addRequiredFee = async (
   event: IpcMainInvokeEvent,
-  room_number: number,
-  amount_money: number,
-  representator: string,
+  feeData: any,
 ) => {
-  const query =
-    'UPDATE fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
-  const values = [amount_money, representator, room_number];
-
   try {
+    const query =
+      'INSERT INTO db.fee_required (fee_name, unit_price, unit) VALUES (?, ?, ?)';
+    const values = [feeData.feeName, feeData.feeUnitPrice, feeData.feeUnit];
+
     db.query(query, values)
       .then((value: [QueryResult, FieldPacket[]]) => {
-        event.sender.send('edit-response', {
+        event.sender.send('add-required-fee-response', {
           success: true,
-          message: 'edit successful',
+          message: 'Thêm khoản thu bắt buộc thành công!',
         });
       })
-      .catch(() => {
-        event.sender.send('add-response', {
+      .catch((err) => {
+        event.sender.send('add-required-fee-response', {
           success: false,
-          message: 'edit failed!',
+          message: 'Thêm khoản thu bắt buộc thất bại!',
         });
       });
-    return 1;
-  } catch (err) {
-    console.log('Server error!');
-    return 0;
+  } catch {
+    event.sender.send('add-required-fee-response', {
+      success: false,
+      message: 'Server error!',
+    });
   }
 };
 
-export const addSubmittedFee = (
+export const editRequiredFee = async (
   event: IpcMainInvokeEvent,
-  room_number: number,
-  amount_money: number,
-  representator: string,
+  feeData: any,
+  editId: number,
 ) => {
-  const query =
-    'UPDATE fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
-  const values = [amount_money, representator, room_number];
-
   try {
+    const query =
+      'UPDATE db.fee_required SET fee_name = ?, unit_price = ?, unit = ? WHERE fee_id = ?';
+    const values = [
+      feeData.feeName,
+      feeData.feeUnitPrice,
+      feeData.feeUnit,
+      editId,
+    ];
+
     db.query(query, values)
       .then((value: [QueryResult, FieldPacket[]]) => {
-        event.sender.send('add-response', {
+        event.sender.send('edit-required-fee-response', {
           success: true,
-          message: 'add successful',
+          message: 'Sửa khoản thu bắt buộc thành công!',
         });
       })
-      .catch(() => {
-        event.sender.send('add-response', {
+      .catch((err) => {
+        event.sender.send('edit-required-fee-response', {
           success: false,
-          message: 'add failed!',
+          message: 'Sửa khoản thu bắt buộc thất bại!',
         });
+        console.log(err);
       });
-    return 1;
-  } catch (err) {
-    console.log('Server error!');
-    return 0;
+  } catch {
+    event.sender.send('edit-required-fee-response', {
+      success: false,
+      message: 'Server error!',
+    });
   }
 };
 
-export const deleteCompulsoryFee = async (
+export const deleteRequiredFee = async (
   event: IpcMainInvokeEvent,
-  room_number: number,
+  feeId: number,
 ) => {
-  const query = 'UPDATE fee SET amount_money = ? WHERE room_number = ?;';
-  const values = [0, room_number];
-
   try {
+    const query = 'DELETE FROM db.fee_required WHERE fee_id = ?';
+    const values = [feeId];
+
     db.query(query, values)
       .then((value: [QueryResult, FieldPacket[]]) => {
-        event.sender.send('delete-response', {
+        event.sender.send('delete-required-fee-response', {
           success: true,
-          message: 'Delete successful',
+          message: 'Xóa khoản thu bắt buộc thành công!',
         });
       })
-      .catch(() => {
-        event.sender.send('delete-response', {
+      .catch((err) => {
+        console.log(err);
+        event.sender.send('delete-required-fee-response', {
           success: false,
-          message: 'Room number does not exist!',
+          message: 'Xóa khoản thu bắt buộc thất bại!',
         });
       });
-    return 1;
-  } catch (err) {
-    console.log('Server error!');
-    return 0;
-  }
-};
-
-export const editContributeFee = (
-  event: IpcMainInvokeEvent,
-  room_number: number,
-  amount_money: number,
-  representator: string,
-) => {
-  const query =
-    'UPDATE contribute_fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
-  const values = [amount_money, representator, room_number];
-
-  try {
-    db.query(query, values)
-      .then((value: [QueryResult, FieldPacket[]]) => {
-        event.sender.send('edit-response', {
-          success: true,
-          message: 'edit successful',
-        });
-      })
-      .catch(() => {
-        event.sender.send('add-response', {
-          success: false,
-          message: 'edit failed!',
-        });
-      });
-    return 1;
-  } catch (err) {
-    console.log('Server error!');
-    return 0;
-  }
-};
-
-export const addContributeFee = (
-  event: IpcMainInvokeEvent,
-  room_number: number,
-  amount_money: number,
-  representator: string,
-) => {
-  const query =
-    'UPDATE contribute_fee SET amount_money = ?, representator = ? WHERE room_number = ?;';
-  const values = [amount_money, representator, room_number];
-
-  try {
-    db.query(query, values)
-      .then((value: [QueryResult, FieldPacket[]]) => {
-        event.sender.send('add-response', {
-          success: true,
-          message: 'add successful',
-        });
-      })
-      .catch(() => {
-        event.sender.send('add-response', {
-          success: false,
-          message: 'add failed!',
-        });
-      });
-    return 1;
-  } catch (err) {
-    console.log('Server error!');
-    return 0;
-  }
-};
-
-export const deleteContributeFee = (
-  event: IpcMainInvokeEvent,
-  room_number: number,
-) => {
-  const query =
-    'UPDATE contribute_fee SET amount_money = ? WHERE room_number = ?;';
-  const values = [0, room_number];
-
-  try {
-    db.query(query, values)
-      .then((value: [QueryResult, FieldPacket[]]) => {
-        event.sender.send('delete-response', {
-          success: true,
-          message: 'Delete successful',
-        });
-      })
-      .catch(() => {
-        event.sender.send('delete-response', {
-          success: false,
-          message: 'Room number does not exist!',
-        });
-      });
-    return 1;
-  } catch (err) {
-    console.log('Server error!');
-    return 0;
+  } catch {
+    event.sender.send('delete-required-fee-response', {
+      success: false,
+      message: 'Server error!',
+    });
   }
 };

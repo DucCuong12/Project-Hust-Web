@@ -5,7 +5,9 @@ import {
   UserPayload,
   IpcResponse,
   SignupPayload,
+  RequiredFee,
 } from '../interface/interface';
+import { deleteRequiredFee, editRequiredFee } from '../db/HandleData';
 
 export type Channels = 'ipc-example';
 
@@ -75,6 +77,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   fetchRequiredFee: () => {
     return ipcRenderer.invoke('fetch-required-fee');
+  },
+
+  addRequiredFee: (feeData: RequiredFee) => {
+    return ipcRenderer.invoke('add-required-fee', feeData);
+  },
+
+  editRequiredFee: (feeData: RequiredFee, editId: number) => {
+    return ipcRenderer.invoke('edit-required-fee', feeData, editId);
+  },
+
+  deleteRequiredFee: (feeId: number) => {
+    return ipcRenderer.invoke('delete-required-fee', feeId);
   },
 
   deleteCompulsoryFee: (room_number: number) => {

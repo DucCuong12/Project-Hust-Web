@@ -16,6 +16,7 @@ import SideBar from '../components/Pages/SideBar/SideBar';
 import Dashboard from '../components/Pages/Dashboard/Dashboard';
 import EditAccount from '../components/EditAccount/EditAccount';
 import ConfirmLogout from '../components/ConfirmLogout/ConfirmLogout';
+import ReceivableFee from '../components/Pages/ReceivableFee/ReceivableFee';
 import CreateAccount from '../components/CreateAccount/CreateAccount';
 import TransferFeePage from '../components/Pages/TransferFee/TransferFee';
 
@@ -46,6 +47,7 @@ const AppInner = () => {
               <Route path="/feepage" element={<FeePage />} />
               <Route path="/contribute" element={<ContributionPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/receivable-fee" element={<ReceivableFee />} />
               <Route path="/transferfeepage" element={<TransferFeePage />} />
               <Route
                 path="/manage-account/:id/edit"

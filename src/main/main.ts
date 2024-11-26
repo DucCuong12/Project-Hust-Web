@@ -34,14 +34,11 @@ import {
   editAccount,
   deleteAccount,
   getResidentsData,
-  fetchRequiredFee,
-  fetchContributeFee,
-  editFee,
-  addSubmittedFee,
-  deleteCompulsoryFee,
-  editContributeFee,
-  addContributeFee,
-  deleteContributeFee,
+  getRequiredFeeData,
+  getContributoryFeeData,
+  addRequiredFee,
+  editRequiredFee,
+  deleteRequiredFee,
 } from '../db/HandleData';
 
 class AppUpdater {
@@ -82,7 +79,15 @@ ipcMain.handle('edit-contribute-fee', editContributeFee);
 
 ipcMain.handle('add-contribute-fee', addContributeFee);
 
-ipcMain.handle('delete-contribute-fee', deleteContributeFee);
+ipcMain.handle('fetch-required-fee', async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM fee');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching residents:', err);
+    throw err;
+  }
+});
 
 ipcMain.handle('fetch-transfer-fee', async () => {
   try {
@@ -128,6 +133,72 @@ ipcMain.handle(
     }
   },
 );
+
+ipcMain.handle(
+  'delete-contribute-fee',
+  (event: IpcMainInvokeEvent, room_number: number) => {
+    const query =
+      'UPDATE contribute_fee SET amount_money = ? WHERE room_number = ?;';
+    const values = [0, room_number];
+
+    try {
+      db.query(query, values)
+        .then((value: [QueryResult, FieldPacket[]]) => {
+          event.sender.send('delete-response', {
+            success: true,
+            message: 'Delete successful',
+          });
+        })
+        .catch(() => {
+          event.sender.send('delete-response', {
+            success: false,
+            message: 'Room number does not exist!',
+          });
+        });
+      return 1;
+    } catch (err) {
+      console.log('Server error!');
+      return 0;
+    }
+  },
+);
+
+ipcMain.handle(
+  'delete-account',
+  (event: IpcMainInvokeEvent, userId: number) => {
+    const query = 'DELETE FROM users WHERE id = ?';
+    const values = [userId];
+    try {
+      db.query(query, values)
+        .then((value: [QueryResult, FieldPacket[]]) => {
+          event.sender.send('delete-response', {
+            success: true,
+            message: 'Delete successful',
+          });
+        })
+        .catch(() => {
+          event.sender.send('delete-response', {
+            success: false,
+            message: 'User not exists!',
+          });
+        });
+    } catch (err) {
+      console.log('Server error!');
+    }
+  },
+);
+// ipcMain.handle('login', loginRequest);
+// ipcMain.handle('signup', signupRequest);
+// ipcMain.handle('fetch-user', fetchUserRequest);
+// ipcMain.handle('fetch-residents-list', fetchResidents);
+// ipcMain.handle('edit-account', editAccount);
+// ipcMain.handle('delete-account', deleteAccount);
+ipcMain.handle('fetch-number-residents', getResidentsData);
+ipcMain.handle('fetch-required-fee', getRequiredFeeData);
+ipcMain.handle('add-required-fee', addRequiredFee);
+ipcMain.handle('edit-required-fee', editRequiredFee);
+ipcMain.handle('delete-required-fee', deleteRequiredFee);
+ipcMain.handle('fetch-contribute-fee', getContributoryFeeData);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

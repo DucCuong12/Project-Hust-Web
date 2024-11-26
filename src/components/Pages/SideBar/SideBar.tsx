@@ -68,8 +68,10 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
             <Menu.Item key="8">
               <Link to="/contribute">Đóng góp</Link>
             </Menu.Item>
-
-          </Menu.SubMenu> */}
+          </Menu.SubMenu>*/}
+          <Menu.Item key="9" icon={<DollarCircleOutlined />}>
+            <Link to="/receivable-fee">Khoản thu</Link>
+          </Menu.Item>
         </Menu>
       </>
 

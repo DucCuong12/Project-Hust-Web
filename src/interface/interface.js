@@ -8,14 +8,22 @@ export interface UserPayload {
   password: string;
 }
 
-export interface Fee {
+export type UnitOptions =  'month' | 'item' | 'time' | 'person' | 'kWh' | 'number';
+
+export interface RequiredFee {
   id: number;
-  room_number: number;
-  amount_money: number;
-  representator: string;
-  email: String;
-  phone_number: string;
+  name: String;
+  unit_price: number;
+  unit: UnitOptions
 }
+
+export interface ContributeFee { 
+  id: number;
+  name: String;
+  total: number;
+}
+
+export interface Fee = RequiredFee | ContributeFee;
 
 export interface TransferFee {
   room_number: number;
