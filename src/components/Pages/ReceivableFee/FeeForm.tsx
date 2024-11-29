@@ -102,7 +102,7 @@ const FeeForm = (props: any) => {
               required
               name="feeUnitPrice"
               onChange={handleChange}
-              value={data.feeUnitPrice}
+              value={data.feeUnitPrice == 0 ? '' : data.feeUnitPrice}
             />
             <Form.Control.Feedback type="invalid">
               Vui lòng nhập đơn giá

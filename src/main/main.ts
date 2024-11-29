@@ -39,6 +39,7 @@ import {
   addRequiredFee,
   editRequiredFee,
   deleteRequiredFee,
+  queryRequiredFee,
 } from '../db/HandleData';
 
 class AppUpdater {
@@ -491,6 +492,7 @@ ipcMain.handle('add-required-fee', addRequiredFee);
 ipcMain.handle('edit-required-fee', editRequiredFee);
 ipcMain.handle('delete-required-fee', deleteRequiredFee);
 ipcMain.handle('fetch-contribute-fee', getContributoryFeeData);
+ipcMain.handle('query-required-fee', queryRequiredFee);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

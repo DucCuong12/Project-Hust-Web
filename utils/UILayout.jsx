@@ -8,7 +8,7 @@ const UILayout = (props) => {
   return (
     <AnimatedFrame>
       <Layout>
-        <Header className="header">
+        <Header className="header mt-5">
           <h2>{props.title}</h2>
         </Header>
         <Content style={{ margin: '14px', background: '#fff' }}>
@@ -16,7 +16,9 @@ const UILayout = (props) => {
             className="site-layout-background"
             style={{ padding: 16, minHeight: 360 }}
           >
-            <Container fluid>{props.children}</Container>
+            <Container fluid className="min-vh-100">
+              {props.children}
+            </Container>
           </div>
         </Content>
       </Layout>

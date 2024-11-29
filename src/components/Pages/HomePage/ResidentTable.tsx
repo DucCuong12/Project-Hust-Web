@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Resident } from '../../../interface/interface.js';
 
 const rowsPerPage = 10;
@@ -30,12 +30,11 @@ function ResidentTable() {
 
   const currentResidents = residents.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   return (
     <div className="resident-table-container">
-      <h1 className = "text-2xl font-semibold mb-4">Danh sách cư dân</h1>
       {/* <button className="btn btn-primary">Add Student</button> */}
       <table className="table">
         <thead>
@@ -50,23 +49,23 @@ function ResidentTable() {
           </tr>
         </thead>
         <tbody>
-            {currentResidents.length > 0 ? (
-              currentResidents.map((resident) => (
-                <tr key={resident.id}>
-                  <td>{resident.id}</td>
-                  <td>{resident.room_number}</td>
-                  <td>{resident.full_name}</td>
-                  <td>{resident.birth_year}</td>
-                  <td>{resident.occupation}</td>
-                  <td>{resident.phone_number}</td>
-                  <td>{resident.email}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={7}>No residents found</td>
+          {currentResidents.length > 0 ? (
+            currentResidents.map((resident) => (
+              <tr key={resident.id}>
+                <td>{resident.id}</td>
+                <td>{resident.room_number}</td>
+                <td>{resident.full_name}</td>
+                <td>{resident.birth_year}</td>
+                <td>{resident.occupation}</td>
+                <td>{resident.phone_number}</td>
+                <td>{resident.email}</td>
               </tr>
-            )}
+            ))
+          ) : (
+            <tr>
+              <td colSpan={7}>No residents found</td>
+            </tr>
+          )}
         </tbody>
       </table>
 
@@ -86,7 +85,6 @@ function ResidentTable() {
           Next
         </button>
       </div>
-
     </div>
   );
 }

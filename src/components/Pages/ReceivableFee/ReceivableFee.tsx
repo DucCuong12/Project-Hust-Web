@@ -51,6 +51,11 @@ const ReceivableFee = () => {
     }
   };
 
+  const searchQuery = async (query: string) => {
+    const queryResult = await window.electronAPI.queryRequiredFee(query);
+    setRequiredFee(queryResult);
+  };
+
   const getData = async () => {
     await Promise.all([fetchRequiredFee(), fetchContributeFee()]);
   };
@@ -78,6 +83,7 @@ const ReceivableFee = () => {
           ]}
           onSubmit={handleSubmitRequiredFee}
           triggerReload={fetchRequiredFee}
+          onSearch={searchQuery}
         />
         <FeeTable
           eventKey="1"

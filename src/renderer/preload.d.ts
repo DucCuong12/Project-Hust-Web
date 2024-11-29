@@ -31,6 +31,7 @@ declare global {
       addRequiredFee: (feeData: RequiredFee) => void;
       editRequiredFee: (feeData: RequiredFee, editId: number) => void;
       deleteRequiredFee: (feeId: number) => void;
+      queryRequiredFee: (query: string) => RequiredFee[];
       addSubmittedFee: (
         room_number: number,
         amount_money: number,

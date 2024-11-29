@@ -361,3 +361,24 @@ export const deleteRequiredFee = async (
     });
   }
 };
+
+export const queryRequiredFee = async (
+  event: IpcMainInvokeEvent,
+  query: string,
+) => {
+  try {
+    if (query) {
+      const [rows] = await db.query(
+        'SELECT * FROM db.fee_required WHERE fee_name LIKE ?',
+        [`%${query}%`],
+      );
+      return rows;
+    } else {
+      const [rows] = await db.query('SELECT * FROM db.fee_required');
+      return rows;
+    }
+  } catch (err) {
+    console.error('Error fetching RequiredFee data:', err);
+    throw err;
+  }
+};
