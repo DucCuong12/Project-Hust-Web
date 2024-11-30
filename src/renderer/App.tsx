@@ -17,6 +17,7 @@ import Dashboard from '../components/Pages/Dashboard/Dashboard';
 import EditAccount from '../components/EditAccount/EditAccount';
 import ConfirmLogout from '../components/ConfirmLogout/ConfirmLogout';
 import ReceivableFee from '../components/Pages/ReceivableFee/ReceivableFee';
+import ScrollToTop from '../../utils/scroll_to_top';
 
 const AppInner = () => {
   const location = useLocation();
@@ -26,6 +27,7 @@ const AppInner = () => {
 
   return (
     <div>
+      <ScrollToTop />
       {location.pathname !== '/' && (
         <LogoutButton
           onAction={() => {
