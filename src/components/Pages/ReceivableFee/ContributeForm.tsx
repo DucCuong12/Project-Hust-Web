@@ -1,19 +1,17 @@
 import { Modal, Form, FloatingLabel, Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 
-const FeeForm = (props: any) => {
+const ContributeForm = (props: any) => {
   const [validated, setValidated] = useState(false);
   const [data, setData] = useState({
     feeName: '',
-    feeUnitPrice: 0,
-    feeUnit: 'kWh',
+    totalMoney: 0,
   });
 
   const fetchData = async () => {
     setData({
       feeName: props.data ? props.data.fee_name : '',
-      feeUnitPrice: props.data ? props.data.unit_price : 0,
-      feeUnit: props.data ? props.data.unit : 'kWh',
+      totalMoney: props.data ? props.data.total_money : 0,
     });
   };
 
@@ -34,8 +32,7 @@ const FeeForm = (props: any) => {
           setValidated(false);
           setData({
             feeName: '',
-            feeUnitPrice: 0,
-            feeUnit: 'kWh',
+            totalMoney: 0,
           });
           props.triggerReload();
         }, 500);
@@ -76,38 +73,6 @@ const FeeForm = (props: any) => {
               Vui lòng nhập tên khoản
             </Form.Control.Feedback>
           </FloatingLabel>
-          <FloatingLabel controlId="feeUnit" label="Đơn vị" className="mb-3">
-            <Form.Select
-              aria-label="Đơn vị"
-              onChange={handleChange}
-              value={data.feeUnit}
-              name="feeUnit"
-            >
-              <option value="kWh">kWh</option>
-              <option value="Số">Số</option>
-              <option value="Tháng">Tháng</option>
-              <option value="Người">Người</option>
-              <option value="Lần">Lần</option>
-              <option value="Cái">Cái</option>
-            </Form.Select>
-          </FloatingLabel>
-          <FloatingLabel
-            controlId="feeUnitPrice"
-            label="Đơn giá (đồng)"
-            className="mb-3"
-          >
-            <Form.Control
-              type="number"
-              placeholder=""
-              required
-              name="feeUnitPrice"
-              onChange={handleChange}
-              value={data.feeUnitPrice == 0 ? '' : data.feeUnitPrice}
-            />
-            <Form.Control.Feedback type="invalid">
-              Vui lòng nhập đơn giá
-            </Form.Control.Feedback>
-          </FloatingLabel>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={props.handleClose}>
@@ -122,4 +87,4 @@ const FeeForm = (props: any) => {
   );
 };
 
-export default FeeForm;
+export default ContributeForm;

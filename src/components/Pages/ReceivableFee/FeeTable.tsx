@@ -1,8 +1,10 @@
 import { Accordion, Button, Modal } from 'react-bootstrap';
 import { Space, Input } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FeeForm from './FeeForm';
 import { Fee } from '../../../interface/interface';
+import ContributeForm from './ContributeForm';
+import useDebounce from '../../../../utils/use_debounce';
 
 const { Search } = Input;
 
@@ -27,6 +29,25 @@ const FeeTable = (props: any) => {
     setTargetData(props.rowData[index]);
   };
 
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 200);
+
+  const handleSearchChange = (event: any) => {
+    setSearch(event.target.value);
+  };
+
+  const handleSearch = () => {
+    if (props.hasOwnProperty('onSearch')) {
+      props.onSearch(debouncedSearch);
+    }
+  };
+
+  useEffect(() => {
+    if (props.hasOwnProperty('onSearch')) {
+      props.onSearch(debouncedSearch);
+    }
+  }, [debouncedSearch]);
+
   return (
     <>
       <Accordion.Item eventKey={props.eventKey}>
@@ -38,6 +59,8 @@ const FeeTable = (props: any) => {
               allowClear
               size="large"
               style={{ width: 300, height: 52, fontSize: 18 }}
+              onSearch={handleSearch}
+              onChange={handleSearchChange}
             />
             <Button variant="primary" onClick={handleAddFormShow}>
               {props.addDataName}
@@ -110,29 +133,59 @@ const FeeTable = (props: any) => {
           </table>
         </Accordion.Body>
       </Accordion.Item>
-      <FeeForm
-        show={addShow}
-        handleClose={handleAddFormClose}
-        title={props.addDataName}
-        onSubmit={(data: Fee) => {
-          props.onSubmit(data, 'add');
-          handleAddFormClose();
-        }}
-        submitText="Thêm"
-        triggerReload={props.triggerReload}
-      />
-      <FeeForm
-        show={editShow}
-        handleClose={handleEditFormClose}
-        title={props.editDataName}
-        onSubmit={(data: Fee) => {
-          props.onSubmit(data, 'edit', targetData.fee_id);
-          handleEditFormClose();
-        }}
-        data={targetData}
-        submitText="Sửa"
-        triggerReload={props.triggerReload}
-      />
+      {props.requiredFee ? (
+        <>
+          <FeeForm
+            show={addShow}
+            handleClose={handleAddFormClose}
+            title={props.addDataName}
+            onSubmit={(data: Fee) => {
+              props.onSubmit(data, 'add');
+              handleAddFormClose();
+            }}
+            submitText="Thêm"
+            triggerReload={props.triggerReload}
+          />
+          <FeeForm
+            show={editShow}
+            handleClose={handleEditFormClose}
+            title={props.editDataName}
+            onSubmit={(data: Fee) => {
+              props.onSubmit(data, 'edit', targetData.fee_id);
+              handleEditFormClose();
+            }}
+            data={targetData}
+            submitText="Sửa"
+            triggerReload={props.triggerReload}
+          />
+        </>
+      ) : (
+        <>
+          <ContributeForm
+            show={editShow}
+            handleClose={handleEditFormClose}
+            title={props.editDataName}
+            onSubmit={(data: Fee) => {
+              props.onSubmit(data, 'edit', targetData.fee_id);
+              handleEditFormClose();
+            }}
+            data={targetData}
+            submitText="Sửa"
+            triggerReload={props.triggerReload}
+          />
+          <ContributeForm
+            show={addShow}
+            handleClose={handleAddFormClose}
+            title={props.addDataName}
+            onSubmit={(data: Fee) => {
+              props.onSubmit(data, 'add');
+              handleAddFormClose();
+            }}
+            submitText="Thêm"
+            triggerReload={props.triggerReload}
+          />
+        </>
+      )}
       <Modal show={deleteShow} backdrop="static">
         <Modal.Header>
           <Modal.Title>Xóa</Modal.Title>

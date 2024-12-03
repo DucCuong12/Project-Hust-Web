@@ -17,6 +17,7 @@ import Dashboard from '../components/Pages/Dashboard/Dashboard';
 import EditAccount from '../components/EditAccount/EditAccount';
 import ConfirmLogout from '../components/ConfirmLogout/ConfirmLogout';
 import ReceivableFee from '../components/Pages/ReceivableFee/ReceivableFee';
+import ScrollToTop from '../../utils/scroll_to_top';
 import CreateAccount from '../components/CreateAccount/CreateAccount';
 import TransferFeePage from '../components/Pages/TransferFee/TransferFee';
 
@@ -28,6 +29,7 @@ const AppInner = () => {
 
   return (
     <div>
+      <ScrollToTop />
       {location.pathname !== '/' && (
         <LogoutButton
           onAction={() => {

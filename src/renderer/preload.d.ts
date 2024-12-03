@@ -31,6 +31,7 @@ declare global {
       addRequiredFee: (feeData: RequiredFee) => void;
       editRequiredFee: (feeData: RequiredFee, editId: number) => void;
       deleteRequiredFee: (feeId: number) => void;
+      queryRequiredFee: (query: string) => RequiredFee[];
       addSubmittedFee: (
         room_number: number,
         amount_money: number,
@@ -43,17 +44,10 @@ declare global {
       ) => number;
 
       fetchContributeFee: () => ContributeFee[];
-      deleteContributeFee: (room_number: number) => number;
-      addContributeFee: (
-        room_number: number,
-        amount_money: number,
-        representator: string,
-      ) => number;
-      editContributeFee: (
-        room_number: number,
-        amount_money: number,
-        representator: string,
-      ) => number;
+      addContributeFee: (feeData: ContributeFee) => void;
+      editContributeFee: (feeData: ContributeFee, editId: number) => void;
+      deleteContributeFee: (feeId: number) => void;
+      queryContributeFee: (query: string) => ContributeFee[];
       fetchResidentsData: () => DashboardData;
 
       fetchTransferFee: () => TransferFee[];

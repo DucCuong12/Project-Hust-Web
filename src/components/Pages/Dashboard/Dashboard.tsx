@@ -5,6 +5,7 @@ import { Layout } from 'antd';
 import GenderChart from './GenderChart';
 import AgeChart from './AgeChart';
 import AnimatedFrame from '../../../../utils/animation_page';
+import UILayout from '../../../../utils/UILayout';
 
 const Dashboard = () => {
   const { Header, Content } = Layout;
@@ -22,40 +23,20 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <AnimatedFrame>
-      <Layout>
-        <Header className="header"> </Header>
-        <Content style={{ margin: '14px', background: '#fff' }}>
-          <div
-            className="site-layout-background"
-            style={{ padding: 16, minHeight: 720 }}
-          >
-            <div className="content">
-              <Container fluid>
-                <Row>
-                  <h2
-                    className="text-2xl font-semibold"
-                    style={{ marginBottom: '24px' }}
-                  >
-                    Thống kê dân cư
-                  </h2>
-                  <Col lg={6} md={12}>
-                    <div className="gender-chart">
-                      <GenderChart data={data?.genderCount} />
-                    </div>
-                  </Col>
-                  <Col lg={6} md={12}>
-                    <div className="age-chart">
-                      <AgeChart data={data?.ageCount} />
-                    </div>
-                  </Col>
-                </Row>
-              </Container>
-            </div>
+    <UILayout title="Thống kê dân cư">
+      <Row>
+        <Col lg={6} md={12}>
+          <div className="gender-chart">
+            <GenderChart data={data?.genderCount} />
           </div>
-        </Content>
-      </Layout>
-    </AnimatedFrame>
+        </Col>
+        <Col lg={6} md={12}>
+          <div className="age-chart">
+            <AgeChart data={data?.ageCount} />
+          </div>
+        </Col>
+      </Row>
+    </UILayout>
   );
 };
 

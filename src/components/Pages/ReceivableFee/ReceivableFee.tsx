@@ -22,6 +22,24 @@ const handleSubmitRequiredFee = async (
   }
 };
 
+const handleSubmitContributeFee = async (
+  data: ContributeFee,
+  action: any,
+  editId: number,
+) => {
+  try {
+    if (action === 'add') {
+      await window.electronAPI.addContributeFee(data);
+    } else if (action === 'edit') {
+      await window.electronAPI.editContributeFee(data, editId);
+    } else if (action === 'delete') {
+      await window.electronAPI.deleteContributeFee(editId);
+    }
+  } catch (err) {
+    console.error('Error adding ContributeFee:', err);
+  }
+};
+
 const ReceivableFee = () => {
   const [loading, setLoading] = useState([true, true]);
   const [requiredFee, setRequiredFee] = useState<RequiredFee[]>([]);
@@ -51,6 +69,16 @@ const ReceivableFee = () => {
     }
   };
 
+  const searchRequiredQuery = async (query: string) => {
+    const queryResult = await window.electronAPI.queryRequiredFee(query);
+    setRequiredFee(queryResult);
+  };
+
+  const searchContributeQuery = async (query: string) => {
+    const queryResult = await window.electronAPI.queryContributeFee(query);
+    setContributeFee(queryResult);
+  };
+
   const getData = async () => {
     await Promise.all([fetchRequiredFee(), fetchContributeFee()]);
   };
@@ -78,6 +106,7 @@ const ReceivableFee = () => {
           ]}
           onSubmit={handleSubmitRequiredFee}
           triggerReload={fetchRequiredFee}
+          onSearch={searchRequiredQuery}
         />
         <FeeTable
           eventKey="1"
@@ -92,6 +121,8 @@ const ReceivableFee = () => {
             'Tổng số tiền đã đóng góp',
             'Hành động',
           ]}
+          onSubmit={handleSubmitContributeFee}
+          onSearch={searchContributeQuery}
           triggerReload={fetchContributeFee}
         />
       </Accordion>
