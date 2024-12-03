@@ -3,6 +3,7 @@ import { Space, Input } from 'antd';
 import { useEffect, useState } from 'react';
 import FeeForm from './FeeForm';
 import { Fee } from '../../../interface/interface';
+import ContributeForm from './ContributeForm';
 import useDebounce from '../../../../utils/use_debounce';
 
 const { Search } = Input;
@@ -132,29 +133,59 @@ const FeeTable = (props: any) => {
           </table>
         </Accordion.Body>
       </Accordion.Item>
-      <FeeForm
-        show={addShow}
-        handleClose={handleAddFormClose}
-        title={props.addDataName}
-        onSubmit={(data: Fee) => {
-          props.onSubmit(data, 'add');
-          handleAddFormClose();
-        }}
-        submitText="Thêm"
-        triggerReload={props.triggerReload}
-      />
-      <FeeForm
-        show={editShow}
-        handleClose={handleEditFormClose}
-        title={props.editDataName}
-        onSubmit={(data: Fee) => {
-          props.onSubmit(data, 'edit', targetData.fee_id);
-          handleEditFormClose();
-        }}
-        data={targetData}
-        submitText="Sửa"
-        triggerReload={props.triggerReload}
-      />
+      {props.requiredFee ? (
+        <>
+          <FeeForm
+            show={addShow}
+            handleClose={handleAddFormClose}
+            title={props.addDataName}
+            onSubmit={(data: Fee) => {
+              props.onSubmit(data, 'add');
+              handleAddFormClose();
+            }}
+            submitText="Thêm"
+            triggerReload={props.triggerReload}
+          />
+          <FeeForm
+            show={editShow}
+            handleClose={handleEditFormClose}
+            title={props.editDataName}
+            onSubmit={(data: Fee) => {
+              props.onSubmit(data, 'edit', targetData.fee_id);
+              handleEditFormClose();
+            }}
+            data={targetData}
+            submitText="Sửa"
+            triggerReload={props.triggerReload}
+          />
+        </>
+      ) : (
+        <>
+          <ContributeForm
+            show={editShow}
+            handleClose={handleEditFormClose}
+            title={props.editDataName}
+            onSubmit={(data: Fee) => {
+              props.onSubmit(data, 'edit', targetData.fee_id);
+              handleEditFormClose();
+            }}
+            data={targetData}
+            submitText="Sửa"
+            triggerReload={props.triggerReload}
+          />
+          <ContributeForm
+            show={addShow}
+            handleClose={handleAddFormClose}
+            title={props.addDataName}
+            onSubmit={(data: Fee) => {
+              props.onSubmit(data, 'add');
+              handleAddFormClose();
+            }}
+            submitText="Thêm"
+            triggerReload={props.triggerReload}
+          />
+        </>
+      )}
       <Modal show={deleteShow} backdrop="static">
         <Modal.Header>
           <Modal.Title>Xóa</Modal.Title>

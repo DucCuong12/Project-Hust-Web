@@ -255,16 +255,6 @@ export const getRequiredFeeData = async () => {
   }
 };
 
-export const getContributoryFeeData = async () => {
-  try {
-    const [rows] = await db.query('SELECT * FROM db.fee_contribute');
-    return rows;
-  } catch (err) {
-    console.error('Error fetching ContributeFee data:', err);
-    throw err;
-  }
-};
-
 export const addRequiredFee = async (
   event: IpcMainInvokeEvent,
   feeData: any,
@@ -362,6 +352,108 @@ export const deleteRequiredFee = async (
   }
 };
 
+export const getContributeFeeData = async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM db.fee_contribute');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching ContributeFee data:', err);
+    throw err;
+  }
+};
+
+export const addContributeFee = async (
+  event: IpcMainInvokeEvent,
+  feeData: any,
+) => {
+  try {
+    const query =
+      'INSERT INTO db.fee_contribute (fee_name, total_money) VALUES (?, ?)';
+    const values = [feeData.feeName, feeData.totalMoney];
+
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('add-contribute-fee-response', {
+          success: true,
+          message: 'Thêm khoản đóng góp thành công!',
+        });
+      })
+      .catch((err) => {
+        event.sender.send('add-contribute-fee-response', {
+          success: false,
+          message: 'Thêm khoản đóng góp thất bại!',
+        });
+      });
+  } catch {
+    event.sender.send('add-contribute-fee-response', {
+      success: false,
+      message: 'Server error!',
+    });
+  }
+};
+
+export const editContributeFee = async (
+  event: IpcMainInvokeEvent,
+  feeData: any,
+  editId: number,
+) => {
+  try {
+    const query =
+      'UPDATE db.fee_contribute SET fee_name = ?, total_money = ? WHERE fee_id = ?';
+    const values = [feeData.feeName, feeData.totalMoney, editId];
+
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('edit-contribute-fee-response', {
+          success: true,
+          message: 'Sửa khoản đóng góp thành công!',
+        });
+      })
+      .catch((err) => {
+        event.sender.send('edit-contribute-fee-response', {
+          success: false,
+          message: 'Sửa khoản đóng góp thất bại!',
+        });
+        console.log(err);
+      });
+  } catch {
+    event.sender.send('edit-contribute-fee-response', {
+      success: false,
+      message: 'Server error!',
+    });
+  }
+};
+
+export const deleteContributeFee = async (
+  event: IpcMainInvokeEvent,
+  feeId: number,
+) => {
+  try {
+    const query = 'DELETE FROM db.fee_contribute WHERE fee_id = ?';
+    const values = [feeId];
+
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('delete-contribute-fee-response', {
+          success: true,
+          message: 'Xóa khoản đóng góp thành công!',
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        event.sender.send('delete-contribute-fee-response', {
+          success: false,
+          message: 'Xóa khoản đóng góp thất bại!',
+        });
+      });
+  } catch {
+    event.sender.send('delete-contribute-fee-response', {
+      success: false,
+      message: 'Server error!',
+    });
+  }
+};
+
 export const queryRequiredFee = async (
   event: IpcMainInvokeEvent,
   query: string,
@@ -379,6 +471,27 @@ export const queryRequiredFee = async (
     }
   } catch (err) {
     console.error('Error fetching RequiredFee data:', err);
+    throw err;
+  }
+};
+
+export const queryContributeFee = async (
+  event: IpcMainInvokeEvent,
+  query: string,
+) => {
+  try {
+    if (query) {
+      const [rows] = await db.query(
+        'SELECT * FROM db.fee_contribute WHERE fee_name LIKE ?',
+        [`%${query}%`],
+      );
+      return rows;
+    } else {
+      const [rows] = await db.query('SELECT * FROM db.fee_contribute');
+      return rows;
+    }
+  } catch (err) {
+    console.error('Error fetching ContributeFee data:', err);
     throw err;
   }
 };
