@@ -75,7 +75,8 @@ function TransferFeePage() {
 
   };
 
-  useEffect(() => {fetchRequiredFee();}, []);
+  // useEffect(() => {fetchRequiredFee();}, []);
+  fetchRequiredFee();
 
   // for searching
   const handleSearching = (e: any) => {
@@ -86,7 +87,7 @@ function TransferFeePage() {
       result: "",
     });
 
-    fetchRequiredFee();
+    // fetchRequiredFee();
 
   };
   
@@ -224,7 +225,7 @@ function TransferFeePage() {
       console.log(error);
     }
 
-    fetchRequiredFee();
+    // fetchRequiredFee();
   };
 
   //for editing

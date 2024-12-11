@@ -25,6 +25,15 @@ export interface ContributeFee {
 
 export interface Fee = RequiredFee | ContributeFee;
 
+export interface BaseFee {
+  id: number;
+  room_number: number;
+  amount_money: number;
+  representator: string;
+  email: String;
+  phone_number: string;
+}
+
 export interface TransferFee {
   room_number: number;
   money: number;
