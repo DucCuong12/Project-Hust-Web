@@ -15,7 +15,7 @@ import {
 // import './FeePage.css';
 import AnimatedFrame from '../../../../utils/animation_page';
 import { Link } from 'react-router-dom';
-import { Fee, TransferFee } from '../../../interface/interface.js';
+import { BaseFee, TransferFee } from '../../../interface/interface.js';
 import SideBar from '../SideBar/SideBar';
 import ConfirmModal from '../../ConfirmModal/ConfirmModel';
 
@@ -39,7 +39,7 @@ function TransferFeePage() {
   const [requiredFee, setRequiredFee] = useState<TransferFee[]>([]);
   const [searchRoom, setSearchRoom] = useState("");
   const [roomFeeMap, setRoomFeeMap] = useState<RoomFeeMap>({});
-  const [allRows, setAllRows] = useState<Fee[]>([]);
+  const [allRows, setAllRows] = useState<BaseFee[]>([]);
 
   // search the fee that filter by room number
   const [searchValues, setSearchValues] = useState({
@@ -48,7 +48,7 @@ function TransferFeePage() {
   });
 
   const fetchFee = async () => {
-    const requiredFee: Fee[] = await window.electronAPI.fetchRequiredFee();
+    const requiredFee: BaseFee[] = await window.electronAPI.fetchMyFee();
 
     setAllRows(requiredFee);
   };
@@ -75,8 +75,7 @@ function TransferFeePage() {
 
   };
 
-  // useEffect(() => {fetchRequiredFee();}, []);
-  fetchRequiredFee();
+  useEffect(() => {fetchRequiredFee();}, []);
 
   // for searching
   const handleSearching = (e: any) => {
@@ -87,7 +86,7 @@ function TransferFeePage() {
       result: "",
     });
 
-    // fetchRequiredFee();
+    fetchRequiredFee();
 
   };
   
@@ -151,7 +150,8 @@ function TransferFeePage() {
   const handleConfirmDeleting = async () => {
     setConfirmDeleteModalOpen(false); // Close confirmation modal
     try {
-      const success = await window.electronAPI.deleteCompulsoryFee(Number(searchDeletedRoom));
+      var success = 1;
+      // const success = await window.electronAPI.deleteCompulsoryFee(Number(searchDeletedRoom));
       if (success) {
         setSuccessDeleteModalOpen(true); // Show success modal
       } else {
@@ -225,7 +225,7 @@ function TransferFeePage() {
       console.log(error);
     }
 
-    // fetchRequiredFee();
+    fetchRequiredFee();
   };
 
   //for editing

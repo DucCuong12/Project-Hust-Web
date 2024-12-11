@@ -10,6 +10,7 @@ import {
   TransferFee,
   RequiredFee,
   ContributeFee,
+  BaseFee,
 } from '../interface/interface';
 
 declare global {
@@ -58,6 +59,8 @@ declare global {
         transferer: string,
         fee_type: string,
       ) => number;
+
+      fetchMyFee: () => BaseFee[];
     };
   }
 }

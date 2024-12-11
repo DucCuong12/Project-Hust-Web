@@ -174,6 +174,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   fetchTransferFee: () => {
     return ipcRenderer.invoke('fetch-transfer-fee');
   },
+
+  fetchMyFee: () => {
+    return ipcRenderer.invoke('fetch-my-fee');
+  }
 });
 
 export type ElectronHandler = typeof electronHandler;

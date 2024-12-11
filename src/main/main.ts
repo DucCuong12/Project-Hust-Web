@@ -80,6 +80,16 @@ ipcMain.handle('fetch-transfer-fee', async () => {
   }
 });
 
+ipcMain.handle('fetch-my-fee', async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM fee');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching fee:', err);
+    throw err;
+  }
+});
+
 ipcMain.handle(
   'add-transfer-fee',
   (
