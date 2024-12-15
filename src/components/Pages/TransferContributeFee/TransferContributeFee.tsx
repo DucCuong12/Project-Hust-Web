@@ -33,7 +33,7 @@ type RoomFeeMap = {
   [key: string]: TransferFee[];
 };
 
-function TransferFeePage() {
+function TransferContributeFeePage() {
   const [collapsed, setCollapsed] = useState(false);
   const [roomNumber, setRoomNumber] = useState("");
   const [requiredFee, setRequiredFee] = useState<TransferFee[]>([]);
@@ -79,7 +79,7 @@ function TransferFeePage() {
   useEffect(() => {
   // Simulate fetching data
   const fetchFees = async () => {
-    const requiredFeeData = await window.electronAPI.fetchRequiredFee();
+    const requiredFeeData = await window.electronAPI.fetchContributeFee();
     const fees = requiredFeeData.map((row: any) => String(row.fee_name)); // Ensure strings
     console.log(fees);
     setFeeMap(fees); // Set the list of fees
@@ -216,7 +216,7 @@ function TransferFeePage() {
     try {
       const success = await window.electronAPI.addTransferFee(Number(submitRoomNumber), Number(submitMoney), 
                                                               submitFeeName, submitTransferrer, 
-                                                              "Bắt buộc");
+                                                              "Tự nguyện");
 
       if (success) {
         setSuccessAddModalOpen(true);
@@ -226,7 +226,7 @@ function TransferFeePage() {
           money: Number(submitMoney),
           fee_name: submitFeeName,
           transferer: submitTransferrer,
-          fee_type: "Bắt buộc",
+          fee_type: "Tự nguyện",
         });        
 
       } else {
@@ -491,4 +491,4 @@ function TransferFeePage() {
   );
 }
 
-export default TransferFeePage;
+export default TransferContributeFeePage;

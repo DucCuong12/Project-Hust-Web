@@ -12,6 +12,7 @@ import {
   MenuUnfoldOutlined,
   DownOutlined,
   DollarCircleTwoTone,
+  HistoryOutlined,
 } from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
 import { Link } from 'react-router-dom';
@@ -45,21 +46,24 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
           <Menu.Item key="1" icon={<HomeOutlined />}>
             <Link to="/home">Trang chủ</Link>
           </Menu.Item>
-          <Menu.Item key="2" icon={<UserOutlined />}>
+          {/* <Menu.Item key="2" icon={<UserOutlined />}>
             Tài khoản
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="3" icon={<BarChartOutlined />}>
             <Link to="/dashboard">Thống kê</Link>
           </Menu.Item>
           <Menu.Item key="4" icon={<DollarCircleTwoTone />}>
-            <Link to="/transferfeepage">Thu phí</Link>
+            <Link to="/transferfeepage">Phí bắt buộc</Link>
           </Menu.Item>
-          <Menu.Item key="5" icon={<FormOutlined />}>
+          <Menu.Item key="5" icon={<DollarCircleTwoTone />}>
+            <Link to="/transfercontributefeepage">Phí tự nguyện</Link>
+          </Menu.Item>
+          {/* <Menu.Item key="6" icon={<FormOutlined />}>
             Báo cáo
           </Menu.Item>
-          <Menu.Item key="6" icon={<NotificationOutlined />}>
+          <Menu.Item key="7" icon={<NotificationOutlined />}>
             Thông báo
-          </Menu.Item>
+          </Menu.Item> */}
           {/* <Menu.SubMenu key="6" icon={<DollarCircleOutlined />} title="Khoản thu">
             <Menu.Item key="7">
               <Link to="/feepage">Bắt buộc</Link>
@@ -71,6 +75,9 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
           </Menu.SubMenu>*/}
           <Menu.Item key="9" icon={<DollarCircleOutlined />}>
             <Link to="/receivable-fee">Khoản thu</Link>
+          </Menu.Item>
+          <Menu.Item key="10" icon={<HistoryOutlined />}>
+            <Link to="/history">Lịch sử</Link>
           </Menu.Item>
         </Menu>
       </>

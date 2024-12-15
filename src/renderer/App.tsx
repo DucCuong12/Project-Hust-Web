@@ -20,6 +20,8 @@ import ReceivableFee from '../components/Pages/ReceivableFee/ReceivableFee';
 import ScrollToTop from '../../utils/scroll_to_top';
 import CreateAccount from '../components/CreateAccount/CreateAccount';
 import TransferFeePage from '../components/Pages/TransferFee/TransferFee';
+import TransferContributeFeePage from '../components/Pages/TransferContributeFee/TransferContributeFee';
+import HistoryPage from '../components/Pages/History/History';
 
 const AppInner = () => {
   const location = useLocation();
@@ -51,6 +53,8 @@ const AppInner = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/receivable-fee" element={<ReceivableFee />} />
               <Route path="/transferfeepage" element={<TransferFeePage />} />
+              <Route path="/transfercontributefeepage" element={<TransferContributeFeePage />} />
+              <Route path="/history" element={<HistoryPage />} />
               <Route
                 path="/manage-account/:id/edit"
                 element={<EditAccount />}
