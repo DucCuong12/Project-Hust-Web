@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IpcRendererEvent } from 'electron/renderer';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import { IpcResponse, CreateAccountProps } from '../../interface/interface';
+import { Form, Button, Container, FloatingLabel } from 'react-bootstrap';
+import { FaEyeSlash, FaLock } from 'react-icons/fa';
+import { IpcResponse } from '../../interface/interface';
+import { notification } from '../../../utils/toast_notification';
+import AnimatedFrame from '../../../utils/animation_page';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateAccount.css';
 
-const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
+var dumState = true;
+
+const CreateAccount = () => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -14,9 +19,15 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
     name: '',
   });
 
-  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleToggle = () => {
+    const inputNode = document.getElementById('myPassword') as HTMLElement;
+    if (inputNode.type === 'password') inputNode.type = 'text';
+    else inputNode.type = 'password';
+  };
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -28,6 +39,7 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       await window.electronAPI.signup({
         username: formData.username,
@@ -35,14 +47,8 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
         email: formData.email,
         name: formData.name,
       });
-      setFormData({
-        username: '',
-        password: '',
-        email: '',
-        name: '',
-      });
     } catch (error) {
-      setMessage('Signup failed');
+      notification.error('Đã có lỗi xảy ra! Vui lòng thử lại sau.');
     }
   };
 
@@ -51,91 +57,98 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onAccountCreated }) => {
       'signup-response',
       (event: IpcRendererEvent, response: IpcResponse) => {
         if (response.success) {
-          setMessage('Signup successful');
-          onAccountCreated();
+          notification.success(response.message);
+          setTimeout(() => {
+            navigate('/manage-account');
+          }, 500);
         } else {
-          setMessage(response.message);
-          // alert(response.message);
+          notification.error(response.message);
         }
+        setIsLoading(false);
+        dumState = !dumState;
       },
     );
-  }, []);
+  }, [dumState]);
 
   return (
-    <Container className="mt-5 form-container">
-      <h2>Tạo tài khoản mới</h2>
-      <Form onSubmit={handleSubmit}>
-        {/* Username Field */}
-        <Form.Group as={Row} controlId="formUsername" className="mb-3">
-          <Form.Label column sm={3}>
-            Tên đăng nhập
-          </Form.Label>
-          <Col sm={9}>
+    <AnimatedFrame>
+      <Container className="form-container">
+        <h2 style={{ textAlign: 'center' }} className="mb-5">
+          Tạo tài khoản mới
+        </h2>
+        <Form onSubmit={handleSubmit}>
+          <FloatingLabel
+            controlId="floatingInput"
+            label="Tên tài khoản"
+            className="mb-3"
+          >
             <Form.Control
               type="text"
-              placeholder="Enter username"
-              name="username"
-              value={formData.username}
+              placeholder=""
+              name="name"
               onChange={handleChange}
-              required
             />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-          <Form.Label column sm={3}>
-            Email
-          </Form.Label>
-          <Col sm={9}>
+          </FloatingLabel>
+          <FloatingLabel
+            controlId="floatingInput"
+            label="Tên đăng nhập"
+            className="mb-3"
+          >
+            <Form.Control
+              type="text"
+              placeholder=""
+              name="username"
+              onChange={handleChange}
+            />
+          </FloatingLabel>
+          <FloatingLabel
+            controlId="floatingInput"
+            label="Email"
+            className="mb-3"
+          >
             <Form.Control
               type="email"
-              placeholder="Enter email"
               name="email"
-              value={formData.email}
+              placeholder="name@example.com"
               onChange={handleChange}
-              required
             />
-          </Col>
-        </Form.Group>
-
-        {/* Password Field */}
-        <Form.Group as={Row} controlId="formPassword" className="mb-3">
-          <Form.Label column sm={3}>
-            Mật khẩu
-          </Form.Label>
-          <Col sm={9}>
+          </FloatingLabel>
+          <FloatingLabel label="Mật khẩu" className="mb-3">
             <Form.Control
               type="password"
-              placeholder="Enter password"
               name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
-
-        {/* Account Name Field */}
-        <Form.Group as={Row} controlId="formName" className="mb-3">
-          <Form.Label column sm={3}>
-            Tên tài khoản
-          </Form.Label>
-          <Col sm={9}>
-            <Form.Control
-              type="text"
-              placeholder="Enter name"
-              name="name"
-              value={formData.name}
+              placeholder=""
+              id="myPassword"
               onChange={handleChange}
             />
-          </Col>
-        </Form.Group>
+            <div style={{ position: 'absolute', right: '0', top: '50%' }}>
+              <FaEyeSlash className="icon-left" onClick={handleToggle} />
+            </div>
+          </FloatingLabel>
 
-        <Button variant="primary" type="submit">
-          Tạo mới
-        </Button>
-      </Form>
-    </Container>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              variant="outline-primary"
+              size="lg"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Đang tạo tài khoản...' : 'Tạo tài khoản'}
+            </Button>
+            <Button variant="secondary" size="lg" onClick={() => navigate(-1)}>
+              Quay lại
+            </Button>
+          </div>
+        </Form>
+      </Container>
+    </AnimatedFrame>
   );
 };
 

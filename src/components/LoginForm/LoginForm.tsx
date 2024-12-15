@@ -133,6 +133,12 @@ const LoginForm: React.FC<HandleLoginState> = ({ onAction }) => {
               'Đăng nhập'
             )}
           </Button>
+
+          <div className="remember-forgot" style={{ marginTop: '10px' }}>
+            <a href="#" onClick={(e) => navigate('/sign-up')}>
+              Chưa có tài khoản? Đăng ký
+            </a>
+          </div>
         </form>
         {message && (
           <Alert key="warning" variant="warning">

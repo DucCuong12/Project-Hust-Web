@@ -16,6 +16,11 @@ import SideBar from '../components/Pages/SideBar/SideBar';
 import Dashboard from '../components/Pages/Dashboard/Dashboard';
 import EditAccount from '../components/EditAccount/EditAccount';
 import ConfirmLogout from '../components/ConfirmLogout/ConfirmLogout';
+import ReceivableFee from '../components/Pages/ReceivableFee/ReceivableFee';
+import ScrollToTop from '../../utils/scroll_to_top';
+import CreateAccount from '../components/CreateAccount/CreateAccount';
+import TransferFeePage from '../components/Pages/TransferFee/TransferFee';
+import SignupForm from '../components/SignupForm/SignupForm';
 
 const AppInner = () => {
   const location = useLocation();
@@ -25,13 +30,15 @@ const AppInner = () => {
 
   return (
     <div>
-      {location.pathname !== '/' && (
-        <LogoutButton
-          onAction={() => {
-            setModalShow(true);
-          }}
-        />
-      )}
+      <ScrollToTop />
+      {location.pathname !== '/' &&
+        (location.pathname as string) !== '/sign-up' && (
+          <LogoutButton
+            onAction={() => {
+              setModalShow(true);
+            }}
+          />
+        )}
       {isLogin ? (
         <div style={{ display: 'flex' }}>
           {!location.pathname.includes('/manage-account') && (
@@ -44,9 +51,15 @@ const AppInner = () => {
               <Route path="/feepage" element={<FeePage />} />
               <Route path="/contribute" element={<ContributionPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/receivable-fee" element={<ReceivableFee />} />
+              <Route path="/transferfeepage" element={<TransferFeePage />} />
               <Route
                 path="/manage-account/:id/edit"
                 element={<EditAccount />}
+              />
+              <Route
+                path="/manage-account/create-account"
+                element={<CreateAccount />}
               />
             </Routes>
           </div>
@@ -54,6 +67,7 @@ const AppInner = () => {
       ) : (
         <Routes>
           <Route path="/" element={<LoginForm onAction={setIsLogin} />} />
+          <Route path="/sign-up" element={<SignupForm />} />
         </Routes>
       )}
       <ConfirmLogout

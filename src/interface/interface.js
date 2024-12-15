@@ -8,13 +8,38 @@ export interface UserPayload {
   password: string;
 }
 
-export interface Fee {
+export type UnitOptions =  'Tháng' | 'Cái' | 'Lần' | 'Người' | 'kWh' | 'Số';
+
+export interface RequiredFee {
+  id: number;
+  name: String;
+  unit_price: number;
+  unit: UnitOptions
+}
+
+export interface ContributeFee { 
+  id: number;
+  name: String;
+  total: number;
+}
+
+export interface Fee = RequiredFee | ContributeFee;
+
+export interface BaseFee {
   id: number;
   room_number: number;
   amount_money: number;
   representator: string;
   email: String;
   phone_number: string;
+}
+
+export interface TransferFee {
+  room_number: number;
+  money: number;
+  fee_name: String;
+  transferer: String;
+  fee_type: String;
 }
 
 export interface Resident {
@@ -45,7 +70,7 @@ export type User = {
 
 export type ViewAccountProps = {
   users: User[];
-  onAccountModified: () => void;
+  handleDelete: (id: number) => void;
 };
 
 export type CreateAccountProps = {

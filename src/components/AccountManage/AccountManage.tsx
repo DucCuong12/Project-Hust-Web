@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
+import { IpcRendererEvent } from 'electron/renderer';
+import { IpcResponse } from '../../interface/interface';
+import { notification } from '../../../utils/toast_notification';
 import ViewAccount from '../ViewAccount/ViewAccount';
-import CreateAccount from '../CreateAccount/CreateAccount';
 import { User } from '../../interface/interface';
-import './AccountManage.css';
 import AnimatedFrame from '../../../utils/animation_page';
+import './AccountManage.css';
 
 const AccountManage = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const location = useLocation();
+  const navigate = useNavigate();
 
   const fetchUsers = async () => {
     try {
@@ -21,21 +24,56 @@ const AccountManage = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [location]);
+  }, []);
 
-  const handleAccountModified = () => {
-    fetchUsers();
+  useEffect(() => {
+    window.electronAPI.onMessage(
+      'delete-user-response',
+      (event: IpcRendererEvent, response: IpcResponse) => {
+        if (response.success) {
+          notification.success(response.message);
+          fetchUsers();
+        } else {
+          notification.error(response.message);
+        }
+      },
+    );
+  }, []);
+
+  const handleDelete = (id: number) => {
+    try {
+      window.electronAPI.deleteUserAccount(id);
+    } catch (err) {
+      notification.error('Đã có lỗi xảy ra! Vui lòng thử lại sau.');
+    }
   };
 
   return (
     <AnimatedFrame>
       <h1 className="account-manage-header">Quản lý tài khoản</h1>
 
-      {/* CreateAccount component with account creation callback */}
-      <CreateAccount onAccountCreated={handleAccountModified} />
-
-      {/* ViewAccount displays the updated list of users */}
-      <ViewAccount users={users} onAccountModified={handleAccountModified} />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+        }}
+      >
+        <div
+          style={{
+            width: '80%',
+            marginTop: '24px',
+          }}
+        >
+          <Button
+            variant="outline-primary"
+            onClick={() => navigate('/manage-account/create-account')}
+          >
+            Thêm tài khoản mới
+          </Button>
+          <ViewAccount users={users} handleDelete={handleDelete} />
+        </div>
+      </div>
     </AnimatedFrame>
   );
 };

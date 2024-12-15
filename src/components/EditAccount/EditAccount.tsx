@@ -1,12 +1,23 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import {
+  Form,
+  Button,
+  Container,
+  Row,
+  Col,
+  FloatingLabel,
+} from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { EditUser } from '../../interface/interface';
+import { FaEyeSlash } from 'react-icons/fa';
+import AnimatedFrame from '../../../utils/animation_page';
 
 const EditAccount = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const idNumber = id ? parseInt(id) : 0;
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [user, setUser] = useState<EditUser>({
     username: '',
@@ -14,6 +25,12 @@ const EditAccount = () => {
     email: '',
     password: '',
   });
+
+  const handleToggle = () => {
+    const inputNode = document.getElementById('myPassword') as HTMLElement;
+    if (inputNode.type === 'password') inputNode.type = 'text';
+    else inputNode.type = 'password';
+  };
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -60,79 +77,87 @@ const EditAccount = () => {
   }, []);
 
   return (
-    <Container className="mt-5 form-container">
-      <h2>Edit an Account</h2>
-      <Form onSubmit={handleSubmit}>
-        {/* Username Field */}
-        <Form.Group as={Row} controlId="formUsername" className="mb-3">
-          <Form.Label column sm={2}>
-            Tên đăng nhập
-          </Form.Label>
-          <Col sm={10}>
+    <AnimatedFrame>
+      <Container className="form-container">
+        <h2 style={{ textAlign: 'center' }} className="mb-5">
+          Chỉnh sửa thông tin tài khoản
+        </h2>
+        <Form onSubmit={handleSubmit}>
+          <FloatingLabel
+            controlId="floatingInput"
+            label="Tên tài khoản"
+            className="mb-3"
+          >
             <Form.Control
               type="text"
-              placeholder="Enter username"
-              name="username"
-              value={user.username}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-          <Form.Label column sm={2}>
-            Email
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="email"
-              placeholder="Enter email"
-              name="email"
-              value={user.email}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
-
-        {/* Password Field */}
-        <Form.Group as={Row} controlId="formPassword" className="mb-3">
-          <Form.Label column sm={2}>
-            Mật khẩu mới (để trống nếu không muốn thay đổi)
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="password"
-              placeholder="Enter password"
-              name="password"
-              value={user.password}
-              onChange={handleChange}
-            />
-          </Col>
-        </Form.Group>
-
-        {/* Account Name Field */}
-        <Form.Group as={Row} controlId="formName" className="mb-3">
-          <Form.Label column sm={2}>
-            Tên tài khoản
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              placeholder="Enter name"
+              placeholder=""
               name="name"
               value={user.name}
               onChange={handleChange}
             />
-          </Col>
-        </Form.Group>
+          </FloatingLabel>
+          <FloatingLabel
+            controlId="floatingInput"
+            label="Tên đăng nhập"
+            className="mb-3"
+          >
+            <Form.Control
+              type="text"
+              placeholder=""
+              name="username"
+              value={user.username}
+              onChange={handleChange}
+            />
+          </FloatingLabel>
+          <FloatingLabel
+            controlId="floatingInput"
+            label="Email"
+            className="mb-3"
+          >
+            <Form.Control
+              type="email"
+              name="email"
+              placeholder="name@example.com"
+              value={user.email}
+              onChange={handleChange}
+            />
+          </FloatingLabel>
+          <FloatingLabel label="Mật khẩu mới" className="mb-3">
+            <Form.Control
+              type="password"
+              name="password"
+              placeholder=""
+              id="myPassword"
+              onChange={handleChange}
+            />
+            <div style={{ position: 'absolute', right: '0', top: '50%' }}>
+              <FaEyeSlash className="icon-left" onClick={handleToggle} />
+            </div>
+          </FloatingLabel>
 
-        <Button variant="primary" type="submit">
-          Sửa
-        </Button>
-      </Form>
-    </Container>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              variant="outline-primary"
+              size="lg"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Đang xử lí...' : 'Chỉnh sửa'}
+            </Button>
+            <Button variant="secondary" size="lg" onClick={() => navigate(-1)}>
+              Quay lại
+            </Button>
+          </div>
+        </Form>
+      </Container>
+    </AnimatedFrame>
   );
 };
 

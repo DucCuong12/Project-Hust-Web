@@ -9,10 +9,23 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, globalShortcut } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  shell,
+  ipcMain,
+  globalShortcut,
+  IpcMainInvokeEvent,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { genSalt, hash, compare } from 'bcrypt-ts';
 import { resolveHtmlPath } from './util';
+import db from '../db/config';
+import { FieldPacket, QueryResult } from 'mysql2';
+import { LoginPayload, SignupPayload, Fee } from '../interface/interface';
+
+const saltRounds = 15;
 import {
   loginRequest,
   signupRequest,
@@ -21,14 +34,16 @@ import {
   editAccount,
   deleteAccount,
   getResidentsData,
-  fetchRequiredFee,
-  fetchContributeFee,
-  editFee,
-  addSubmittedFee,
-  deleteCompulsoryFee,
-  editContributeFee,
+  getRequiredFeeData,
+  getContributeFeeData,
+  addRequiredFee,
+  editRequiredFee,
+  deleteRequiredFee,
   addContributeFee,
+  editContributeFee,
   deleteContributeFee,
+  queryRequiredFee,
+  queryContributeFee,
 } from '../db/HandleData';
 
 class AppUpdater {
@@ -55,21 +70,70 @@ ipcMain.handle('delete-account', deleteAccount);
 
 ipcMain.handle('fetch-number-residents', getResidentsData);
 
-ipcMain.handle('fetch-required-fee', fetchRequiredFee);
+ipcMain.handle('fetch-transfer-fee', async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM transfer_fee');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching transfer_fee:', err);
+    throw err;
+  }
+});
 
-ipcMain.handle('fetch-contribute-fee', fetchContributeFee);
+ipcMain.handle('fetch-my-fee', async () => {
+  try {
+    const [rows] = await db.query('SELECT * FROM fee');
+    return rows;
+  } catch (err) {
+    console.error('Error fetching fee:', err);
+    throw err;
+  }
+});
 
-ipcMain.handle('edit-fee', editFee);
+ipcMain.handle(
+  'add-transfer-fee',
+  (
+    event: IpcMainInvokeEvent,
+    room_number: number,
+    money: number,
+    fee_name: string,
+    transferer: string,
+    fee_type: string,
+  ) => {
+    const query = 'insert into transfer_fee values (?, ?, ?, ?, ?);';
+    const values = [room_number, money, fee_name, transferer, fee_type];
 
-ipcMain.handle('add-submitted-fee', addSubmittedFee);
-
-ipcMain.handle('delete-compulsory-fee', deleteCompulsoryFee);
-
-ipcMain.handle('edit-contribute-fee', editContributeFee);
-
+    try {
+      db.query(query, values)
+        .then((value: [QueryResult, FieldPacket[]]) => {
+          event.sender.send('add-response', {
+            success: true,
+            message: 'add successful',
+          });
+        })
+        .catch(() => {
+          event.sender.send('add-response', {
+            success: false,
+            message: 'add failed!',
+          });
+        });
+      return 1;
+    } catch (err) {
+      console.log('Server error!');
+      return 0;
+    }
+  },
+);
+ipcMain.handle('fetch-required-fee', getRequiredFeeData);
+ipcMain.handle('add-required-fee', addRequiredFee);
+ipcMain.handle('edit-required-fee', editRequiredFee);
+ipcMain.handle('delete-required-fee', deleteRequiredFee);
+ipcMain.handle('fetch-contribute-fee', getContributeFeeData);
 ipcMain.handle('add-contribute-fee', addContributeFee);
-
+ipcMain.handle('edit-contribute-fee', editContributeFee);
 ipcMain.handle('delete-contribute-fee', deleteContributeFee);
+ipcMain.handle('query-required-fee', queryRequiredFee);
+ipcMain.handle('query-contribute-fee', queryContributeFee);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

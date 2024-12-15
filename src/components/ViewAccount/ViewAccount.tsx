@@ -3,10 +3,7 @@ import { Table, Button, Modal } from 'react-bootstrap';
 import { ViewAccountProps } from '../../interface/interface';
 import { useNavigate } from 'react-router-dom';
 
-const ViewAccount: React.FC<ViewAccountProps> = ({
-  users,
-  onAccountModified,
-}) => {
+const ViewAccount: React.FC<ViewAccountProps> = ({ users, handleDelete }) => {
   const [show, setShow] = useState(false);
   const [id, setId] = useState(0);
 
@@ -14,17 +11,6 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
   const handleShow = (e: any) => {
     setId(parseInt(e.target.getAttribute('data-id')));
     setShow(true);
-  };
-
-  const handleDelete = () => {
-    console.log(id);
-    try {
-      window.electronAPI.deleteUserAccount(id);
-    } catch (err) {
-      console.log('Server error!');
-    }
-    handleClose();
-    onAccountModified();
   };
 
   const navigate = useNavigate();
@@ -35,11 +21,11 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
   };
 
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>#</th>
+            <th>ID</th>
             <th>Tên tài khoản</th>
             <th>Tên đăng nhập</th>
             <th>Email</th>
@@ -85,7 +71,13 @@ const ViewAccount: React.FC<ViewAccountProps> = ({
                   <Button variant="secondary" onClick={handleClose}>
                     Hủy bỏ
                   </Button>
-                  <Button variant="danger" onClick={handleDelete}>
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      handleDelete(id);
+                      handleClose();
+                    }}
+                  >
                     Xóa
                   </Button>
                 </Modal.Footer>

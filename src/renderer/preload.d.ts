@@ -6,8 +6,11 @@ import {
   IpcResponse,
   User,
   Resident,
-  Fee,
   DashboardData,
+  TransferFee,
+  RequiredFee,
+  ContributeFee,
+  BaseFee,
 } from '../interface/interface';
 
 declare global {
@@ -22,19 +25,42 @@ declare global {
         callback: (event: IpcRendererEvent, data: IpcResponse) => void,
       ) => void;
       fetchResidentsList: () => Resident[];
-      fetchRequiredFee: () => Fee[];
       fetchUser: (id?: number) => User[];
       editUserAccount: (formData: SignupPayload, userId: number) => void;
       deleteUserAccount: (userId: number) => void;
-      deleteCompulsoryFee: (room_number: number) => number;
-      addSubmittedFee: (room_number: number, amount_money: number, representator: string) => number;
-      editFee: (room_number: number, amount_money: number, representator: string) => number;
+      fetchRequiredFee: () => RequiredFee[];
+      addRequiredFee: (feeData: RequiredFee) => void;
+      editRequiredFee: (feeData: RequiredFee, editId: number) => void;
+      deleteRequiredFee: (feeId: number) => void;
+      queryRequiredFee: (query: string) => RequiredFee[];
+      addSubmittedFee: (
+        room_number: number,
+        amount_money: number,
+        representator: string,
+      ) => number;
+      editFee: (
+        room_number: number,
+        amount_money: number,
+        representator: string,
+      ) => number;
 
-      fetchContributeFee: () => Fee[];
-      deleteContributeFee: (room_number: number) => number;
-      addContributeFee: (room_number: number, amount_money: number, representator: string) => number;
-      editContributeFee: (room_number: number, amount_money: number, representator: string) => number;
+      fetchContributeFee: () => ContributeFee[];
+      addContributeFee: (feeData: ContributeFee) => void;
+      editContributeFee: (feeData: ContributeFee, editId: number) => void;
+      deleteContributeFee: (feeId: number) => void;
+      queryContributeFee: (query: string) => ContributeFee[];
       fetchResidentsData: () => DashboardData;
+
+      fetchTransferFee: () => TransferFee[];
+      addTransferFee: (
+        room_number: number,
+        money: number,
+        fee_name: string,
+        transferer: string,
+        fee_type: string,
+      ) => number;
+
+      fetchMyFee: () => BaseFee[];
     };
   }
 }
