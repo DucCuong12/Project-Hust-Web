@@ -20,6 +20,7 @@ import ReceivableFee from '../components/Pages/ReceivableFee/ReceivableFee';
 import ScrollToTop from '../../utils/scroll_to_top';
 import CreateAccount from '../components/CreateAccount/CreateAccount';
 import TransferFeePage from '../components/Pages/TransferFee/TransferFee';
+import SignupForm from '../components/SignupForm/SignupForm';
 
 const AppInner = () => {
   const location = useLocation();
@@ -30,13 +31,14 @@ const AppInner = () => {
   return (
     <div>
       <ScrollToTop />
-      {location.pathname !== '/' && (
-        <LogoutButton
-          onAction={() => {
-            setModalShow(true);
-          }}
-        />
-      )}
+      {location.pathname !== '/' &&
+        (location.pathname as string) !== '/sign-up' && (
+          <LogoutButton
+            onAction={() => {
+              setModalShow(true);
+            }}
+          />
+        )}
       {isLogin ? (
         <div style={{ display: 'flex' }}>
           {!location.pathname.includes('/manage-account') && (
@@ -65,6 +67,7 @@ const AppInner = () => {
       ) : (
         <Routes>
           <Route path="/" element={<LoginForm onAction={setIsLogin} />} />
+          <Route path="/sign-up" element={<SignupForm />} />
         </Routes>
       )}
       <ConfirmLogout
