@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { IpcRendererEvent } from 'electron';
 import { useNavigate } from 'react-router-dom';
 import AnimatedFrame from '../../../utils/animation_page';
-import { FaLock, FaUser } from 'react-icons/fa';
 import './SignupForm.css';
 
 interface IpcResponse {
@@ -74,7 +73,7 @@ function Signup() {
 
   return (
     <AnimatedFrame>
-      <div className="wrapper">
+      <div className="wrapper signup">
         <form onSubmit={handleSubmit}>
           <h1>Đăng ký</h1>
           <div className="input-box">
