@@ -107,6 +107,7 @@ const ReceivableFee = () => {
           onSubmit={handleSubmitRequiredFee}
           triggerReload={fetchRequiredFee}
           onSearch={searchRequiredQuery}
+          requiredFee
         />
         <FeeTable
           eventKey="1"

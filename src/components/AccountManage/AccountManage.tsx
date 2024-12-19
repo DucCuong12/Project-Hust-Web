@@ -26,7 +26,8 @@ const AccountManage = () => {
     fetchUsers();
   }, []);
 
-  useEffect(() => {
+  const handleListener = () => {
+    window.electronAPI.clearListener('delete-user-response');
     window.electronAPI.onMessage(
       'delete-user-response',
       (event: IpcRendererEvent, response: IpcResponse) => {
@@ -38,9 +39,10 @@ const AccountManage = () => {
         }
       },
     );
-  }, []);
+  };
 
   const handleDelete = (id: number) => {
+    handleListener();
     try {
       window.electronAPI.deleteUserAccount(id);
     } catch (err) {

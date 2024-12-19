@@ -24,6 +24,7 @@ declare global {
         channel: String,
         callback: (event: IpcRendererEvent, data: IpcResponse) => void,
       ) => void;
+      clearListener: (channel: String) => void;
       fetchResidentsList: () => Resident[];
       fetchUser: (id?: number) => User[];
       editUserAccount: (formData: SignupPayload, userId: number) => void;

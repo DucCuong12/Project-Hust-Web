@@ -64,6 +64,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
     }
   },
 
+  clearListener: (channel: string) => {
+    const validChannels = [
+      'signup-response',
+      'login-response',
+      'edit-response',
+      'delete-user-response',
+    ]; // Add valid channels
+    if (validChannels.includes(channel)) {
+      ipcRenderer.removeAllListeners(channel);
+    }
+  },
+
   fetchUser: (id?: number) => {
     return ipcRenderer.invoke('fetch-user', id);
   },
@@ -177,7 +189,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   fetchMyFee: () => {
     return ipcRenderer.invoke('fetch-my-fee');
-  }
+  },
 });
 
 export type ElectronHandler = typeof electronHandler;

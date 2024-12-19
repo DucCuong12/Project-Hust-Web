@@ -36,37 +36,45 @@ export const loginRequest = async (
     : 'SELECT password FROM users WHERE username = ?';
   const values = [username];
   try {
-    db.query(query, values).then((value: [QueryResult, FieldPacket[]]) => {
-      if (!value[0][0])
-        event.sender.send('login-response', {
-          success: false,
-          message: 'User not found',
-        });
-      else {
-        compare(password, value[0][0].password).then((result) => {
-          if (result) {
-            if (!admin) {
-              event.sender.send('login-response', {
-                success: true,
-                message: 'Login successful',
-              });
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        if (!value[0][0])
+          event.sender.send('login-response', {
+            success: false,
+            message: 'User not found',
+          });
+        else {
+          compare(password, value[0][0].password).then((result) => {
+            if (result) {
+              if (!admin) {
+                event.sender.send('login-response', {
+                  success: true,
+                  message: 'Login successful',
+                });
+              } else {
+                event.sender.send('login-response', {
+                  success: true,
+                  message: 'Admin successful',
+                });
+              }
             } else {
               event.sender.send('login-response', {
-                success: true,
-                message: 'Admin successful',
+                success: false,
+                message: 'Invalid credentials',
               });
             }
-          } else {
-            event.sender.send('login-response', {
-              success: false,
-              message: 'Invalid credentials',
-            });
-          }
+          });
+        }
+      })
+      .catch((err: any) => {
+        console.log(err);
+        event.sender.send('login-response', {
+          success: false,
+          message: 'Error occured!',
         });
-      }
-    });
+      });
   } catch (err: any) {
-    console.log(err);
+    // console.log(err);
     event.sender.send('login-response', {
       success: false,
       message: 'Error occured!',
