@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IpcRendererEvent } from 'electron';
+import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { useNavigate } from 'react-router-dom';
 import { Spinner, Alert, Button } from 'react-bootstrap';
 import { FaLock, FaUser, FaEyeSlash } from 'react-icons/fa';
@@ -34,28 +34,8 @@ const LoginForm: React.FC<HandleLoginState> = ({ onAction }) => {
     }));
   };
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setMessage('');
-    setIsLoading(true);
-    try {
-      await window.electronAPI.login({
-        username: input.username,
-        password: input.password,
-        admin: input.admin,
-      });
-    } catch (error) {
-      alert('Login failed');
-    }
-  };
-
-  const handleToggle = () => {
-    const inputNode = document.getElementById('myPassword') as HTMLElement;
-    if (inputNode.type === 'password') inputNode.type = 'text';
-    else inputNode.type = 'password';
-  };
-
-  useEffect(() => {
+  const handleListener = () => {
+    window.electronAPI.clearListener('login-response');
     window.electronAPI.onMessage(
       'login-response',
       (event: IpcRendererEvent, response: IpcResponse) => {
@@ -71,7 +51,25 @@ const LoginForm: React.FC<HandleLoginState> = ({ onAction }) => {
         setIsLoading(false);
       },
     );
-  }, []);
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setMessage('');
+    setIsLoading(true);
+    handleListener();
+    await window.electronAPI.login({
+      username: input.username,
+      password: input.password,
+      admin: input.admin,
+    });
+  };
+
+  const handleToggle = () => {
+    const inputNode = document.getElementById('myPassword') as HTMLElement;
+    if (inputNode.type === 'password') inputNode.type = 'text';
+    else inputNode.type = 'password';
+  };
 
   return (
     <AnimatedFrame>
