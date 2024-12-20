@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { saveAs } from 'file-saver';
+import Papa from 'papaparse';
 import { Flex, Button, Layout, Menu } from 'antd';
 import {  FaLeaf, FaSearch, FaHome, FaMoneyBillWave, FaUserAlt  } from "react-icons/fa";
 import { Form } from 'react-bootstrap';
@@ -27,7 +29,7 @@ const { Header, Sider, Content } = Layout;
 //     "Tiền ủng hộ bão": "Tự nguyện",
 //     "Tiền ủng hộ lũ": "Tự nguyện",
 //   };
-  
+
 
 type RoomFeeMap = {
   [key: string]: TransferFee[];
@@ -41,6 +43,8 @@ function HistoryPage() {
   const [roomFeeMap, setRoomFeeMap] = useState<RoomFeeMap>({});
   const [allRows, setAllRows] = useState<BaseFee[]>([]);
   const [FeeMap, setFeeMap] = useState<string[]>([]);
+
+  const [selectedFeeType, setSelectedFeeType] = useState<string>(""); // State for selected fee type
 
   // search the fee that filter by room number
   const [searchValues, setSearchValues] = useState({
@@ -67,7 +71,7 @@ function HistoryPage() {
         if (!mapFee[roomNumber]) {
             mapFee[roomNumber] = [];
           }
-        
+
           mapFee[roomNumber].push(fee);
       }
 
@@ -101,7 +105,12 @@ function HistoryPage() {
     fetchRequiredFee();
 
   };
-  
+
+  // for searching by fee type
+  const handleFeeTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedFeeType(e.target.value);
+  };
+
 //   useEffect(() => {
 //     if (searchValues.searchRoomFee) {
 //       var result = "";
@@ -140,7 +149,7 @@ function HistoryPage() {
 
   const handleSubmitDeleting = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     var check = 0;
 
     for (var i = 0; i < requiredFee.length; i++) {
@@ -176,7 +185,7 @@ function HistoryPage() {
 
     fetchRequiredFee();
   };
-  
+
   // for adding
   const [isErrorAddModalOpen, setErrorAddModalOpen] = useState(false);
   const [isConfirmAddModalOpen, setConfirmAddModalOpen] = useState(false);
@@ -191,7 +200,7 @@ function HistoryPage() {
 
   const handleSubmitAdding = async (e: any) => {
     e.preventDefault();
-    
+
     var check = 0;
 
     for (const row of allRows) {
@@ -214,8 +223,8 @@ function HistoryPage() {
     setConfirmAddModalOpen(false); // Close confirmation modal
 
     try {
-      const success = await window.electronAPI.addTransferFee(Number(submitRoomNumber), Number(submitMoney), 
-                                                              submitFeeName, submitTransferrer, 
+      const success = await window.electronAPI.addTransferFee(Number(submitRoomNumber), Number(submitMoney),
+                                                              submitFeeName, submitTransferrer,
                                                               "Tự nguyện");
 
       if (success) {
@@ -227,7 +236,7 @@ function HistoryPage() {
           fee_name: submitFeeName,
           transferer: submitTransferrer,
           fee_type: "Tự nguyện",
-        });        
+        });
 
       } else {
         setErrorAddMessage("Nộp tiền không thành công.");
@@ -256,7 +265,7 @@ function HistoryPage() {
 
   const handleSubmitEditing = async (e: any) => {
     e.preventDefault();
-    
+
     var check = 0;
 
     for (var i = 0; i < requiredFee.length; i++) {
@@ -303,23 +312,45 @@ function HistoryPage() {
     fetchRequiredFee();
   };
 
+  const handleExport = () => {
+    // Lấy dữ liệu từ bảng hiện tại (đã lọc hoặc chưa lọc)
+    const dataToExport =
+      searchValues.searchRoomFee !== ""
+        ? roomFeeMap[searchValues.searchRoomFee] || []
+        : requiredFee;
+
+    // Định dạng dữ liệu cho CSV
+    const formattedData = dataToExport.map((row) => ({
+      'Số phòng': row.room_number,
+      'Số tiền đã nộp': row.money,
+      'Tên khoản thu': row.fee_name,
+      'Người nộp': row.transferer,
+      'Loại khoản thu': row.fee_type,
+    }));
+
+    // Chuyển đổi dữ liệu sang CSV
+    const csvData = Papa.unparse(formattedData);
+
+    // Thêm BOM để hỗ trợ UTF-8 cho tiếng Việt
+    const utf8Bom = '\uFEFF';
+    const blob = new Blob([utf8Bom + csvData], { type: 'text/csv;charset=utf-8;' });
+
+    // Tải xuống file với tên "history.csv"
+    saveAs(blob, 'history.csv');
+  };
+
   return (
     <AnimatedFrame>
       <Layout>
-        {/* <SideBar collapsed={collapsed} setCollapsed={setCollapsed} /> */}
         <Layout className="site-layout">
           <Header className="header"> </Header>
           <Content style={{ margin: '14px', background: '#fff' }}>
             <div className="min-h-screen bg-gray-100 p-6">
               <div className="container mx-auto grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
-
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <h2 className="text-2xl font-semibold mb-4">Lịch sử nộp tiền</h2>
-                  <label
-                        className="block text-sm font-medium mb-2"
-                        htmlFor="roomNumber"
-                      >
-                        Số phòng
+                  <label className="block text-sm font-medium mb-2" htmlFor="roomNumber">
+                    Số phòng
                   </label>
                   <div className="mb-4">
                     <input
@@ -330,6 +361,8 @@ function HistoryPage() {
                       placeholder="Nhập số phòng"
                     />
                   </div>
+
+
                   <table className="min-w-full table-auto border-collapse">
                     <thead>
                       <tr className="bg-gray-200">
@@ -341,32 +374,36 @@ function HistoryPage() {
                       </tr>
                     </thead>
                     <tbody>
-                        {searchValues.searchRoomFee !== ""? (
-                            roomFeeMap[searchValues.searchRoomFee]?.map((row, index) => (
+                      {searchValues.searchRoomFee !== ""
+                        ? roomFeeMap[searchValues.searchRoomFee]?.map((row, index) => (
                             <tr key={index}>
-                                <td>{row.room_number}</td>
-                                <td>{row.money}</td>
-                                <td>{row.fee_name}</td>
-                                <td>{row.transferer}</td>
-                                <td>{row.fee_type}</td>
+                              <td>{row.room_number}</td>
+                              <td>{row.money}</td>
+                              <td>{row.fee_name}</td>
+                              <td>{row.transferer}</td>
+                              <td>{row.fee_type}</td>
                             </tr>
-                            ))
-                        ) : (
-                            requiredFee.map((row, index) => (
-                                <tr key={index}>
-                                  <td>{row.room_number}</td>
-                                  <td>{row.money}</td>
-                                  <td>{row.fee_name}</td>
-                                  <td>{row.transferer}</td>
-                                  <td>{row.fee_type}</td>
-                                </tr>
-                            ))
-                        )}
+                          ))
+                        : requiredFee.map((row, index) => (
+                            <tr key={index}>
+                              <td>{row.room_number}</td>
+                              <td>{row.money}</td>
+                              <td>{row.fee_name}</td>
+                              <td>{row.transferer}</td>
+                              <td>{row.fee_type}</td>
+                            </tr>
+                          ))}
                     </tbody>
                   </table>
+                  {/* Dòng phân cách */}
+                  <hr className="my-4 border-t border-gray-300" />
+                  {/* Nút xuất file */}
+                  <div className="export-button-container">
+                    <button onClick={handleExport} className="btn btn-success">
+                      Xuất file CSV
+                    </button>
+                  </div>
                 </div>
-                {/* </div> */}
-
               </div>
             </div>
           </Content>
