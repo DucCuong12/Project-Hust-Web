@@ -32,7 +32,7 @@ function ResidentTable() {
   };
 
   const filteredResidents = residents.filter((resident) =>
-    resident.room_number.toLowerCase().includes(searchRoom.toLowerCase())
+    resident.room_number.toLowerCase().includes(searchRoom.toLowerCase()),
   );
 
   const currentResidents = filteredResidents.slice(
@@ -43,18 +43,18 @@ function ResidentTable() {
   useEffect(() => {
     setTotalPages(Math.ceil(filteredResidents.length / rowsPerPage));
     setCurrentPage(1);
-  }, [searchRoom, filteredResidents]);
+  }, [searchRoom]);
 
   const handleExport = () => {
     // Định nghĩa dữ liệu với các cột và tiêu đề khớp với giao diện
     const formattedData = currentResidents.map((resident) => ({
-      'ID': resident.id,
+      ID: resident.id,
       'Số phòng': resident.room_number,
       'Họ và tên': resident.full_name,
       'Năm sinh': resident.birth_year,
       'Nghề nghiệp': resident.occupation,
       'Số điện thoại': resident.phone_number,
-      'Email': resident.email,
+      Email: resident.email,
     }));
 
     // Sử dụng papaparse để chuyển đổi thành CSV
@@ -62,13 +62,13 @@ function ResidentTable() {
 
     // Thêm BOM để hỗ trợ UTF-8 (tránh lỗi phông chữ tiếng Việt)
     const utf8Bom = '\uFEFF';
-    const blob = new Blob([utf8Bom + csvData], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([utf8Bom + csvData], {
+      type: 'text/csv;charset=utf-8;',
+    });
 
     // Lưu file với tên "filtered_residents.csv"
     saveAs(blob, 'filtered_residents.csv');
   };
-
-
 
   return (
     <div className="resident-table-container">
@@ -118,28 +118,44 @@ function ResidentTable() {
       </table>
 
       {/* Điều hướng trang */}
-      <div className="pagination-controls">
-        <button
-          className="pagination-button"
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div
+          className="pagination-controls"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
-          Trước
-        </button>
-        <button
-          className="pagination-button"
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          Tiếp theo
-        </button>
-      </div>
+          <button
+            className="pagination-button"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Trước
+          </button>
+          <button
+            className="pagination-button"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Tiếp theo
+          </button>
+        </div>
 
-      {/* Nút xuất file */}
-      <div className="export-button-container">
-        <button onClick={handleExport} className="btn btn-success">
-          Xuất file CSV
-        </button>
+        {/* Nút xuất file */}
+        <div
+          className="export-button-container"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <button onClick={handleExport} className="btn btn-success">
+            Xuất file CSV
+          </button>
+        </div>
       </div>
     </div>
   );
