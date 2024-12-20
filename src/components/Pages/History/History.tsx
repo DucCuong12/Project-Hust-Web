@@ -33,7 +33,7 @@ type RoomFeeMap = {
   [key: string]: TransferFee[];
 };
 
-function TransferFeePage() {
+function HistoryPage() {
   const [collapsed, setCollapsed] = useState(false);
   const [roomNumber, setRoomNumber] = useState("");
   const [requiredFee, setRequiredFee] = useState<TransferFee[]>([]);
@@ -79,7 +79,7 @@ function TransferFeePage() {
   useEffect(() => {
   // Simulate fetching data
   const fetchFees = async () => {
-    const requiredFeeData = await window.electronAPI.fetchRequiredFee();
+    const requiredFeeData = await window.electronAPI.fetchContributeFee();
     const fees = requiredFeeData.map((row: any) => String(row.fee_name)); // Ensure strings
     console.log(fees);
     setFeeMap(fees); // Set the list of fees
@@ -216,7 +216,7 @@ function TransferFeePage() {
     try {
       const success = await window.electronAPI.addTransferFee(Number(submitRoomNumber), Number(submitMoney), 
                                                               submitFeeName, submitTransferrer, 
-                                                              "Bắt buộc");
+                                                              "Tự nguyện");
 
       if (success) {
         setSuccessAddModalOpen(true);
@@ -226,7 +226,7 @@ function TransferFeePage() {
           money: Number(submitMoney),
           fee_name: submitFeeName,
           transferer: submitTransferrer,
-          fee_type: "Bắt buộc",
+          fee_type: "Tự nguyện",
         });        
 
       } else {
@@ -311,129 +311,10 @@ function TransferFeePage() {
           <Header className="header"> </Header>
           <Content style={{ margin: '14px', background: '#fff' }}>
             <div className="min-h-screen bg-gray-100 p-6">
-              <div className="container mx-auto grid grid-cols-2 md:grid-cols-2 gap-6 mb-6">
-                {/* Transfer Money Section */}
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                  <h2 className="text-2xl font-semibold mb-4">
-                    Nộp tiền
-                  </h2>
-                  <form onSubmit={handleSubmitAdding}>
-                    <div className="mb-4">
-                      <label
-                        className="block text-sm font-medium mb-2"
-                        htmlFor="roomNumber"
-                      >
-                        Số phòng
-                      </label>
-                      <input
-                        type="number"
-                        id="roomNumber"
-                        value={submitRoomNumber}
-                        onChange={(e) => setSubmitRoomNumber(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        placeholder="Nhập số phòng"
-                        required
-                      />
-                    </div>
-                    
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium mb-2" htmlFor="feeName">
-                            Tên khoản thu
-                        </label>
-                        <Form.Select
-                            id="feeName"
-                            value={submitFeeName}
-                            onChange={(e) => setSubmitFeeName(e.target.value)}
-                            className="w-full p-2 border rounded-md"
-                            required
-                        >
-                            <option value="">Chọn khoản thu</option>
-                            {FeeMap.map((key) => (
-                            <option key={key} value={key}>
-                                {key}
-                            </option>
-                            ))}
-                        </Form.Select>
-                    </div>
-
-                    <div className="mb-4">
-                      <label
-                        className="block text-sm font-medium mb-2"
-                        htmlFor="transferAmount"
-                      >
-                        Số tiền nộp
-                      </label>
-                      <input
-                        type="number"
-                        id="transferAmount"
-                        value={submitMoney}
-                        onChange={(e) => setSubmitMoney(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        placeholder="Nhập số tiền"
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label
-                        className="block text-sm font-medium mb-2"
-                        htmlFor="transferrer"
-                      >
-                        Người nộp tiền
-                      </label>
-                      <input
-                        type="string"
-                        id="person"
-                        value={submitTransferrer}
-                        onChange={(e) => setSubmitTransferrer(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        placeholder="Nhập tên người nộp tiền"
-                        required
-                      />
-                    </div>
-                    
-                    <button
-                      type="submit"
-                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
-                    >
-                      Nộp tiền
-                    </button>
-
-                    <ConfirmModal
-                      show={isErrorAddModalOpen}
-                      onClose={() => setErrorAddModalOpen(false)}
-                      onConfirm={() => setErrorAddModalOpen(false)}
-                      title="Lỗi"
-                      bodyText={errorAddMessage}
-                      confirmText=""
-                      cancelText="Huỷ"
-                    />
-
-                    {/* Confirmation Modal */}
-                    <ConfirmModal
-                      show={isConfirmAddModalOpen}
-                      onClose={() => setConfirmAddModalOpen(false)}
-                      onConfirm={handleConfirmAdding}
-                      title="Xác nhận nộp tiền"
-                      bodyText={confirmationAddMessage}
-                      confirmText="Xác nhận"
-                      cancelText="Hủy"
-                    />
-
-                    {/* Success Modal */}
-                    <ConfirmModal
-                      show={isSuccessAddModalOpen}
-                      onClose={() => setSuccessAddModalOpen(false)}
-                      onConfirm={() => setSuccessAddModalOpen(false)}
-                      title="Thành công"
-                      bodyText="Đã nộp tiền thành công."
-                      confirmText=""
-                      cancelText="Huỷ"
-                    />
-                  </form>
-                </div>
+              <div className="container mx-auto grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
 
                 <div className="bg-white p-6 rounded-lg shadow-md">
-                  <h2 className="text-2xl font-semibold mb-4">Tra cứu tiền nộp</h2>
+                  <h2 className="text-2xl font-semibold mb-4">Lịch sử nộp tiền</h2>
                   <label
                         className="block text-sm font-medium mb-2"
                         htmlFor="roomNumber"
@@ -456,7 +337,7 @@ function TransferFeePage() {
                         <th>Số tiền đã nộp</th>
                         <th>Tên khoản thu</th>
                         <th>Người nộp</th>
-                        {/* <th>Loại khoản thu</th> */}
+                        <th>Loại khoản thu</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -467,15 +348,19 @@ function TransferFeePage() {
                                 <td>{row.money}</td>
                                 <td>{row.fee_name}</td>
                                 <td>{row.transferer}</td>
-                                {/* <td>{FeeMap[row.fee_name as keyof typeof FeeMap]}</td> */}
+                                <td>{row.fee_type}</td>
                             </tr>
                             ))
                         ) : (
-                            <tr>
-                                <td colSpan={5} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                    Hãy nhập số phòng
-                                </td>
-                            </tr>
+                            requiredFee.map((row, index) => (
+                                <tr key={index}>
+                                  <td>{row.room_number}</td>
+                                  <td>{row.money}</td>
+                                  <td>{row.fee_name}</td>
+                                  <td>{row.transferer}</td>
+                                  <td>{row.fee_type}</td>
+                                </tr>
+                            ))
                         )}
                     </tbody>
                   </table>
@@ -491,4 +376,4 @@ function TransferFeePage() {
   );
 }
 
-export default TransferFeePage;
+export default HistoryPage;
