@@ -1,5 +1,6 @@
 # Flat management app
 This is a desktop app to manage flat details and fees. Made for school, class HUST/IT3180.
+
 Our app is written in TypeScript and JavaScript, and based on ElectronJS + React framework.
 
 ## Recommended IDE Setup
@@ -42,4 +43,3 @@ npm run package
 ## Credits
 
 - Thanks Long Lo for his team's README file, this file was likely a "clone" to their file.
-- Documents from (https://react-bootstrap.github.io/) helps us a lot on our coding process.
