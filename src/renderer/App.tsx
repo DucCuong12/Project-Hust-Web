@@ -22,6 +22,7 @@ import CreateAccount from '../components/CreateAccount/CreateAccount';
 import TransferFeePage from '../components/Pages/TransferFee/TransferFee';
 import TransferContributeFeePage from '../components/Pages/TransferContributeFee/TransferContributeFee';
 import HistoryPage from '../components/Pages/History/History';
+import SignupForm from '../components/SignupForm/SignupForm';
 
 const AppInner = () => {
   const location = useLocation();
@@ -32,13 +33,14 @@ const AppInner = () => {
   return (
     <div>
       <ScrollToTop />
-      {location.pathname !== '/' && (
-        <LogoutButton
-          onAction={() => {
-            setModalShow(true);
-          }}
-        />
-      )}
+      {location.pathname !== '/' &&
+        (location.pathname as string) !== '/sign-up' && (
+          <LogoutButton
+            onAction={() => {
+              setModalShow(true);
+            }}
+          />
+        )}
       {isLogin ? (
         <div style={{ display: 'flex' }}>
           {!location.pathname.includes('/manage-account') && (
@@ -69,6 +71,7 @@ const AppInner = () => {
       ) : (
         <Routes>
           <Route path="/" element={<LoginForm onAction={setIsLogin} />} />
+          <Route path="/sign-up" element={<SignupForm />} />
         </Routes>
       )}
       <ConfirmLogout

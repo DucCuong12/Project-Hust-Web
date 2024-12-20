@@ -37,22 +37,8 @@ const CreateAccount = () => {
     });
   };
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      await window.electronAPI.signup({
-        username: formData.username,
-        password: formData.password,
-        email: formData.email,
-        name: formData.name,
-      });
-    } catch (error) {
-      notification.error('Đã có lỗi xảy ra! Vui lòng thử lại sau.');
-    }
-  };
-
-  useEffect(() => {
+  const handleListener = () => {
+    window.electronAPI.clearListener('signup-response');
     window.electronAPI.onMessage(
       'signup-response',
       (event: IpcRendererEvent, response: IpcResponse) => {
@@ -65,10 +51,25 @@ const CreateAccount = () => {
           notification.error(response.message);
         }
         setIsLoading(false);
-        dumState = !dumState;
       },
     );
-  }, [dumState]);
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    handleListener();
+    setIsLoading(true);
+    try {
+      await window.electronAPI.signup({
+        username: formData.username,
+        password: formData.password,
+        email: formData.email,
+        name: formData.name,
+      });
+    } catch (error) {
+      notification.error('Đã có lỗi xảy ra! Vui lòng thử lại sau.');
+    }
+  };
 
   return (
     <AnimatedFrame>

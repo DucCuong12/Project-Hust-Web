@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { IpcRendererEvent } from 'electron';
 import { useNavigate } from 'react-router-dom';
 import AnimatedFrame from '../../../utils/animation_page';
-import { FaLock, FaUser } from 'react-icons/fa';
 import './SignupForm.css';
 
 interface IpcResponse {
@@ -12,6 +11,7 @@ interface IpcResponse {
 
 function Signup() {
   const [input, setInput] = useState({
+    name: '',
     username: '',
     email: '',
     password: '',
@@ -30,7 +30,7 @@ function Signup() {
         const username = input.username;
         const password = input.password;
         const email = input.email;
-        const name = 'abcd';
+        const name = input.name;
         await window.electronAPI.signup({
           username,
           password,
@@ -73,50 +73,67 @@ function Signup() {
 
   return (
     <AnimatedFrame>
-      <div className="wrapper">
+      <div className="wrapper signup">
         <form onSubmit={handleSubmit}>
           <h1>Đăng ký</h1>
           <div className="input-box">
             <input
               type="text"
+              name="name"
+              placeholder="Tên tài khoản"
+              required
+              value={input.name}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-box">
+            <input
+              type="text"
               name="username"
-              placeholder="Username"
+              placeholder="Tên đăng nhập"
               required
               value={input.username}
               onChange={handleChange}
             />
-            <FaUser className="icon" />
+          </div>
+          <div className="input-box">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
+              value={input.email}
+              onChange={handleChange}
+            />
           </div>
           <div className="input-box">
             <input
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder="Mật khẩu"
               required
               value={input.password}
               onChange={handleChange}
             />
-            <FaLock className="icon" />
           </div>
           <div className="input-box">
             <input
               type="password"
               name="retype_password"
-              placeholder="Retype password"
+              placeholder="Nhập lại mật khẩu"
               required
               value={input.retype_password}
               onChange={handleChange}
             />
-            <FaLock className="icon" />
           </div>
 
-          <div className="remember-forgot">
+          <button type="submit">Đăng ký</button>
+
+          <div className="remember-forgot" style={{ marginTop: '10px' }}>
             <a href="#" onClick={handleClick}>
               Đã có tài khoản? Đăng nhập
             </a>
           </div>
-
-          <button type="submit">Đăng ký</button>
         </form>
         {message && <p>{message}</p>}
       </div>
