@@ -1,5 +1,6 @@
-# Flat management app in Typescript, Javascript, Electronjs 
+# Flat management app
 This is a desktop app to manage flat details and fees. Made for school, class HUST/IT3180.
+Our app is written in TypeScript and JavaScript, and based on ElectronJS + React framework.
 
 ## Recommended IDE Setup
 
