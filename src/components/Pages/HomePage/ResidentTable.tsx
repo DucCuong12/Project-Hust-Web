@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Resident } from '../../../interface/interface.js';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
-
 const rowsPerPage = 10;
 
 function ResidentTable() {
@@ -10,26 +9,14 @@ function ResidentTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [residents, setResidents] = useState<Resident[]>([]);
   const [searchRoom, setSearchRoom] = useState('');
-  const [editingResidentId, setEditingResidentId] = useState<number | null>(null);
-  const [editedResident, setEditedResident] = useState<Resident | null>(null);
-  // const [saveSuccess, setSaveSuccess] = useState<boolean>(false); // Trạng thái lưu thành công
-
-
-  const fetchResidents = async () => {
-    try {
-      const residents = await window.electronAPI.fetchResidentsList();
-      setResidents(residents);
-      setTotalPages(Math.ceil(residents.length / rowsPerPage));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchResidents();
-  }, []);
-
-  // Mới thêm
+  const [editingResidentId, setEditingResidentId] = useState(null);
+  const [editedResident, setEditedResident] = useState({
+    room_number: '',
+    full_name: '',
+    birth_year: '',
+    occupation: '',
+    phone_number: '',
+    email: ''});
   const [isAdding, setIsAdding] = useState(false); // Trạng thái thêm cư dân mới
   const [newResident, setNewResident] = useState({
     room_number: '',
@@ -37,7 +24,7 @@ function ResidentTable() {
     birth_year: '',
     occupation: '',
     phone_number: '',
-    email: '',
+    email: ''
   });
 
   // Lấy dữ liệu từ localStorage khi trang load
@@ -52,21 +39,35 @@ function ResidentTable() {
   const saveResidentsToLocalStorage = (updatedResidents) => {
     localStorage.setItem('residents', JSON.stringify(updatedResidents));
   };
+
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
   };
 
+  // const currentResidents = residents.slice(
+  //   (currentPage - 1) * rowsPerPage,
+  //   currentPage * rowsPerPage
+  // );
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Xử lý thay đổi dữ liệu trong form
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (isAdding) {
       setNewResident({ ...newResident, [name]: value });
-    } else if (editedResident) {
+    } else {
       setEditedResident({ ...editedResident, [name]: value });
     }
   };
+
+  // Bắt đầu chỉnh sửa cư dân
+  const handleEdit = (resident) => {
+    setEditingResidentId(resident.id);
+    setEditedResident(resident); // Điền thông tin cư dân hiện tại vào form
+  };
+
+  // Lưu lại thông tin cư dân sau khi chỉnh sửa
   const handleSave = () => {
     const updatedResidents = residents.map((resident) =>
      resident.id === editingResidentId ? editedResident : resident
@@ -75,17 +76,18 @@ function ResidentTable() {
     setEditingResidentId(null);
     setEditedResident(null);
     saveResidentsToLocalStorage(updatedResidents); // Lưu vào localStorage
-      // setSaveSuccess(true); // Hiển thị thông báo lưu thành công
+    // setSaveSuccess(true); // Hiển thị thông báo lưu thành công
       // setTimeout(() => setSaveSuccess(false), 3000); // Ẩn thông báo sau 3 giây
+    // alert('Thay đổi thông tin cư dân thành công');
 
   };
 
+  // Hủy bỏ việc chỉnh sửa
   const handleCancel = () => {
-    setEditingResidentId(null);
-    setEditedResident(null);
+    setEditingResidentId(null); // Đặt lại trạng thái không chỉnh sửa
   };
 
-  // Neww2
+  // Bắt đầu thêm cư dân mới
   const handleAddResident = () => {
     const updatedResidents = [...residents, { ...newResident, id: Date.now() }]; // thêm id tạm thời bằng Date.now()
     setResidents(updatedResidents);
@@ -98,7 +100,7 @@ function ResidentTable() {
       birth_year: '',
       occupation: '',
       phone_number: '',
-      email: '',
+      email: ''
     });
   };
 
@@ -110,16 +112,14 @@ function ResidentTable() {
       birth_year: '',
       occupation: '',
       phone_number: '',
-      email: '',
+      email: ''
     });
   };
-
   function isValidPhoneNumber(phoneNumber) {
     // Kiểm tra nếu chuỗi chỉ chứa các chữ số và độ dài từ 9 đến 12
     const regex = /^[0-9]{9,12}$/;
     return regex.test(phoneNumber);
 }
-
   // Lưu cư dân mới vào danh sách
   const handleSaveNew = () => {
     if (
@@ -130,21 +130,22 @@ function ResidentTable() {
       !newResident.phone_number ||
       !newResident.email
     ) {
-      alert('Vui lòng điền đầy đủ thông tin.');
+      // alert('Vui lòng điền đầy đủ thông tin.');
       return;
     }
 
     if(!isValidPhoneNumber(newResident.phone_number)) {
-      alert('SDT phải gồm 9-12 chữ số');
+      // alert('SDT phải gồm 9-12 chữ số');
       return;
     }
+
 
     const newResidentWithId = { ...newResident, id: Date.now() }; // Tạo ID mới cho cư dân
     const updatedResidents = [...residents, newResidentWithId];
     setResidents(updatedResidents);
     setIsAdding(false); // Tắt form thêm mới sau khi lưu
     saveResidentsToLocalStorage(updatedResidents); // Lưu vào localStorage
-    alert('Thêm cư dân thành công');
+    // alert('Thêm cư dân thành công');
   };
 
   // Hủy bỏ thêm cư dân mới
@@ -154,12 +155,10 @@ function ResidentTable() {
   const filteredResidents = residents.filter((resident) =>
     resident.room_number.toLowerCase().includes(searchRoom.toLowerCase())
   );
-
   const currentResidents = filteredResidents.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
-
   useEffect(() => {
     setTotalPages(Math.ceil(filteredResidents.length / rowsPerPage));
     setCurrentPage(1);
@@ -421,7 +420,6 @@ function ResidentTable() {
           </div>
         </div>
       </div>
-    </div>
-);
-}
+      </div>);
+       };
 export default ResidentTable;
