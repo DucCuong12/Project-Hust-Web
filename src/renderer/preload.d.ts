@@ -26,6 +26,8 @@ declare global {
       ) => void;
       clearListener: (channel: String) => void;
       fetchResidentsList: () => Resident[];
+      addResident: (residentData: Resident) => void;
+      editResident: (residentData: Resident) => void;
       fetchUser: (id?: number) => User[];
       editUserAccount: (formData: SignupPayload, userId: number) => void;
       deleteUserAccount: (userId: number) => void;

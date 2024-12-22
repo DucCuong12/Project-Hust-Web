@@ -7,10 +7,13 @@ import {
   SignupPayload,
   RequiredFee,
   ContributeFee,
+  Resident,
 } from '../interface/interface';
 import {
+  addResident,
   deleteRequiredFee,
   editRequiredFee,
+  editResident,
   queryRequiredFee,
 } from '../db/HandleData';
 
@@ -164,6 +167,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   fetchResidentsData: () => {
     return ipcRenderer.invoke('fetch-number-residents');
+  },
+
+  addResident: (residentData: Resident) => {
+    return ipcRenderer.invoke('add-resident', residentData);
+  },
+
+  editResident: (residentData: Resident) => {
+    return ipcRenderer.invoke('edit-resident', residentData);
   },
 
   addTransferFee: (

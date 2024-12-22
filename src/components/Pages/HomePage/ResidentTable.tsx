@@ -9,36 +9,50 @@ function ResidentTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [residents, setResidents] = useState<Resident[]>([]);
   const [searchRoom, setSearchRoom] = useState('');
-  const [editingResidentId, setEditingResidentId] = useState(null);
-  const [editedResident, setEditedResident] = useState({
-    room_number: '',
+  const [editingResidentId, setEditingResidentId] = useState<Number>();
+  const [editedResident, setEditedResident] = useState<Resident>({
+    id: 0,
+    room_number: 0,
     full_name: '',
-    birth_year: '',
+    birth_year: 0,
     occupation: '',
     phone_number: '',
-    email: ''});
+    email: '',
+  });
   const [isAdding, setIsAdding] = useState(false); // Trạng thái thêm cư dân mới
   const [newResident, setNewResident] = useState({
-    room_number: '',
+    room_number: 0,
     full_name: '',
-    birth_year: '',
+    birth_year: 0,
     occupation: '',
     phone_number: '',
-    email: ''
+    email: '',
   });
 
-  // Lấy dữ liệu từ localStorage khi trang load
-  useEffect(() => {
-    const storedResidents = localStorage.getItem('residents');
-    if (storedResidents) {
-      setResidents(JSON.parse(storedResidents));
-      setTotalPages(Math.ceil(JSON.parse(storedResidents).length / rowsPerPage));
+  const addResident = (updatedResidents: any) => {
+    try {
+      window.electronAPI.addResident(updatedResidents);
+    } catch (error) {
+      console.error('Error adding resident:', error);
+    } finally {
+      fetchResidents();
+      setIsAdding(false);
     }
-  }, []);
-
-  const saveResidentsToLocalStorage = (updatedResidents) => {
-    localStorage.setItem('residents', JSON.stringify(updatedResidents));
   };
+
+  const fetchResidents = async () => {
+    try {
+      const residents = await window.electronAPI.fetchResidentsList();
+      setResidents(residents);
+      setTotalPages(Math.ceil(residents.length / rowsPerPage));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchResidents();
+  }, []);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -52,7 +66,7 @@ function ResidentTable() {
   // );
 
   // Xử lý thay đổi dữ liệu trong form
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     if (isAdding) {
       setNewResident({ ...newResident, [name]: value });
@@ -62,66 +76,65 @@ function ResidentTable() {
   };
 
   // Bắt đầu chỉnh sửa cư dân
-  const handleEdit = (resident) => {
+  const handleEdit = (resident: Resident) => {
     setEditingResidentId(resident.id);
     setEditedResident(resident); // Điền thông tin cư dân hiện tại vào form
   };
 
   // Lưu lại thông tin cư dân sau khi chỉnh sửa
-  const handleSave = () => {
-    const updatedResidents = residents.map((resident) =>
-     resident.id === editingResidentId ? editedResident : resident
-    );
-    setResidents(updatedResidents);
-    setEditingResidentId(null);
-    setEditedResident(null);
-    saveResidentsToLocalStorage(updatedResidents); // Lưu vào localStorage
-    // setSaveSuccess(true); // Hiển thị thông báo lưu thành công
-      // setTimeout(() => setSaveSuccess(false), 3000); // Ẩn thông báo sau 3 giây
-    // alert('Thay đổi thông tin cư dân thành công');
-
+  const handleSave = async () => {
+    try {
+      await window.electronAPI.editResident({
+        ...editedResident,
+        id: editingResidentId,
+      });
+    } catch (error) {
+      console.error('Error editing resident:', error);
+    } finally {
+      setEditingResidentId(0); // Đặt lại trạng thái không chỉnh sửa\
+      fetchResidents();
+    }
   };
 
   // Hủy bỏ việc chỉnh sửa
   const handleCancel = () => {
-    setEditingResidentId(null); // Đặt lại trạng thái không chỉnh sửa
+    setEditingResidentId(0); // Đặt lại trạng thái không chỉnh sửa
   };
 
   // Bắt đầu thêm cư dân mới
   const handleAddResident = () => {
-    const updatedResidents = [...residents, { ...newResident, id: Date.now() }]; // thêm id tạm thời bằng Date.now()
-    setResidents(updatedResidents);
-    setTotalPages(Math.ceil(updatedResidents.length / rowsPerPage));
+    // thêm id tạm thời bằng Date.now()
+    addResident(newResident);
 
     // Reset lại form
     setNewResident({
-      room_number: '',
+      room_number: 0,
       full_name: '',
-      birth_year: '',
+      birth_year: 0,
       occupation: '',
       phone_number: '',
-      email: ''
+      email: '',
     });
   };
 
   const handleAddNew = () => {
     setIsAdding(true); // Chuyển sang chế độ thêm
     setNewResident({
-      room_number: '',
+      room_number: 0,
       full_name: '',
-      birth_year: '',
+      birth_year: 0,
       occupation: '',
       phone_number: '',
-      email: ''
+      email: '',
     });
   };
-  function isValidPhoneNumber(phoneNumber) {
+  function isValidPhoneNumber(phoneNumber: any) {
     // Kiểm tra nếu chuỗi chỉ chứa các chữ số và độ dài từ 9 đến 12
     const regex = /^[0-9]{9,12}$/;
     return regex.test(phoneNumber);
-}
+  }
   // Lưu cư dân mới vào danh sách
-  const handleSaveNew = () => {
+  const handleSaveNew = async () => {
     if (
       !newResident.room_number ||
       !newResident.full_name ||
@@ -134,17 +147,11 @@ function ResidentTable() {
       return;
     }
 
-    if(!isValidPhoneNumber(newResident.phone_number)) {
+    if (!isValidPhoneNumber(newResident.phone_number)) {
       // alert('SDT phải gồm 9-12 chữ số');
       return;
     }
-
-
-    const newResidentWithId = { ...newResident, id: Date.now() }; // Tạo ID mới cho cư dân
-    const updatedResidents = [...residents, newResidentWithId];
-    setResidents(updatedResidents);
-    setIsAdding(false); // Tắt form thêm mới sau khi lưu
-    saveResidentsToLocalStorage(updatedResidents); // Lưu vào localStorage
+    await addResident(newResident); // Lưu vào localStorage
     // alert('Thêm cư dân thành công');
   };
 
@@ -153,11 +160,11 @@ function ResidentTable() {
     setIsAdding(false); // Tắt form thêm mới
   };
   const filteredResidents = residents.filter((resident) =>
-    resident.room_number.toLowerCase().includes(searchRoom.toLowerCase())
+    resident.room_number.toLowerCase().includes(searchRoom.toLowerCase()),
   );
   const currentResidents = filteredResidents.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
   useEffect(() => {
     setTotalPages(Math.ceil(filteredResidents.length / rowsPerPage));
@@ -187,7 +194,10 @@ function ResidentTable() {
     <div className="resident-table-container">
       <div className="res">
         <h2>Danh sách cư dân</h2>
-        <button className="btn-primary p-2 bg-blue-400 font-medium" onClick={handleAddNew}>
+        <button
+          className="btn-primary p-2 bg-blue-400 font-medium"
+          onClick={handleAddNew}
+        >
           Thêm cư dân
         </button>
       </div>
@@ -204,7 +214,7 @@ function ResidentTable() {
             onChange={handleInputChange}
           />
           <input
-            className='custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500'
+            className="custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500"
             type="text"
             name="full_name"
             placeholder="Họ và tên"
@@ -212,7 +222,7 @@ function ResidentTable() {
             onChange={handleInputChange}
           />
           <input
-            className='custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500'
+            className="custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500"
             type="number"
             name="birth_year"
             placeholder="Năm sinh"
@@ -220,7 +230,7 @@ function ResidentTable() {
             onChange={handleInputChange}
           />
           <input
-            className='custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500'
+            className="custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500"
             type="text"
             name="occupation"
             placeholder="Nghề nghiệp"
@@ -228,7 +238,7 @@ function ResidentTable() {
             onChange={handleInputChange}
           />
           <input
-            className='custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500'
+            className="custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500"
             type="text"
             name="phone_number"
             placeholder="Số điện thoại"
@@ -236,15 +246,25 @@ function ResidentTable() {
             onChange={handleInputChange}
           />
           <input
-            className='custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500'
+            className="custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500"
             type="email"
             name="email"
             placeholder="Email"
             value={newResident.email}
             onChange={handleInputChange}
           />
-            <button className='btn-submit rounded-sm p-2  font-semibold text-white bg-green-400' onClick={handleSaveNew}>Lưu</button>
-            <button className='btn-delete rounded-sm p-2 font-semibold text-white bg-red-400' onClick={handleCancelNew}>Hủy</button>
+          <button
+            className="btn-submit rounded-sm p-2  font-semibold text-white bg-green-400"
+            onClick={handleSaveNew}
+          >
+            Lưu
+          </button>
+          <button
+            className="btn-delete rounded-sm p-2 font-semibold text-white bg-red-400"
+            onClick={handleCancelNew}
+          >
+            Hủy
+          </button>
         </div>
       )}
 
@@ -420,6 +440,7 @@ function ResidentTable() {
           </div>
         </div>
       </div>
-      </div>);
-       };
+    </div>
+  );
+}
 export default ResidentTable;
