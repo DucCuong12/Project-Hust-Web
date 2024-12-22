@@ -46,6 +46,7 @@ export interface Resident {
   id: number;
   room_number: number;
   full_name: string;
+  gender: String;
   birth_year: number;
   occupation: string;
   phone_number: string;

@@ -26,6 +26,8 @@ declare global {
       ) => void;
       clearListener: (channel: String) => void;
       fetchResidentsList: () => Resident[];
+      addResident: (residentData: Resident) => void;
+      editResident: (residentData: Resident) => void;
       fetchUser: (id?: number) => User[];
       editUserAccount: (formData: SignupPayload, userId: number) => void;
       deleteUserAccount: (userId: number) => void;
@@ -44,6 +46,14 @@ declare global {
         amount_money: number,
         representator: string,
       ) => number;
+      // addResident: (
+      //   room_number: string,
+      //   full_name: string,
+      //   birth_year: number,
+      //   occupation: string,
+      //   phone_number: string,
+      //   email: string,
+      // ) => Promise<boolean>;
 
       fetchContributeFee: () => ContributeFee[];
       addContributeFee: (feeData: ContributeFee) => void;

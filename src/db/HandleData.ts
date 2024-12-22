@@ -2,7 +2,7 @@ import db from './config';
 import { IpcMainInvokeEvent } from 'electron';
 import { compare, genSalt, hash } from 'bcrypt-ts';
 import { FieldPacket, QueryResult } from 'mysql2';
-import { LoginPayload, SignupPayload } from '../interface/interface';
+import { LoginPayload, Resident, SignupPayload } from '../interface/interface';
 import { ChartData } from '../interface/class';
 
 const saltRounds = 15;
@@ -520,5 +520,81 @@ export const queryContributeFee = async (
   } catch (err) {
     console.error('Error fetching ContributeFee data:', err);
     throw err;
+  }
+};
+
+export const addResident = async (
+  event: IpcMainInvokeEvent,
+  residentData: any,
+) => {
+  try {
+    const query =
+      'INSERT INTO db.residents (room_number, full_name, birth_year, gender, occupation, phone_number, email) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const values = [
+      residentData.room_number,
+      residentData.full_name,
+      residentData.birth_year,
+      residentData.gender,
+      residentData.occupation,
+      residentData.phone_number,
+      residentData.email,
+    ];
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('add-resident-response', {
+          success: true,
+          message: 'Thêm cư dân thành công!',
+        });
+      })
+      .catch((err) => {
+        event.sender.send('add-resident-response', {
+          success: false,
+          message: 'Thêm cư dân thất bại!',
+        });
+        console.log(err);
+      });
+  } catch {
+    event.sender.send('add-resident-response', {
+      success: false,
+      message: 'Server error!',
+    });
+    console.log('Error');
+  }
+};
+
+export const editResident = async (
+  event: IpcMainInvokeEvent,
+  residentData: Resident,
+) => {
+  try {
+    const query =
+      'UPDATE db.residents SET room_number = ?, full_name = ?, birth_year = ?, gender = ?, occupation = ?, phone_number = ?, email = ? WHERE id = ?';
+    const values = [
+      residentData.room_number,
+      residentData.full_name,
+      residentData.birth_year,
+      residentData.occupation,
+      residentData.phone_number,
+      residentData.email,
+      residentData.id,
+    ];
+    db.query(query, values)
+      .then((value: [QueryResult, FieldPacket[]]) => {
+        event.sender.send('add-resident-response', {
+          success: true,
+          message: 'Thêm cư dân thành công!',
+        });
+      })
+      .catch((err) => {
+        event.sender.send('add-resident-response', {
+          success: false,
+          message: 'Thêm cư dân thất bại!',
+        });
+      });
+  } catch {
+    event.sender.send('add-resident-response', {
+      success: false,
+      message: 'Server error!',
+    });
   }
 };
