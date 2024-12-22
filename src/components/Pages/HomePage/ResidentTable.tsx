@@ -194,7 +194,7 @@ function ResidentTable() {
 
       {isAdding && (
         <div className="add-resident-form">
-          <h3>Thêm cư dân mới</h3>
+          {/* <h3>Thêm cư dân mới</h3> */}
           <input
             className="custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500"
             type="number"

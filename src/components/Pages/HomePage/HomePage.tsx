@@ -10,7 +10,7 @@ const { Header, Content } = Layout;
 
 function HomePage() {
   return (
-    <UILayout title="Danh sách cư dân">
+    <UILayout>
       <ResidentTable />
     </UILayout>
   );
