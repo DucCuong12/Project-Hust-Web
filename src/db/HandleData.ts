@@ -529,11 +529,12 @@ export const addResident = async (
 ) => {
   try {
     const query =
-      'INSERT INTO db.residents (room_number, full_name, birth_year, occupation, phone_number, email) VALUES (?, ?, ?, ?, ?, ?)';
+      'INSERT INTO db.residents (room_number, full_name, birth_year, gender, occupation, phone_number, email) VALUES (?, ?, ?, ?, ?, ?, ?)';
     const values = [
       residentData.room_number,
       residentData.full_name,
       residentData.birth_year,
+      residentData.gender,
       residentData.occupation,
       residentData.phone_number,
       residentData.email,
@@ -567,7 +568,7 @@ export const editResident = async (
 ) => {
   try {
     const query =
-      'UPDATE db.residents SET room_number = ?, full_name = ?, birth_year = ?, occupation = ?, phone_number = ?, email = ? WHERE id = ?';
+      'UPDATE db.residents SET room_number = ?, full_name = ?, birth_year = ?, gender = ?, occupation = ?, phone_number = ?, email = ? WHERE id = ?';
     const values = [
       residentData.room_number,
       residentData.full_name,

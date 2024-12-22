@@ -15,6 +15,7 @@ function ResidentTable() {
     room_number: 0,
     full_name: '',
     birth_year: 0,
+    gender: '',
     occupation: '',
     phone_number: '',
     email: '',
@@ -24,6 +25,7 @@ function ResidentTable() {
     room_number: 0,
     full_name: '',
     birth_year: 0,
+    gender: 'Nam',
     occupation: '',
     phone_number: '',
     email: '',
@@ -229,6 +231,15 @@ function ResidentTable() {
             value={newResident.birth_year}
             onChange={handleInputChange}
           />
+          <select
+            className="custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500"
+            name="gender"
+            value={newResident.gender}
+            onChange={handleInputChange}
+          >
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+          </select>
           <input
             className="custom-input placeholder-slate-400 border-b-1 border-gray-300 text-violet-500"
             type="text"
