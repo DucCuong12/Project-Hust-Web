@@ -568,7 +568,7 @@ export const editResident = async (
 ) => {
   try {
     const query =
-      'UPDATE db.residents SET room_number = ?, full_name = ?, birth_year = ?, gender = ?, occupation = ?, phone_number = ?, email = ? WHERE id = ?';
+      'UPDATE db.residents SET room_number = ?, full_name = ?, birth_year = ?, occupation = ?, phone_number = ?, email = ? WHERE id = ?';
     const values = [
       residentData.room_number,
       residentData.full_name,
@@ -586,6 +586,7 @@ export const editResident = async (
         });
       })
       .catch((err) => {
+        console.log(err);
         event.sender.send('add-resident-response', {
           success: false,
           message: 'Thêm cư dân thất bại!',
