@@ -46,6 +46,8 @@ import {
   queryContributeFee,
   addResident,
   editResident,
+  getResidentData,
+  getRequiredFee,
 } from '../db/HandleData';
 
 class AppUpdater {
@@ -71,6 +73,8 @@ ipcMain.handle('edit-account', editAccount);
 ipcMain.handle('delete-account', deleteAccount);
 
 ipcMain.handle('fetch-number-residents', getResidentsData);
+
+ipcMain.handle('get-resident-data', getResidentData);
 
 ipcMain.handle('add-resident', addResident);
 
@@ -134,6 +138,7 @@ ipcMain.handle('fetch-required-fee', getRequiredFeeData);
 ipcMain.handle('add-required-fee', addRequiredFee);
 ipcMain.handle('edit-required-fee', editRequiredFee);
 ipcMain.handle('delete-required-fee', deleteRequiredFee);
+ipcMain.handle('get-required-fee', getRequiredFee);
 ipcMain.handle('fetch-contribute-fee', getContributeFeeData);
 ipcMain.handle('add-contribute-fee', addContributeFee);
 ipcMain.handle('edit-contribute-fee', editContributeFee);

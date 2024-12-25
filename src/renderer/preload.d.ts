@@ -26,6 +26,7 @@ declare global {
       ) => void;
       clearListener: (channel: String) => void;
       fetchResidentsList: () => Resident[];
+      getResidentData: (room_id: number) => any;
       addResident: (residentData: Resident) => void;
       editResident: (residentData: Resident) => void;
       fetchUser: (id?: number) => User[];
@@ -36,6 +37,7 @@ declare global {
       editRequiredFee: (feeData: RequiredFee, editId: number) => void;
       deleteRequiredFee: (feeId: number) => void;
       queryRequiredFee: (query: string) => RequiredFee[];
+      getRequiredFee: (id: number) => any;
       addSubmittedFee: (
         room_number: number,
         amount_money: number,

@@ -58,10 +58,10 @@ const SideBar: React.FC<SideBarProps> = ({ collapsed, setCollapsed }) => {
           <Menu.Item key="5" icon={<DollarCircleTwoTone />}>
             <Link to="/transfercontributefeepage">Phí tự nguyện</Link>
           </Menu.Item>
-          {/* <Menu.Item key="6" icon={<FormOutlined />}>
-            Báo cáo
+          <Menu.Item key="6" icon={<FormOutlined />}>
+            <Link to="/fee-qr">Thu phí</Link>
           </Menu.Item>
-          <Menu.Item key="7" icon={<NotificationOutlined />}>
+          {/* <Menu.Item key="7" icon={<NotificationOutlined />}>
             Thông báo
           </Menu.Item> */}
           {/* <Menu.SubMenu key="6" icon={<DollarCircleOutlined />} title="Khoản thu">

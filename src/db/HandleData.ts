@@ -4,6 +4,9 @@ import { compare, genSalt, hash } from 'bcrypt-ts';
 import { FieldPacket, QueryResult } from 'mysql2';
 import { LoginPayload, Resident, SignupPayload } from '../interface/interface';
 import { ChartData } from '../interface/class';
+import { event } from 'jquery';
+import { stat } from 'node:fs';
+import { message } from 'antd';
 
 const saltRounds = 15;
 
@@ -523,6 +526,35 @@ export const queryContributeFee = async (
   }
 };
 
+export const getRequiredFee = async (
+  event: IpcMainInvokeEvent,
+  fee_id: any,
+) => {
+  try {
+    const [rows] = await db.query(
+      'SELECT * FROM db.fee_required WHERE fee_id = ?',
+      [fee_id],
+    );
+    if (rows.length !== 0) {
+      return {
+        status: 'success',
+        data: rows[0],
+      };
+    } else {
+      return {
+        status: 'error',
+        message: 'Không tìm thấy phí',
+      };
+    }
+  } catch (err) {
+    console.error('Error fetching RequiredFee:', err);
+    return {
+      status: 'error',
+      message: 'Lỗi truy vấn phí. Vui lòng thử lại sau.',
+    };
+  }
+};
+
 export const addResident = async (
   event: IpcMainInvokeEvent,
   residentData: any,
@@ -597,5 +629,34 @@ export const editResident = async (
       success: false,
       message: 'Server error!',
     });
+  }
+};
+
+export const getResidentData = async (
+  event: IpcMainInvokeEvent,
+  room_id: number,
+) => {
+  try {
+    const [rows] = await db.query(
+      'SELECT * FROM db.room_data WHERE room_id = ?',
+      [room_id],
+    );
+    if (rows.length !== 0) {
+      return {
+        status: 'success',
+        data: rows[0],
+      };
+    } else {
+      return {
+        status: 'error',
+        message: 'Không tìm thấy phòng',
+      };
+    }
+  } catch (err) {
+    console.error('Error fetching residents:', err);
+    return {
+      status: 'error',
+      message: 'Lỗi truy vấn thông tin phòng. Vui long thử lại sau.',
+    };
   }
 };

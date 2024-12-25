@@ -23,6 +23,7 @@ import TransferFeePage from '../components/Pages/TransferFee/TransferFee';
 import TransferContributeFeePage from '../components/Pages/TransferContributeFee/TransferContributeFee';
 import HistoryPage from '../components/Pages/History/History';
 import SignupForm from '../components/SignupForm/SignupForm';
+import FeeSummary from '../components/FeeSummary/FeeSummary';
 
 const AppInner = () => {
   const location = useLocation();
@@ -55,8 +56,12 @@ const AppInner = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/receivable-fee" element={<ReceivableFee />} />
               <Route path="/transferfeepage" element={<TransferFeePage />} />
-              <Route path="/transfercontributefeepage" element={<TransferContributeFeePage />} />
+              <Route
+                path="/transfercontributefeepage"
+                element={<TransferContributeFeePage />}
+              />
               <Route path="/history" element={<HistoryPage />} />
+              <Route path="/fee-qr" element={<FeeSummary />} />
               <Route
                 path="/manage-account/:id/edit"
                 element={<EditAccount />}

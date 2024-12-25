@@ -14,6 +14,8 @@ import {
   deleteRequiredFee,
   editRequiredFee,
   editResident,
+  getRequiredFee,
+  getResidentsData,
   queryRequiredFee,
 } from '../db/HandleData';
 
@@ -115,6 +117,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('query-required-fee', query);
   },
 
+  getRequiredFee: (id: number) => {
+    return ipcRenderer.invoke('get-required-fee', id);
+  },
+
   deleteCompulsoryFee: (room_number: number) => {
     return ipcRenderer.invoke('delete-compulsory-fee', room_number);
   },
@@ -167,6 +173,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   fetchResidentsData: () => {
     return ipcRenderer.invoke('fetch-number-residents');
+  },
+
+  getResidentData: (room_id: number) => {
+    return ipcRenderer.invoke('get-resident-data', room_id);
   },
 
   addResident: (residentData: Resident) => {

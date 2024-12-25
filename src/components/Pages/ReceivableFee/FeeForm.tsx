@@ -89,6 +89,7 @@ const FeeForm = (props: any) => {
               <option value="Người">Người</option>
               <option value="Lần">Lần</option>
               <option value="Cái">Cái</option>
+              <option value="m2">m2 (diện tích)</option>
             </Form.Select>
           </FloatingLabel>
           <FloatingLabel
