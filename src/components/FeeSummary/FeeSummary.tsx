@@ -7,7 +7,6 @@ import FeeDisplay from './FeeDisplay';
 
 const getResidentData = async (id: number) => {
   const req = await window.electronAPI.getResidentData(id);
-  console.log(req);
   if (req.status === 'success') {
     return req.data;
   } else {
@@ -20,7 +19,6 @@ const getResidentData = async (id: number) => {
 const getRequiredFee = async (id: number) => {
   if (!id) return;
   const req = await window.electronAPI.getRequiredFee(id);
-  console.log(req);
   if (req.status === 'success') {
     return req.data;
   } else {
@@ -31,7 +29,6 @@ const getRequiredFee = async (id: number) => {
 };
 
 const calculateTotalFee = (requiredFee: any, residentData: any) => {
-  console.log(requiredFee, residentData);
   if (requiredFee && residentData) {
     switch (requiredFee.unit) {
       case 'Người':
@@ -74,13 +71,11 @@ const FeeSummary = () => {
       if (image) {
         const qrImg = document.getElementById('qr-image') as HTMLInputElement;
         const qrData = await qrReader(qrImg);
-        console.log(qrData);
         Promise.all([getResidentData(roomID), getRequiredFee(qrData)]).then(
           (values) => {
             const residentData = values[0];
             const requiredFee = values[1];
             setFeeData(requiredFee);
-            console.log(residentData, feeData);
             const totalFee = calculateTotalFee(requiredFee, residentData);
             if (totalFee) {
               setResult(true);
