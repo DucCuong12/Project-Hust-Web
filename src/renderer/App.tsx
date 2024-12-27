@@ -23,7 +23,7 @@ import TransferFeePage from '../components/Pages/TransferFee/TransferFee';
 import TransferContributeFeePage from '../components/Pages/TransferContributeFee/TransferContributeFee';
 import HistoryPage from '../components/Pages/History/History';
 import SignupForm from '../components/SignupForm/SignupForm';
-import FeeSummary from '../components/FeeSummary/FeeSummary';
+import FinalFee from '../components/QRFee/FinalFee';
 
 const AppInner = () => {
   const location = useLocation();
@@ -61,7 +61,7 @@ const AppInner = () => {
                 element={<TransferContributeFeePage />}
               />
               <Route path="/history" element={<HistoryPage />} />
-              <Route path="/fee-qr" element={<FeeSummary />} />
+              <Route path="/qrfee" element={<FinalFee />} />
               <Route
                 path="/manage-account/:id/edit"
                 element={<EditAccount />}
