@@ -92,7 +92,7 @@ export const signupRequest = async (
   queryUserByField('username', userData.username)
     .then(([rows]) => {
       if (rows[0]) {
-        throw new Error('Tên tài khoản đã tồn tại.');
+        throw new Error('Tài khoản đã tồn tại.');
       }
       return queryUserByField('email', userData.email);
     })
@@ -286,8 +286,8 @@ export const getRequiredFeeData = async () => {
 };
 
 export const addRequiredFee = async (
-  event: IpcMainInvokeEvent,
   feeData: any,
+  event: IpcMainInvokeEvent,
 ) => {
   try {
     const query =
@@ -526,16 +526,17 @@ export const queryContributeFee = async (
   }
 };
 
+
 export const getRequiredFee = async (
   event: IpcMainInvokeEvent,
-  fee_id: any,
-) => {
+  fee_id: number
+): Promise<{ status: string; data?: FeeRequired; message?: string }> => {
   try {
-    const [rows] = await db.query(
-      'SELECT * FROM db.fee_required WHERE fee_id = ?',
+    const [rows] = await db.query<FeeRequired[]>(
+      'SELECT * FROM db.fee_required WHERE fee_id = ? LIMIT 1',
       [fee_id],
     );
-    if (rows.length !== 0) {
+    if (rows.length > 0) {
       return {
         status: 'success',
         data: rows[0],
@@ -554,6 +555,7 @@ export const getRequiredFee = async (
     };
   }
 };
+
 
 export const addResident = async (
   event: IpcMainInvokeEvent,
@@ -656,7 +658,7 @@ export const getResidentData = async (
     console.error('Error fetching residents:', err);
     return {
       status: 'error',
-      message: 'Lỗi truy vấn thông tin phòng. Vui long thử lại sau.',
+      message: 'Lỗi truy vấn thông tin phòng. Hãy thử lại sau.',
     };
   }
 };

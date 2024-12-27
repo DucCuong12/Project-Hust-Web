@@ -5,29 +5,25 @@ import UILayout from '../../../utils/UILayout';
 import { notification } from '../../../utils/toast_notification';
 import FeeDisplay from './FeeDisplay';
 
-const getResidentData = async (id: number) => {
-  const req = await window.electronAPI.getResidentData(id);
-  if (req.status === 'success') {
-    return req.data;
-  } else {
-    console.log(req.message);
-    notification.error(req.message);
+// Utility function for API requests
+const fetchData = async (apiMethod: Function, id: number, errorMessage: string) => {
+  try {
+    const req = await apiMethod(id);
+    if (req.status === 'success') {
+      return req.data;
+    } else {
+      console.log(req.message);
+      notification.error(req.message);
+      return null;
+    }
+  } catch (error) {
+    console.error(errorMessage, error);
+    notification.error(errorMessage);
     return null;
   }
 };
 
-const getRequiredFee = async (id: number) => {
-  if (!id) return;
-  const req = await window.electronAPI.getRequiredFee(id);
-  if (req.status === 'success') {
-    return req.data;
-  } else {
-    console.log(req.message);
-    notification.error(req.message);
-    return null;
-  }
-};
-
+// Calculation function
 const calculateTotalFee = (requiredFee: any, residentData: any) => {
   if (requiredFee && residentData) {
     switch (requiredFee.unit) {
@@ -38,9 +34,8 @@ const calculateTotalFee = (requiredFee: any, residentData: any) => {
       default:
         return requiredFee.unit_price;
     }
-  } else {
-    return null;
   }
+  return null;
 };
 
 const FeeSummary = () => {
@@ -54,41 +49,40 @@ const FeeSummary = () => {
 
   const qrReader = async (imageData: any) => {
     const codeReader = new BrowserQRCodeReader();
-    let res: any;
     try {
       const result = await codeReader.decodeFromImage(imageData);
       return result.text;
     } catch (err) {
       console.error(err);
       notification.error('Không thể đọc mã QR');
+      return null;
     }
   };
 
   const handleSubmit = async () => {
     const form = document.querySelector('form') as HTMLElement;
     setValidated(true);
-    if (form.checkValidity() === true) {
-      if (image) {
-        const qrImg = document.getElementById('qr-image') as HTMLInputElement;
-        const qrData = await qrReader(qrImg);
-        Promise.all([getResidentData(roomID), getRequiredFee(qrData)]).then(
-          (values) => {
-            const residentData = values[0];
-            const requiredFee = values[1];
-            setFeeData(requiredFee);
-            const totalFee = calculateTotalFee(requiredFee, residentData);
-            if (totalFee) {
-              setResult(true);
-              setTotalPrice(totalFee);
-            }
-          },
-        );
+    if (form.checkValidity() === true && image) {
+      const qrImg = document.getElementById('qr-image') as HTMLInputElement;
+      const qrData = await qrReader(qrImg);
+      if (qrData) {
+        Promise.all([
+          fetchData(window.electronAPI.getResidentData, roomID, 'Lỗi khi lấy dữ liệu cư dân'),
+          fetchData(window.electronAPI.getRequiredFee, qrData, 'Lỗi khi lấy phí cần thiết'),
+        ]).then(([residentData, requiredFee]) => {
+          setFeeData(requiredFee);
+          const totalFee = calculateTotalFee(requiredFee, residentData);
+          if (totalFee !== null) {
+            setResult(true);
+            setTotalPrice(totalFee);
+          }
+        });
       }
     }
   };
 
-  const handleIDChange = (e: any) => {
-    setRoomID(e.target.value);
+  const handleInputChange = (setter: Function) => (e: any) => {
+    setter(e.target.value);
   };
 
   const handleImageChange = (e: any) => {
@@ -98,46 +92,40 @@ const FeeSummary = () => {
 
       const reader = new FileReader();
       reader.onload = () => {
-        setPreviewUrl(reader.result as string); // Set the preview URL
+        setPreviewUrl(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleClose = () => {
-    setResult(false);
-  };
+  const handleClose = () => setResult(false);
 
   return (
     <UILayout title="Thu phí">
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
+      <Form noValidate validated={validated} onSubmit={(e) => e.preventDefault()}>
         <FloatingLabel controlId="roomID" label="Số phòng" className="mb-3">
           <Form.Control
             required
             name="roomID"
             type="number"
             placeholder="Nhập số phòng"
-            onChange={handleIDChange}
+            onChange={handleInputChange(setRoomID)}
             value={roomID}
           />
-          <Form.Control.Feedback type="invalid">
-            Vui lòng nhập số phòng
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Vui lòng nhập số phòng</Form.Control.Feedback>
         </FloatingLabel>
         <Form.Group className="mb-3">
-          <Form.Label>Ảnh mã QR</Form.Label>
+          <Form.Label>Mã QR</Form.Label>
           <Form.Control
             type="file"
             id="qr-form"
             accept="image/*"
             onChange={handleImageChange}
           />
-          <Form.Control.Feedback type="invalid">
-            Vui lòng tải ảnh mã QR
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Tải mã QR tại đây</Form.Control.Feedback>
         </Form.Group>
         {previewUrl && (
-          <div style={{ marginTop: '20px' }}>
+          <div style={{ marginTop: '25px' }}>
             <img
               src={previewUrl}
               alt="Uploaded Preview"
